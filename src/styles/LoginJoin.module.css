@@ -61,7 +61,7 @@
 .inputField {
   width: 100%;
   padding: 12px;
-  margin: 10px 0;
+  margin: 3px 0;
   border-radius: 8px;
   border: 1px solid #ffffff;
   font-size: 16px;
@@ -179,8 +179,8 @@
 /* 눈 버튼 스타일 */
 .eyeImg{
   cursor: pointer;
-  max-width: 25px;
-  max-height: 25px;
+  max-width: 23px;
+  max-height: 23px;
 }
 
 /* 비밀번호가 일치하지 않을 때 표시되는 스타일 */
@@ -195,7 +195,7 @@
 }
 
 .successMessage{
-  color: rgb(2, 233, 10);
+  color: rgb(24, 208, 67);
   font-size: 12px;
   margin-left: 5px;
 }

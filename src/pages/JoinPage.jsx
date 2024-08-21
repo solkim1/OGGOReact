@@ -11,7 +11,6 @@ import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 
 const Join = () => {
-
   // 백으로 보낼 회원가입 데이터
   const [formData, setFormData] = useState({
     userId: '',
@@ -28,7 +27,8 @@ const Join = () => {
   const [emailValid, setEmailValid] = useState(true);
   // 아이디 중복 검사를 위한 state
   const [userIdValid, setUserIdValid] = useState(true);
-
+  // 이메일 중복 검사를 위한 state
+  const [emailDuplicate, setEmailDuplicate] = useState(true);
 
   // 사용자가 입력하는 도중에도 동적으로 바뀌는 값들이 있어야함
   const handleChange = (e) => {
@@ -48,7 +48,14 @@ const Join = () => {
     // 이메일이 이메일 형식에 부합한지 체크
     if (name === 'userEmail') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      setEmailValid(emailRegex.test(value));
+      const isValid = emailRegex.test(value);
+      setEmailValid(isValid);
+
+      if (isValid) {
+        debounceCheckEmail(value);
+      } else {
+        setEmailDuplicate(true); // 유효하지 않은 이메일이면 중복 체크 결과를 true로 설정
+      }
     }
 
     // 아이디 중복체크
@@ -57,13 +64,10 @@ const Join = () => {
     }
   };
 
-
   // 디바운스를 적용한 아이디 중복 확인 함수
   // 마지막으로 아이디 value가 바뀐지 250ms 가 지났을 경우에 실행됨 
   const debounceCheckId = useCallback(
     debounce(async (id) => {
-      // return 을 활용
-      // 조건문을 순차적으로 만나면서 return 에 걸림이 없어야 백이랑 통신 진행
       if (!id) {
         setUserIdValid(true);
         return;
@@ -74,23 +78,31 @@ const Join = () => {
         setUserIdValid(response.data.available);
       } catch (e) {
         console.error(e);
-      } finally {
-
       }
-    }, 250), // 250ms 지연 
-    []
-  );
+    }, 250), []);
 
+  const debounceCheckEmail = useCallback(
+    debounce(async (email) => {
+      if (!email) {
+        setEmailDuplicate(true);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:8090/plan/user/checkEmail?userEmail=${email}`);
+        setEmailDuplicate(response.data.available);
+      } catch (e) {
+        console.error(e);
+      }
+    }, 250), []);
 
   // 눈버튼 눌렀을때 실행될 함수
   const togglePwVisibility = () => {
     setPwVisible(!pwVisible);
   };
 
-
   // 사용자가 회원가입버튼을 눌렀을 경우
   const join = async () => {
-
     // return 을 활용
     // 조건문을 순차적으로 만나면서 return 에 걸림이 없어야 백이랑 통신 진행
 
@@ -109,7 +121,7 @@ const Join = () => {
       return;
     }
 
-    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&^#]{8,}$/;
     if (!pwRegex.test(formData.userPw)) {
       alert('비밀번호는 최소 8자 이상이어야 하며, 대문자와 숫자를 포함해야 합니다.');
       return;
@@ -120,14 +132,18 @@ const Join = () => {
       return;
     }
 
-    // return 을 활용
-    // 조건문을 순차적으로 만나면서 return 에 걸림이 없어야 아래 로직 실행됨
+    if (!emailDuplicate) {
+      alert('이메일 중복 확인을 먼저 진행해주세요.');
+      return;
+    }
+
     try {
       const response = await axios.post(
         'http://localhost:8090/plan/user/join',
         formData
       );
       console.log(response.data);
+      alert("회원가입 성공");
     } catch (e) {
       console.error(e);
     }
@@ -164,7 +180,7 @@ const Join = () => {
               {!userIdValid ? '이미 사용중인 아이디입니다' : '사용 가능한 아이디입니다'}
             </span>
           ) : (
-            <span> </span>
+            <span></span>
           )}
         </div>
 
@@ -178,8 +194,16 @@ const Join = () => {
             value={formData.userEmail}
             onChange={handleChange}
           />
-          {!emailValid && (
-            <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
+          {formData.userEmail !== '' ? (
+            !emailValid ? (
+              <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
+            ) : !emailDuplicate ? (
+              <span className={styles.errorMessage}>이미 사용중인 이메일입니다</span>
+            ) : (
+              <span className={styles.successMessage}>사용 가능한 이메일입니다</span>
+            )
+          ) : (
+            <span></span>
           )}
         </div>
 
