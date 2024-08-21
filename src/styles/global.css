@@ -1,0 +1,35 @@
+/* 여기서는 버튼 스타일(호버했을때랑도),  기본 폰트및 배경색, 기본요소 스타일(h1,h2 이런식으로) 정의하는곳이에요! 밑에는 예시에요*/
+
+
+
+
+/* .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  button {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    margin-bottom: 1rem;
+  }
+  
+  */
