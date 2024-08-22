@@ -1,13 +1,20 @@
 {
-  "name": "planmaker-react",
+  "name": "combined-project",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "anim-event": "^1.0.17",
+    "axios": "^1.7.4",
+    "cssprefix": "^2.0.17",
+    "m-class-list": "^1.1.10",
+    "plain-draggable": "^2.5.14",
+    "pointer-event": "^1.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-naver-maps": "^0.1.3",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
