@@ -1,0 +1,119 @@
+.pageContainer {
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.filterSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.filterLabel {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: default;
+}
+
+.filterInput,
+.filterSelect {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-left: none;
+  font-size: 14px;
+}
+
+.filterInput {
+  width: 120px;
+}
+
+.filterSelect {
+  border-radius: 0 4px 4px 0;
+  width: 100px;
+}
+
+.dateSeparator {
+  margin: 0 5px;
+}
+
+.resetButton,
+.scheduleButton,
+.calendarToggle {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: 32px;
+  margin-left: 10px;
+}
+
+.resetButton {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.scheduleButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.calendarToggle {
+  background-color: #333;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.recommendationsTitle {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 1200px) {
+  .filterSection {
+    flex-wrap: wrap;
+  }
+
+  .filterItem {
+    margin-bottom: 10px;
+  }
+
+  .resetButton,
+  .scheduleButton {
+    margin-top: 10px;
+  }
+}

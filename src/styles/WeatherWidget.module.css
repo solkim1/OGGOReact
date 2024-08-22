@@ -1,0 +1,12 @@
+.weatherWidget {
+    display: flex;
+    align-items: center;
+  }
+
+  .weatherIcon {
+    margin-right: 10px;
+  }
+
+  .weatherInfo {
+    font-size: 14px;
+  }
