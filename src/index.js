@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import JoinPage from './pages/JoinPage';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <JoinPage />
-  </React.StrictMode>
+  <Router>
+    <h1>header</h1>
+    <App />
+  </Router>
 );
 
 // If you want to start measuring performance in your app, pass a function

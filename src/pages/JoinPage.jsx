@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import styles from '../styles/LoginJoin.module.css';
@@ -10,7 +11,11 @@ import closeEyeIcon from '../images/icon-close-eye.png';
 import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 
-const Join = () => {
+const JoinPage = () => {
+
+  const nav = useNavigate();
+
+
   // 백으로 보낼 회원가입 데이터
   const [formData, setFormData] = useState({
     userId: '',
@@ -144,8 +149,10 @@ const Join = () => {
       );
       console.log(response.data);
       alert("회원가입 성공");
+      nav('/');
     } catch (e) {
       console.error(e);
+      alert("서버와 통신이 원활하지 않습니다");
     }
     // 추가해야할것 
     // 로그인 후 페이지 이동 구현
@@ -271,4 +278,4 @@ const Join = () => {
   );
 };
 
-export default Join;
+export default JoinPage;
