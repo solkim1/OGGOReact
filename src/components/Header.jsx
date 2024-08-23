@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { UserContext } from "../context/UserProvider";
+
 import WeatherWidget from "./WeatherWidget";
 import Calendar from "./Calendar";
 import logoImage from "../images/logo.png";
@@ -14,6 +16,8 @@ const Header = () => {
   const location = useLocation();
   const [isBusinessMode, setIsBusinessMode] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+
+  const { logout } = useContext(UserContext);
 
   useEffect(() => {
     if (location.pathname === "/business") {
@@ -54,15 +58,19 @@ const Header = () => {
     }
   };
 
+  const logoutBtn = () => {
+    logout();
+  }
+
   return (
     <div>
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.logoContainer}>
-            <img 
-              src={logoImage} 
-              alt="플랜메이커 로고" 
-              className={styles.logo} 
+            <img
+              src={logoImage}
+              alt="플랜메이커 로고"
+              className={styles.logo}
               onClick={goToHomePage}
             />
           </div>
@@ -90,7 +98,7 @@ const Header = () => {
                 <img src={mypageIcon} alt="My Page" className={styles.buttonIcon} />
                 마이페이지
               </button>
-              <button className={styles.navButton} onClick={() => navigate("/logout")}>
+              <button className={styles.navButton} onClick={logoutBtn}>
                 <img src={logoutIcon} alt="Logout" className={styles.buttonIcon} />
                 로그아웃
               </button>
