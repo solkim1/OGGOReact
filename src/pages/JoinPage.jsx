@@ -163,7 +163,7 @@ const Join = () => {
       <div className={styles.formContainer}>
 
         <h1 className={styles.title}>
-          <img src={logoImage} alt="Logo" /> Plan Maker
+          <img src={logoImage} alt="Logo" /> 
         </h1>
 
         <div className={styles.inputGroup}>

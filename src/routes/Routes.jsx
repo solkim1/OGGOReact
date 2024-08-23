@@ -14,6 +14,7 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
+    
         <Route path="/join" element={<JoinPage />} /> {/* 회원 가입 */}
         <Route path="/landing" element={<LandingPage />} /> {/* 시작 페이지 */}
         <Route path="/login" element={<LoginPage />} /> {/* 로그인 */}
