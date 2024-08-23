@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import RecommendationsTheme from "../components/RecommendationsTheme";
-import Footer from "../components/Footer";
 import styles from "../styles/TravelerMainPage.module.css";
 
 const TravelerMainPage = () => {
@@ -14,7 +12,6 @@ const TravelerMainPage = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <Header />
       <main className={styles.mainContent}>
         <div className={styles.contentWrapper}>
           <div className={styles.filterSection}>
@@ -65,7 +62,6 @@ const TravelerMainPage = () => {
           <RecommendationsTheme />
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

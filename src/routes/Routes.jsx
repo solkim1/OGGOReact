@@ -29,18 +29,20 @@ const AppRoutes = () => {
 
   // 로그인 후 라우트
   const PrivateRoutes = () => (
-    <div>
+    <>
       <Header />
+
       <Routes>
         <Route path="/mypage" element={<MyPage />} /> {/* 마이페이지 */}
-        <Route path="/traveler" element={<TravelerMainPage />} /> {/* 메인페이지 여행자모드 */}
+        <Route path="/traveler" element={<TravelerMainPage />} /> {/* 메인페이지 여행자모드 */}s
         <Route path="/business" element={<BusinessMainPage />} /> {/* 메인페이지 출장자모드 */}
         <Route path="/myschedules" element={<MySchedulesPage />} /> {/* 나의 일정 */}
         <Route path="/schedulemap" element={<ScheduleMapPage />} />
         <Route path="*" element={<Navigate to="/traveler" />} /> {/* 모든 다른 경로는 TravelerMainPage로 리다이렉트 */}
       </Routes>
+
       <Footer />
-    </div>
+    </>
   );
 
   return (
@@ -62,8 +64,9 @@ const AppRoutes = () => {
       라우트 이동 시 마다 그 안의 Header 컴포넌트들의 렌더링이 계속 일어난다.
 
       이렇게 될 경우 Header 안에 useEffect같은 함수들이 있다면 
-      라우트 이동 시 마다 필요없이 계속 실행될것.
+      라우트 이동 시 마다 필요없이 계속 실행될것임
     */
+   
     <Router>
       {isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}
     </Router>

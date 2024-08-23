@@ -20,7 +20,6 @@ const UserProvider = ({ children }) => {
   // 로그인 함수
   const login = (userData) => {
     setUser(userData);
-    setIsAuthenticated(true);
     sessionStorage.setItem("user", JSON.stringify(userData)); // 사용자 정보를 세션에 저장
   };
 
@@ -32,7 +31,7 @@ const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <UserContext.Provider value={{ user, isAuthenticated, setIsAuthenticated, login, logout }}>
       {children}
     </UserContext.Provider>
   );

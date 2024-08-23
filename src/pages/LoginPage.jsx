@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
-
+import axios from 'axios';
 import { UserContext } from '../context/UserProvider';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/LoginJoin.module.css';
 
 // 이미지 파일 불러오기
@@ -11,52 +12,83 @@ import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 
 const LoginPage = () => {
-  // UserContext에서 login과 logout을 가져옵니다.
-  const { login, logout } = useContext(UserContext); 
+  // UserContext에서 login 함수와 기타 필요한 정보 가져오기
+  const { login } = useContext(UserContext);
+  const nav = useNavigate();
 
-  // 백으로 보낼 로그인 데이터
+  // 로그인 데이터 상태
   const [formData, setFormData] = useState({
     userId: '',
-    userEmail: '',
-    userPw: '',
-    pwCheck: ''
+    userPw: ''
   });
 
-  // 비밀번호 보이고 안보이고 상태 관리 state
+  // 비밀번호 가시성 상태
   const [pwVisible, setPwVisible] = useState(false);
 
-  // 사용자가 입력하는 도중에도 동적으로 바뀌는 값들이 있어야 함
+  // 입력값 변경 처리
   const handleChange = (e) => {
-    const { name, value } = e.target; // e.target에서 name과 value 추출
+    const { name, value } = e.target;
     setFormData({
-      ...formData, // 현재까지 변경된 formData 먼저 세팅
-      [name]: value // 추출한 name value 값 업데이트
+      ...formData,
+      [name]: value
     });
   };
 
-  // 눈 버튼 눌렀을 때 실행될 함수
+  // 비밀번호 보이기/숨기기 토글
   const togglePwVisibility = () => {
-    setPwVisible(!pwVisible);
+    setPwVisible(prev => !prev);
   };
 
-  const test = () => {
-    login({
-      userId: "test",
-      userEmail: "test@naver.com"
-    });
+  // 로그인 버튼 클릭 처리
+  const loginBtn = async () => {
+    // 입력 값 유효성 검사
+    if (!formData.userId || !formData.userPw) {
+      alert("아이디와 비밀번호를 모두 입력해 주세요.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8090/plan/user/login',
+        formData
+      );
+
+      // 로그인 성공 시 UserContext에 로그인 정보 설정
+      login({
+        userId: response.data.userId,
+        userEmail: response.data.userEmail
+      });
+
+      // 로그인 후 홈 페이지로 이동
+      nav('/');
+
+    } catch (e) {
+      // 에러 처리
+      if (e.response) {
+        console.error(e.response.data);
+        if (e.response.status === 401) {
+          alert("잘못된 사용자 ID 또는 비밀번호입니다.");
+        } else {
+          alert("서버와 통신이 원활하지 않습니다");
+        }
+      } else {
+        console.error(e);
+        alert("서버와 통신이 원활하지 않습니다");
+      }
+    }
   };
 
   return (
     <div className={styles.container}>
-
       <div className={styles.imageContainer}>
         <img src={planeImage} alt="Airplane" />
       </div>
 
       <div className={styles.formContainer}>
-
         <h1 className={styles.title}>
-          <img src={logoImage} alt="Plan Maker Logo" /> Plan Maker
+          <Link to="/">
+            <img src={logoImage} alt="Plan Maker Logo" />
+          </Link>
         </h1>
 
         <div className={styles.inputGroup}>
@@ -87,27 +119,24 @@ const LoginPage = () => {
               className={styles.eyeButton}
               onClick={togglePwVisibility}
             >
-              <img className={styles.eyeImg}
+              <img
+                className={styles.eyeImg}
                 src={pwVisible ? closeEyeIcon : eyeIcon}
-                alt="Toggle visibility" />
+                alt="Toggle visibility"
+              />
             </button>
           </div>
         </div>
 
         <div className={styles.buttonGroup}>
-          <button className={styles.button}>로그인</button>
-          <p>계정이 없다면? <a href="/join">Join</a></p>
+          <button className={styles.button} onClick={loginBtn}>로그인</button>
+          <p>계정이 없다면? <Link to="/join">회원가입</Link></p>
         </div>
 
         <div className={styles.googleSignIn}>
           <img src={googleIcon} alt="Google logo" width="20" />
           <span>Google 계정으로 가입하기</span>
         </div>
-
-        <div>
-          <button onClick={test}>테스트 로그인</button>
-        </div>
-
       </div>
     </div>
   );

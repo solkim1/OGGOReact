@@ -19,7 +19,6 @@ const BusinessMainPage = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <Header />
       <main className={styles.mainContent}>
         <div className={styles.contentWrapper}>
           <div className={styles.filterSection}>
@@ -97,7 +96,6 @@ const BusinessMainPage = () => {
           <RecommendationsExhibition />
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
