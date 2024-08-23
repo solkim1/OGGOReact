@@ -21,7 +21,7 @@ const ScheduleMapPage = () => {
 
     if (!data) {
       try {
-        const response = await fetch("http://localhost:8090/api/travel");
+        const response = await fetch("http://localhost:8090/plan/map/mapdata");
         data = await response.json();
 
         await localCache.writeToCache(cacheKey, data);
