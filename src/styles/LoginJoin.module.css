@@ -79,6 +79,7 @@
   .inputField:focus {
     border-color: #007bff;
     outline: none;
+
   }
 
   /* 버튼 스타일 */
@@ -263,3 +264,4 @@
       /* 구글 로그인 글씨 크기 축소 */
     }
   }
+
