@@ -1,1 +1,12 @@
-// 구글캘린더 컴포넌트 (메인페이지에서 통합예정)
+import React from "react";
+import styles from "../styles/Calendar.module.css";
+
+const Calendar = () => {
+  return (
+
+      <h3>여행 캘린더</h3>
+
+  );
+};
+
+export default Calendar;

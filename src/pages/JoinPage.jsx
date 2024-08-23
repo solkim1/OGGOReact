@@ -1,5 +1,6 @@
+//회원가입페이지
 import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate}from 'react-router-dom';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import styles from '../styles/LoginJoin.module.css';
@@ -169,7 +170,7 @@ const JoinPage = () => {
       <div className={styles.formContainer}>
 
         <h1 className={styles.title}>
-          <img src={logoImage} alt="Logo" /> Plan Maker
+          <img src={logoImage} alt="Logo" /> 
         </h1>
 
         <div className={styles.inputGroup}>

@@ -1,20 +1,10 @@
-import './App.css';
-import { Routes,Route } from 'react-router-dom';
-import LandingPage from './pages/LandingPage';
-import JoinPage from './pages/JoinPage';
-import LoginPage from './pages/LoginPage';
-
-
+import React from 'react';
+import AppRoutes from './routes/Routes'; // 라우트 설정이 포함된 컴포넌트를 가져옵니다
 
 function App() {
   return (
-    <div>
-      <Routes>
-        <Route path='/' element={<LandingPage/>}/>
-        <Route path='JoinPage' element={<JoinPage/>}/>
-        <Route path='LoginPage' element={<LoginPage/>}/>
-      </Routes>
-
+    <div className="App">
+      <AppRoutes /> {/* 이 컴포넌트가 라우팅을 관리*/}
     </div>
   );
 }
