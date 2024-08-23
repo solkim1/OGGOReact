@@ -1,6 +1,6 @@
-//로그인페이지
-import React, { useState } from 'react'
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
+
+import { UserContext } from '../context/UserProvider';
 import styles from '../styles/LoginJoin.module.css';
 
 // 이미지 파일 불러오기
@@ -10,8 +10,9 @@ import closeEyeIcon from '../images/icon-close-eye.png';
 import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 
-
 const LoginPage = () => {
+  // UserContext에서 login과 logout을 가져옵니다.
+  const { login, logout } = useContext(UserContext); 
 
   // 백으로 보낼 로그인 데이터
   const [formData, setFormData] = useState({
@@ -24,8 +25,7 @@ const LoginPage = () => {
   // 비밀번호 보이고 안보이고 상태 관리 state
   const [pwVisible, setPwVisible] = useState(false);
 
-
-  // 사용자가 입력하는 도중에도 동적으로 바뀌는 값들이 있어야함
+  // 사용자가 입력하는 도중에도 동적으로 바뀌는 값들이 있어야 함
   const handleChange = (e) => {
     const { name, value } = e.target; // e.target에서 name과 value 추출
     setFormData({
@@ -34,11 +34,17 @@ const LoginPage = () => {
     });
   };
 
-  // 눈버튼 눌렀을때 실행될 함수
+  // 눈 버튼 눌렀을 때 실행될 함수
   const togglePwVisibility = () => {
     setPwVisible(!pwVisible);
   };
 
+  const test = () => {
+    login({
+      userId: "test",
+      userEmail: "test@naver.com"
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -50,9 +56,8 @@ const LoginPage = () => {
       <div className={styles.formContainer}>
 
         <h1 className={styles.title}>
-          <img src={logoImage} /> Plan Maker
+          <img src={logoImage} alt="Plan Maker Logo" /> Plan Maker
         </h1>
-
 
         <div className={styles.inputGroup}>
           <label className={styles.label}>아이디</label>
@@ -60,13 +65,11 @@ const LoginPage = () => {
             type="text"
             placeholder="아이디를 입력하세요"
             className={styles.inputField}
-            name='userId'
+            name="userId"
             value={formData.userId}
             onChange={handleChange}
           />
         </div>
-
-
 
         <div className={styles.inputGroup}>
           <label className={styles.label}>패스워드</label>
@@ -75,7 +78,7 @@ const LoginPage = () => {
               type={pwVisible ? "text" : "password"}
               placeholder="비밀번호를 입력하세요"
               className={styles.inputField}
-              name='userPw'
+              name="userPw"
               value={formData.userPw}
               onChange={handleChange}
             />
@@ -91,22 +94,23 @@ const LoginPage = () => {
           </div>
         </div>
 
-
         <div className={styles.buttonGroup}>
           <button className={styles.button}>로그인</button>
           <p>계정이 없다면? <a href="/join">Join</a></p>
         </div>
-
 
         <div className={styles.googleSignIn}>
           <img src={googleIcon} alt="Google logo" width="20" />
           <span>Google 계정으로 가입하기</span>
         </div>
 
+        <div>
+          <button onClick={test}>테스트 로그인</button>
+        </div>
 
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

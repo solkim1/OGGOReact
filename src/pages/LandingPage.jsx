@@ -1,6 +1,6 @@
 // 시작페이지
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from '../styles/LandingPage.module.css';
 
 // 이미지 불러오기
@@ -19,8 +19,8 @@ const LandingPage = () => {
         </div>
         <nav className={styles.nav}>
           <a href="#">이용방법</a>
-          <Link to='/JoinPage'>회원가입</Link>
-          <Link to='/LoginPage'>
+          <Link to='/join'>회원가입</Link>
+          <Link to='/login'>
             <button className={styles.loginButton}>로그인</button>
           </Link>
         </nav>

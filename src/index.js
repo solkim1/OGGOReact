@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import AppRoutes from './routes/Routes';
 import reportWebVitals from './reportWebVitals';
+import UserProvider from './context/UserProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <App />
+  // 이렇게 UserProvider 로 감싸놓게 되면 그 하위 컴포넌트에서 useContext를 이용해
+  // UserProvider 안의 모든 함수들과 state 들을 바로바로 꺼내 사용할 수 있음
+  <UserProvider>
+    <AppRoutes />
+  </UserProvider>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
