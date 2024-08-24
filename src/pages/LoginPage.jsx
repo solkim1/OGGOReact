@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { UserContext } from '../context/UserProvider';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,20 +12,60 @@ import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 
 const LoginPage = () => {
-  // UserContext에서 login 함수와 기타 필요한 정보 가져오기
   const { login } = useContext(UserContext);
   const nav = useNavigate();
 
-  // 로그인 데이터 상태
   const [formData, setFormData] = useState({
     userId: '',
     userPw: ''
   });
 
-  // 비밀번호 가시성 상태
   const [pwVisible, setPwVisible] = useState(false);
 
-  // 입력값 변경 처리
+  useEffect(() => {
+    const loadGoogleScript = () => {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.onload = initializeGoogleLogin;
+      document.body.appendChild(script);
+    };
+
+    loadGoogleScript();
+  }, []);
+
+  const initializeGoogleLogin = () => {
+    window.google.accounts.id.initialize({
+      client_id: '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com',
+      callback: handleGoogleLoginCallback,
+      ux_mode: 'popup',
+      auto_select: false,
+      context: 'use'
+    });
+  
+    window.google.accounts.id.renderButton(
+      document.getElementById('googleLoginButton'),
+      { theme: 'outline', size: 'large', type: 'standard' }
+    );
+  };
+
+  const handleGoogleLoginCallback = async (response) => {
+    try {
+      const res = await axios.post('http://localhost:8090/plan/user/google-login', {
+        token: response.credential
+      });
+
+      login({
+        userId: res.data.userId,
+        userEmail: res.data.userEmail
+      });
+
+      nav('/');
+    } catch (error) {
+      console.error('Google login failed', error);
+      alert('Google 로그인에 실패했습니다.');
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -34,14 +74,11 @@ const LoginPage = () => {
     });
   };
 
-  // 비밀번호 보이기/숨기기 토글
   const togglePwVisibility = () => {
     setPwVisible(prev => !prev);
   };
 
-  // 로그인 버튼 클릭 처리
   const loginBtn = async () => {
-    // 입력 값 유효성 검사
     if (!formData.userId || !formData.userPw) {
       alert("아이디와 비밀번호를 모두 입력해 주세요.");
       return;
@@ -53,17 +90,13 @@ const LoginPage = () => {
         formData
       );
 
-      // 로그인 성공 시 UserContext에 로그인 정보 설정
       login({
         userId: response.data.userId,
         userEmail: response.data.userEmail
       });
 
-      // 로그인 후 홈 페이지로 이동
       nav('/');
-
     } catch (e) {
-      // 에러 처리
       if (e.response) {
         console.error(e.response.data);
         if (e.response.status === 401) {
@@ -133,10 +166,7 @@ const LoginPage = () => {
           <p>계정이 없다면? <Link to="/join">회원가입</Link></p>
         </div>
 
-        <div className={styles.googleSignIn}>
-          <img src={googleIcon} alt="Google logo" width="20" />
-          <span>Google 계정으로 가입하기</span>
-        </div>
+        <div id="googleLoginButton"></div>
       </div>
     </div>
   );
