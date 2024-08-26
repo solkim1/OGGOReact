@@ -1,90 +1,123 @@
-// src/components/DaySchedule.jsx
+import React, { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import LocalCache from "./LocalCache";
+import style from "../styles/DaySchedule.module.css";
 
-import React, { useEffect, useRef } from "react";
-import PlainDraggable from "plain-draggable";
-
-const DaySchedule = ({ selectedDay, setSelectedDay, locationData }) => {
-  const containerRefs = useRef([]);
+const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, setLocationData }) => {
+  const [scheduleData, setScheduleData] = useState({});
 
   useEffect(() => {
-    containerRefs.current.forEach((container, containerIndex) => {
-      if (container) {
-        const poiElements = container.querySelectorAll("[name='scheduleListPOI']");
-        poiElements.forEach((poiElement, index) => {
-          new PlainDraggable(poiElement, {
-            containment: container, // scheduleListBackground 내부로만 이동 제한
-            handle: poiElement,
-            onDrag: function (newPosition) {
-              const poiArray = Array.from(poiElements);
-              poiArray.sort((a, b) => {
-                return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
-              });
-
-              // 화면적으로 위치를 업데이트
-              poiArray.forEach((el) => {
-                container.appendChild(el);
-              });
-            },
-          });
-        });
-      }
-    });
+    // locationData에서 시간을 가져와서 설정
+    setScheduleData(
+      Object.keys(locationData).reduce((acc, day) => {
+        acc[day] = locationData[day].map((item, index) => ({
+          ...item,
+          draggableId: `${day}-${index}`,
+        }));
+        return acc;
+      }, {})
+    );
   }, [locationData]);
 
-  return (
-    <div style={{ display: "flex", flex: 1, marginLeft: "10px", marginRight: "10px" }}>
-      {Object.keys(locationData).map((day, dayIndex) => (
-        <div
-          name={"scheduleListBackground"}
-          key={dayIndex}
-          ref={(el) => (containerRefs.current[dayIndex] = el)}
-          style={{
-            flex: 1,
-            marginRight: "10px",
-            padding: "10px",
-            backgroundColor: selectedDay === day ? "#ff0000" : "#00ff00", // 날짜별로 배경색 구분
-            borderRadius: "8px",
-          }}
-        >
-          <button
-            name={"scheduleDaySelectButton"}
-            onClick={() => setSelectedDay(day)}
-            style={{
-              display: "block",
-              marginBottom: "10px",
-              padding: "10px 20px",
-              cursor: "pointer",
-              backgroundColor: selectedDay === day ? "#003499" : "#f0f0f0",
-              color: selectedDay === day ? "#ffffff" : "#000000",
-              border: "none",
-              borderRadius: "5px",
-              width: "100%",
-            }}
-          >
-            {day}
-          </button>
-          {locationData[day]?.map((location, index) => (
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const { source, destination } = result;
+
+    if (source.droppableId === destination.droppableId) {
+      const items = Array.from(scheduleData[source.droppableId]);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+
+      // 드래그 후 순서에 맞게 시간을 다시 설정
+      const updatedItems = items.map((item, index) => ({
+        ...item,
+        departTime: locationData[source.droppableId][index].departTime,
+        arriveTime: locationData[source.droppableId][index].arriveTime,
+      }));
+
+      setScheduleData((prev) => ({
+        ...prev,
+        [source.droppableId]: updatedItems,
+      }));
+
+      setLocationData((prev) => {
+        const newLocationData = {
+          ...prev,
+          [source.droppableId]: updatedItems,
+        };
+
+        LocalCache.writeToCache("travel_data_all", newLocationData);
+
+        return newLocationData;
+      });
+    }
+  };
+
+  const renderSchedule = (day) => {
+    const daySchedule = scheduleData[day];
+    const result = [];
+
+    if (!daySchedule) return result;
+
+    for (let i = 0; i < daySchedule.length; i++) {
+      const item = daySchedule[i];
+      const key = item.draggableId;
+
+      result.push(
+        <Draggable key={key} draggableId={key} index={i}>
+          {(provided, snapshot) => (
             <div
-              name={"scheduleListPOI"}
-              key={index}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "10px",
-                marginBottom: "10px",
-                backgroundColor: "#ffffff",
-              }}
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ""}`}
             >
-              <h3 style={{ margin: "0 0 10px 0" }}>{location.name}</h3>
-              <p style={{ margin: "0" }}>{location.description}</p>
-              <p style={{ margin: "0 0 5px 0" }}>
-                {location.departTime}-{location.arriveTime}
-              </p>
+              <div className={style.scheduleItemIcon}></div>
+              <div>
+                <h3 className={style.scheduleItemTitle}>{item.name}</h3>
+                <p className={style.scheduleItemDescription}>{item.description}</p>
+                <div className={style.scheduleItemTime}>
+                  {item.departTime} - {item.arriveTime}
+                </div>
+              </div>
+            </div>
+          )}
+        </Draggable>
+      );
+    }
+
+    return result;
+  };
+
+  const currentDays = Object.keys(scheduleData);
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className={style.scheduleContainer}>
+        <div className={style.scheduleListContainer}>
+          {currentDays.map((day) => (
+            <div key={day} className={`${style.scheduleListBackground} ${selectedDay === day ? style.selected : ""}`}>
+              <button
+                className={`${style.scheduleDaySelectButton} ${selectedDay === day ? style.selected : ""}`}
+                onClick={() => setSelectedDay(day)}
+              >
+                {day}
+              </button>
+
+              <Droppable droppableId={day} key={day}>
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps} className={style.scheduleDroppable}>
+                    {renderSchedule(day)}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
             </div>
           ))}
         </div>
-      ))}
-    </div>
+      </div>
+    </DragDropContext>
   );
 };
 
