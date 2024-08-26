@@ -58,10 +58,6 @@ const Header = () => {
     }
   };
 
-  const logoutBtn = () => {
-    logout();
-  }
-
   return (
     <div>
       <header className={styles.header}>
@@ -98,7 +94,7 @@ const Header = () => {
                 <img src={mypageIcon} alt="My Page" className={styles.buttonIcon} />
                 마이페이지
               </button>
-              <button className={styles.navButton} onClick={logoutBtn}>
+              <button className={styles.navButton} onClick={logout}>
                 <img src={logoutIcon} alt="Logout" className={styles.buttonIcon} />
                 로그아웃
               </button>
