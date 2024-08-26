@@ -79,32 +79,22 @@ const LoginPage = () => {
   };
 
   const loginBtn = async () => {
-    console.log(formData.userId,formData.userPw);
     if (!formData.userId || !formData.userPw) {
       alert("아이디와 비밀번호를 모두 입력해 주세요.");
       return;
-      
-      
     }
-    const requestBody = {
-      userId: formData.userId,
-      userPw: formData.userPw
-    };
+
     try {
       const response = await axios.post(
         'http://localhost:8090/plan/user/login',
-        requestBody, // JSON 데이터 전송
-        {
-          headers: {
-            'Content-Type': 'application/json' // 이 설정은 기본적으로 적용됨
-          }
-        }
+        formData
       );
+
       login({
         userId: response.data.userId,
         userEmail: response.data.userEmail
       });
-    
+
       nav('/');
     } catch (e) {
       if (e.response) {
@@ -119,7 +109,7 @@ const LoginPage = () => {
         alert("서버와 통신이 원활하지 않습니다");
       }
     }
-  }
+  };
 
   return (
     <div className={styles.container}>

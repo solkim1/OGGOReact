@@ -1,3 +1,4 @@
+
 // src/components/LocalCache.jsx
 
 const cacheVersion = "v1";
@@ -55,3 +56,4 @@ class LocalCache {
 }
 
 export default LocalCache;
+

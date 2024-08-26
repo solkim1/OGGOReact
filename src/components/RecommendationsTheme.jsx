@@ -1,3 +1,4 @@
+
 import React from "react";
 import styles from "../styles/RecommendationsTheme.module.css";
 
@@ -31,5 +32,6 @@ const RecommendationsTheme = () => {
     </div>
   );
 };
+
 
 export default RecommendationsTheme;

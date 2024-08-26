@@ -1,3 +1,4 @@
+
 // src/components/DaySchedule.jsx
 
 import React, { useEffect, useRef } from "react";
@@ -89,3 +90,4 @@ const DaySchedule = ({ selectedDay, setSelectedDay, locationData }) => {
 };
 
 export default DaySchedule;
+

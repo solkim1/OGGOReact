@@ -1,3 +1,4 @@
+
 import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
 
@@ -248,3 +249,4 @@ const Map = ({ locations, center }) => {
 };
 
 export default Map;
+

@@ -1,3 +1,4 @@
+
 /* global google */
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
@@ -208,3 +209,4 @@ const Calendar = () => {
 };
 
 export default Calendar;
+

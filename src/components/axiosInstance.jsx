@@ -1,3 +1,4 @@
+
 // axiosInstance.js
 import axios from 'axios';
 
@@ -9,5 +10,6 @@ const axiosInstance = axios.create({
     // 'Authorization': `Bearer ${yourToken}` // 필요 시 인증 헤더 추가
   }
 });
+
 
 export default axiosInstance;
