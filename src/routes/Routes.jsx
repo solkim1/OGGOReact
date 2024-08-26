@@ -34,7 +34,7 @@ const AppRoutes = () => {
 
       <Routes>
         <Route path="/mypage" element={<MyPage />} /> {/* 마이페이지 */}
-        <Route path="/traveler" element={<TravelerMainPage />} /> {/* 메인페이지 여행자모드 */}s
+        <Route path="/traveler" element={<TravelerMainPage />} /> {/* 메인페이지 여행자모드 */}
         <Route path="/business" element={<BusinessMainPage />} /> {/* 메인페이지 출장자모드 */}
         <Route path="/myschedules" element={<MySchedulesPage />} /> {/* 나의 일정 */}
         <Route path="/schedulemap" element={<ScheduleMapPage />} />
