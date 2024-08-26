@@ -1,0 +1,27 @@
+.exhibitionsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.exhibitionItem {
+  flex: 1 1 calc(33.333% - 20px);
+  max-width: calc(33.333% - 20px);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.exhibitionItem img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.exhibitionTitle {
+  font-size: 18px;
+  font-weight: bold;
+}
