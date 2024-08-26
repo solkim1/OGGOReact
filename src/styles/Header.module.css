@@ -154,6 +154,10 @@
   padding: 20px;
   border-radius: 8px;
   position: relative;
+  width: 100%; /* 화면에 맞게 조정 */
+  max-width: 700px; /* 최대 너비를 늘려서 일정이 잘리지 않게 함 */
+  margin: 0 auto; /* 중앙 정렬 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
 }
 
 .closeButton {
@@ -166,6 +170,23 @@
   cursor: pointer;
 }
 
+.fc-event {
+  background: #ff5722; /* 이벤트 배경색 */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px; /* 패딩을 줄여서 텍스트가 잘리지 않도록 함 */
+  font-size: 12px; /* 글씨 크기를 살짝 줄여서 더 많은 텍스트를 표시 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.fc-event:hover {
+  background: #e33905;
+  transform: scale(1.05);
+}
+
+/* 반응형 조정 */
 @media (max-width: 1024px) {
   .headerContent {
     flex-wrap: wrap;
@@ -194,6 +215,11 @@
 
   .toggleText {
     font-size: 12px;
+  }
+
+  .calendarContainer {
+    width: 95%; /* 작은 화면에서 더 넓게 보이도록 조정 */
+    max-width: 90%;
   }
 }
 
@@ -255,6 +281,11 @@
   .toggleText {
     font-size: 12px;
   }
+
+  .calendarContainer {
+    width: 100%; /* 모바일 화면에서 전체 너비로 조정 */
+    padding: 10px; /* 패딩 줄이기 */
+  }
 }
 
 @media (max-width: 480px) {
@@ -310,5 +341,9 @@
   .toggleSwitch.active .toggleText {
     left: 12px;
     right: 32px;
+  }
+
+  .calendarContainer {
+    padding: 5px; /* 더 작은 패딩으로 모바일 최적화 */
   }
 }

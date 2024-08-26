@@ -1,14 +1,14 @@
+/* global google */
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
-import styles from '../styles/Calendar.module.css';
+import '../styles/Calendar.css'
 
-const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com';
-const API_URL = 'http://localhost:8090/plan/api/events';
-const REDIRECT_URI = 'http://localhost:3000/oauth2/callback';
+const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com'; // 여기에 클라이언트 ID를 입력하세요
+const API_URL = 'http://localhost:8090/plan/api/events'; // 백엔드 API URL
 
 const Calendar = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -22,39 +22,40 @@ const Calendar = () => {
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
       script.defer = true;
-      script.onload = initializeGoogleIdentityServices;
+      script.onload = initializeGis; // 스크립트 로드 후 initializeGis 호출
       document.body.appendChild(script);
     };
 
     loadGisScript();
   }, []);
   
-  const initializeGoogleIdentityServices = () => {
-    if (window.google && window.google.accounts) {
-      window.google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredentialResponse,
-      });
-    } else {
-      console.error('Google Identity Services library not loaded.');
-    }
-  };
+    const initializeGis = () => {
+      if (window.google && window.google.accounts) {
+        google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: handleCredentialResponse,
+        });
+      } else {
+        console.error('Google Identity Services library not loaded.');
+      }
+    };
 
   const handleCredentialResponse = (response) => {
     const idToken = response.credential;
     console.log('ID Token:', idToken);
-    // You can use this token to get user information or authenticate with your backend
+    // 이 토큰을 사용하여 사용자 정보를 가져올 수 있습니다.
   };
 
   const fetchEventsFromGoogle = async (accessToken) => {
     try {
-      const response = await axios.get(`${API_URL}/google`, {
+      const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      const formattedEvents = response.data.map(event => ({
+      const events = response.data.items;
+      const formattedEvents = events.map(event => ({
         id: event.id,
         title: event.summary,
         start: event.start.dateTime || event.start.date,
@@ -64,8 +65,17 @@ const Calendar = () => {
       }));
 
       setEvents(formattedEvents);
+      syncEventsWithBackend(formattedEvents);
     } catch (error) {
-      console.error('Error fetching events from Google Calendar:', error.response || error.message);
+      console.error('Error fetching events from Google Calendar:', error);
+    }
+  };
+
+  const syncEventsWithBackend = async (events) => {
+    try {
+      await axios.post(API_URL, events); // 백엔드에 이벤트 저장
+    } catch (error) {
+      console.error('Error syncing events with backend:', error);
     }
   };
 
@@ -73,7 +83,6 @@ const Calendar = () => {
     const tokenClient = window.google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: 'https://www.googleapis.com/auth/calendar.readonly',
-      redirect_uri: REDIRECT_URI,
       callback: (response) => {
         if (response.error) {
           console.error('Login failed:', response.error);
@@ -90,7 +99,6 @@ const Calendar = () => {
   const handleLogout = () => {
     window.google.accounts.id.disableAutoSelect();
     setIsSignedIn(false);
-    setEvents([]);
   };
 
   const handleEventClick = (info) => {
@@ -105,7 +113,7 @@ const Calendar = () => {
   };
 
   return (
-    <div className={styles.App}>
+    <div className="Calendar">
       <h1>Plan Maker Calendar</h1>
       {!isSignedIn ? (
         <button onClick={handleLogin}>Login with Google</button>
@@ -143,8 +151,8 @@ const Calendar = () => {
             eventClick={handleEventClick}
           />
           {modalIsOpen && selectedEvent && (
-            <div className={styles.modal}>
-              <div className={styles.modalContent}>
+            <div className="modal">
+              <div className="modal-content">
                 <h2>{selectedEvent.title}</h2>
                 <p><strong>Start:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
                 <p><strong>End:</strong> {new Date(selectedEvent.end).toLocaleString()}</p>
