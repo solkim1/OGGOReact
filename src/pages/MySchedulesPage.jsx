@@ -8,25 +8,34 @@ import ImportantSchedules from '../components/ImportantSchedules';
 import { UserContext } from '../context/UserProvider';
 
 const MySchedulesPage = () => {
+  // 활성화된 탭 상태를 저장합니다.
   const [activeTab, setActiveTab] = useState('all');
+  
+  // 일정 목록과 각 탭에 대한 일정 수를 저장합니다.
   const [schedules, setSchedules] = useState([]);
   const [counts, setCounts] = useState({ all: 0, travel: 0, business: 0, important: 0 });
+  
+  // 사용자 정보를 UserContext에서 가져옵니다.
   const { user } = useContext(UserContext);
 
   useEffect(() => {
+    // 사용자가 로그인된 경우 일정 수와 일정을 가져옵니다.
     if (user) {
       fetchCounts();
       fetchSchedules();
     }
-  }, [user, activeTab]);
+  }, [user, activeTab]); // user 또는 activeTab이 변경될 때마다 호출됩니다.
 
+  // 각 탭에 대한 일정 수를 가져옵니다.
   const fetchCounts = async () => {
     try {
+      // 사용자 ID를 포함한 API 요청 URL을 정의합니다.
       const allUrl = `/plan/api/schedules/all?userId=${user.userId}`;
       const travelUrl = `/plan/api/schedules/travel?userId=${user.userId}`;
       const businessUrl = `/plan/api/schedules/business?userId=${user.userId}`;
       const importantUrl = `/plan/api/schedules/important?userId=${user.userId}`;
 
+      // 병렬로 API 요청을 보내고 응답을 받습니다.
       const [allResponse, travelResponse, businessResponse, importantResponse] = await Promise.all([
         axios.get(allUrl),
         axios.get(travelUrl),
@@ -34,6 +43,7 @@ const MySchedulesPage = () => {
         axios.get(importantUrl),
       ]);
 
+      // 각 탭에 대한 일정 수를 업데이트합니다.
       setCounts({
         all: allResponse.data.length,
         travel: travelResponse.data.length,
@@ -41,29 +51,37 @@ const MySchedulesPage = () => {
         important: importantResponse.data.length,
       });
     } catch (error) {
+      // 에러 발생 시 콘솔에 오류 메시지를 출력합니다.
       console.error('Error fetching schedule counts:', error);
     }
   };
 
+  // 현재 활성화된 탭에 대한 일정을 가져옵니다.
   const fetchSchedules = async () => {
     try {
+      // 활성화된 탭에 맞는 API 요청 URL을 정의합니다.
       const url = `/plan/api/schedules/${activeTab}?userId=${user.userId}`;
       const response = await axios.get(url);
+      
+      // 일정 데이터를 상태에 저장합니다.
       setSchedules(response.data);
     } catch (error) {
+      // 에러 발생 시 콘솔에 오류 메시지를 출력합니다.
       console.error('Error fetching schedules:', error);
     }
   };
 
+  // 일정 삭제 및 업데이트 후 일정을 다시 가져오고 일정 수를 갱신합니다.
   const handleActionComplete = () => {
     fetchSchedules();
     fetchCounts();
   };
 
+  // 현재 활성화된 탭에 맞는 일정 컴포넌트를 렌더링합니다.
   const renderSchedules = () => {
     const props = {
       schedules,
-      fetchSchedules: handleActionComplete // 별표 클릭 및 삭제 후 동적으로 탭 개수 갱신
+      fetchSchedules: handleActionComplete // 일정 클릭 및 삭제 후 동적으로 탭 개수 갱신
     };
 
     switch (activeTab) {
@@ -77,6 +95,7 @@ const MySchedulesPage = () => {
 
   return (
     <div className={styles.pageContainer}>
+      {/* 탭 헤더 영역 */}
       <div className={styles.headerBlock}>
         <div className={styles.tabContainer}>
           {[
@@ -98,6 +117,7 @@ const MySchedulesPage = () => {
           ))}
         </div>
       </div>
+      {/* 일정 목록 영역 */}
       <div className={styles.container}>
         {renderSchedules()}
       </div>

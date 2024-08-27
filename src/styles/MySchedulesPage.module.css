@@ -175,4 +175,20 @@
   .scheduleDate {
     margin-top: 5px;
   }
+  /* 삭제 유무 CSS */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+ 
+  
 }
