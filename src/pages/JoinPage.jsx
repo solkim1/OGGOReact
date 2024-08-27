@@ -1,7 +1,7 @@
-//회원가입페이지
-import React, { useState, useCallback } from 'react';
-import {useNavigate,Link}from 'react-router-dom';
+import React, { useState, useCallback, useContext } from 'react';
 import axios from 'axios';
+import { UserContext } from '../context/UserProvider';
+import { useNavigate, Link } from 'react-router-dom';
 import debounce from 'lodash/debounce';
 import styles from '../styles/LoginJoin.module.css';
 
@@ -13,30 +13,30 @@ import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 
 const JoinPage = () => {
+  const nav = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  const { loginWithGoogle } = useContext(UserContext); // Google 로그인 함수 가져오기
 
-  const nav = useNavigate();
-
-
-  // 백으로 보낼 회원가입 데이터
+  // 백으로 보낼 회원가입 데이터 상태 관리
   const [formData, setFormData] = useState({
     userId: '',
     userEmail: '',
+    userNick: '',
     userPw: '',
     pwCheck: ''
   });
 
-  // 비밀번호 보이고 안보이고 상태 관리 state
+  // 비밀번호 보이기/숨기기 상태
   const [pwVisible, setPwVisible] = useState(false);
-  // 비밀번호 확인과 비밀번호가 일치하는지 관리하기 위한 state
+  // 비밀번호 확인과 비밀번호가 일치하는지 관리하는 상태
   const [pwMatch, setPwMatch] = useState(true);
-  // email형식에 맞는지 확인하기 위한 state
+  // 이메일 형식에 맞는지 확인하는 상태
   const [emailValid, setEmailValid] = useState(true);
-  // 아이디 중복 검사를 위한 state
+  // 아이디 중복 검사 상태
   const [userIdValid, setUserIdValid] = useState(true);
-  // 이메일 중복 검사를 위한 state
+  // 이메일 중복 검사 상태
   const [emailDuplicate, setEmailDuplicate] = useState(true);
 
-  // 사용자가 입력하는 도중에도 동적으로 바뀌는 값들이 있어야함
+  // 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target; // e.target에서 name과 value 추출
     setFormData({
@@ -71,7 +71,6 @@ const JoinPage = () => {
   };
 
   // 디바운스를 적용한 아이디 중복 확인 함수
-  // 마지막으로 아이디 value가 바뀐지 250ms 가 지났을 경우에 실행됨 
   const debounceCheckId = useCallback(
     debounce(async (id) => {
       if (!id) {
@@ -87,6 +86,7 @@ const JoinPage = () => {
       }
     }, 250), []);
 
+  // 디바운스를 적용한 이메일 중복 확인 함수
   const debounceCheckEmail = useCallback(
     debounce(async (email) => {
       if (!email) {
@@ -102,15 +102,14 @@ const JoinPage = () => {
       }
     }, 250), []);
 
-  // 눈버튼 눌렀을때 실행될 함수
+  // 눈 버튼 눌렀을 때 실행될 함수
   const togglePwVisibility = () => {
     setPwVisible(!pwVisible);
   };
 
-  // 사용자가 회원가입버튼을 눌렀을 경우
-  const join = async () => {
-    // return 을 활용
-    // 조건문을 순차적으로 만나면서 return 에 걸림이 없어야 백이랑 통신 진행
+  // 사용자가 회원가입 버튼을 눌렀을 경우
+  const join = async (e) => {
+    e.preventDefault(); // 폼 제출 기본 동작 방지
 
     if (!formData.userId || !formData.userEmail || !formData.userPw || !formData.pwCheck) {
       alert('모든 필드를 입력하세요.');
@@ -155,9 +154,16 @@ const JoinPage = () => {
       console.error(e);
       alert("서버와 통신이 원활하지 않습니다");
     }
-    // 추가해야할것 
-    // 로그인 후 페이지 이동 구현
-    // 현재 로그인 되어있는 회원의 정보를 session 에 저장&관리
+  };
+
+  // Google 로그인 버튼 눌렀을 때
+  const googleLoginBtn = async () => {
+    try {
+      await loginWithGoogle();
+      nav('/');
+    } catch (error) {
+      console.error('로그인 실패:', error);
+    }
   };
 
   return (
@@ -168,110 +174,128 @@ const JoinPage = () => {
       </div>
 
       <div className={styles.formContainer}>
-
         <h1 className={styles.title}>
-          <Link to="/"><img src={logoImage} alt="Logo"/></Link>
+          <Link to="/"><img src={logoImage} alt="Logo" /></Link>
         </h1>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>아이디</label>
-          <input
-            type="text"
-            placeholder="아이디를 입력하세요"
-            className={`${styles.inputField} ${!userIdValid ? styles.error : ''}`}
-            name='userId'
-            value={formData.userId}
-            onChange={handleChange}
-          />
-          {formData.userId !== '' ? (
-            <span className={!userIdValid ? styles.errorMessage : styles.successMessage}>
-              {!userIdValid ? '이미 사용중인 아이디입니다' : '사용 가능한 아이디입니다'}
-            </span>
-          ) : (
-            <span></span>
-          )}
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>이메일</label>
-          <input
-            type="text"
-            placeholder="이메일을 입력하세요"
-            className={`${styles.inputField} ${!emailValid ? styles.error : ''}`}
-            name='userEmail'
-            value={formData.userEmail}
-            onChange={handleChange}
-          />
-          {formData.userEmail !== '' ? (
-            !emailValid ? (
-              <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
-            ) : !emailDuplicate ? (
-              <span className={styles.errorMessage}>이미 사용중인 이메일입니다</span>
+        {/* 폼 요소를 <form>으로 감싸기 */}
+        <form onSubmit={join}>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>아이디</label>
+            <input
+              type="text"
+              placeholder="아이디를 입력하세요"
+              className={`${styles.inputField} ${!userIdValid ? styles.error : ''}`}
+              name='userId'
+              value={formData.userId}
+              onChange={handleChange}
+            />
+            {formData.userId !== '' ? (
+              <span className={!userIdValid ? styles.errorMessage : styles.successMessage}>
+                {!userIdValid ? '이미 사용중인 아이디입니다' : '사용 가능한 아이디입니다'}
+              </span>
             ) : (
-              <span className={styles.successMessage}>사용 가능한 이메일입니다</span>
-            )
-          ) : (
-            <span></span>
-          )}
-        </div>
+              <span></span>
+            )}
+          </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>패스워드</label>
-          <div className={styles.passwordContainer}>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>이메일</label>
             <input
-              type={pwVisible ? "text" : "password"}
-              placeholder="비밀번호를 입력하세요"
+              type="text"
+              placeholder="이메일을 입력하세요"
+              className={`${styles.inputField} ${!emailValid ? styles.error : ''}`}
+              name='userEmail'
+              value={formData.userEmail}
+              onChange={handleChange}
+              autoComplete="new-email" 
+            />
+            {formData.userEmail !== '' ? (
+              !emailValid ? (
+                <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
+              ) : !emailDuplicate ? (
+                <span className={styles.errorMessage}>이미 사용중인 이메일입니다</span>
+              ) : (
+                <span className={styles.successMessage}>사용 가능한 이메일입니다</span>
+              )
+            ) : (
+              <span></span>
+            )}
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>닉네임</label>
+            <input
+              type="text"
+              placeholder="닉네임을 입력하세요"
               className={styles.inputField}
-              name='userPw'
-              value={formData.userPw}
+              name='userNick'
+              value={formData.userNick}
               onChange={handleChange}
+              autoComplete="new-nickname" 
             />
-            <button
-              type="button"
-              className={styles.eyeButton}
-              onClick={togglePwVisibility}
-            >
-              <img className={styles.eyeImg}
-                src={pwVisible ? closeEyeIcon : eyeIcon}
-                alt="Toggle visibility" />
-            </button>
           </div>
-        </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>패스워드 재입력</label>
-          <div className={styles.passwordContainer}>
-            <input
-              type={pwVisible ? "text" : "password"}
-              placeholder="비밀번호를 다시 입력하세요"
-              className={`${styles.inputField} ${!pwMatch ? styles.error : ''}`}
-              name='pwCheck'
-              value={formData.pwCheck}
-              onChange={handleChange}
-            />
-            <button
-              type="button"
-              className={styles.eyeButton}
-              onClick={togglePwVisibility}
-            >
-              <img className={styles.eyeImg}
-                src={pwVisible ? closeEyeIcon : eyeIcon}
-                alt="Toggle visibility" />
-            </button>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>패스워드</label>
+            <div className={styles.passwordContainer}>
+              <input
+                type={pwVisible ? "text" : "password"}
+                placeholder="비밀번호를 입력하세요"
+                className={styles.inputField}
+                name='userPw'
+                value={formData.userPw}
+                onChange={handleChange}
+                autoComplete="new-password" 
+              />
+              <button
+                type="button"
+                className={styles.eyeButton}
+                onClick={togglePwVisibility}
+              >
+                <img className={styles.eyeImg}
+                  src={pwVisible ? closeEyeIcon : eyeIcon}
+                  alt="Toggle visibility" />
+              </button>
+            </div>
           </div>
-          {!pwMatch && (
-            <span className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</span>
-          )}
-        </div>
 
-        <div className={styles.buttonGroup}>
-          <button className={styles.button} onClick={join}>회원가입</button>
-          <p>이미 계정이 있다면?<Link to="/login">로그인</Link></p>
-        </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>패스워드 재입력</label>
+            <div className={styles.passwordContainer}>
+              <input
+                type={pwVisible ? "text" : "password"}
+                placeholder="비밀번호를 다시 입력하세요"
+                className={`${styles.inputField} ${!pwMatch ? styles.error : ''}`}
+                name='pwCheck'
+                value={formData.pwCheck}
+                onChange={handleChange}
+                autoComplete="new-password" 
+              />
+              <button
+                type="button"
+                className={styles.eyeButton}
+                onClick={togglePwVisibility}
+              >
+                <img className={styles.eyeImg}
+                  src={pwVisible ? closeEyeIcon : eyeIcon}
+                  alt="Toggle visibility" />
+              </button>
+            </div>
+            {!pwMatch && (
+              <span className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</span>
+            )}
+          </div>
 
-        <div className={styles.googleSignIn}>
+          <div className={styles.buttonGroup}>
+            <button type="submit" className={styles.button}>회원가입</button>
+            <p>이미 계정이 있다면?<Link to="/login">로그인</Link></p>
+          </div>
+        </form>
+
+        <div className={styles.googleSignIn} onClick={googleLoginBtn}>
           <img src={googleIcon} alt="Google logo" width="20" />
-          <span>Google 계정으로 가입하기</span>
+          <span>Google 계정으로 로그인</span>
         </div>
 
       </div>
