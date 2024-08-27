@@ -20,14 +20,18 @@
     "plain-draggable": "^2.5.14",
     "pointer-event": "^1.3.1",
     "react": "^18.3.1",
+
     "react-calendar": "^5.0.0",
+
+    "react-beautiful-dnd": "^13.1.1",
+
     "react-dom": "^18.3.1",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
-  "proxy": "http://localhost:8089",
+  "proxy": "http://localhost:8090",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -1,4 +1,5 @@
 /* global google */
+/* global google */
 import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 import FullCalendar from '@fullcalendar/react';
@@ -6,9 +7,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
+import '../styles/Calendar.css'
 
-const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com';
-const API_URL = 'http://localhost:8090/plan/api/events';
+const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com'; // 여기에 클라이언트 ID를 입력하세요
+const API_URL = 'http://localhost:8090/plan/api/events'; // 백엔드 API URL
 
 const Calendar = () => {
   const { googleToken, setGoogleToken } = useContext(UserContext);

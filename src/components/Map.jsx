@@ -1,5 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
+import spPinsSpotV3 from "../images/sp_pins_spot_v3.png";
+import spPinsSpotV3Over from "../images/sp_pins_spot_v3_over.png";
 
 const Map = ({ locations, center }) => {
   const initializeMap = useCallback(() => {
@@ -22,11 +24,9 @@ const Map = ({ locations, center }) => {
       "#aa9872",
     ];
 
-    const localCache = new LocalCache(); // 인스턴스를 올바르게 생성
-
     const drawNaverMarker = (lat, lng, index) => {
       const icon = {
-        url: `/sp_pins_spot_v3.png`,
+        url: spPinsSpotV3,
         size: new window.naver.maps.Size(24, 37),
         anchor: new window.naver.maps.Point(12, 37),
         origin: new window.naver.maps.Point(index * 29, 0),
@@ -42,7 +42,7 @@ const Map = ({ locations, center }) => {
 
       marker.addListener("mouseover", () => {
         marker.setIcon({
-          url: `/sp_pins_spot_v3_over.png`,
+          url: spPinsSpotV3Over,
           size: new window.naver.maps.Size(24, 37),
           anchor: new window.naver.maps.Point(12, 37),
           origin: new window.naver.maps.Point(index * 29, 50),
@@ -51,7 +51,7 @@ const Map = ({ locations, center }) => {
 
       marker.addListener("mouseout", () => {
         marker.setIcon({
-          url: `/sp_pins_spot_v3.png`,
+          url: spPinsSpotV3,
           size: new window.naver.maps.Size(24, 37),
           anchor: new window.naver.maps.Point(12, 37),
           origin: new window.naver.maps.Point(index * 29, 0),
@@ -63,7 +63,7 @@ const Map = ({ locations, center }) => {
 
     const searchPubTransPathAJAX = async (sx, sy, ex, ey, index) => {
       const cacheKey = `path_${sx}_${sy}_${ex}_${ey}`;
-      const cachedData = await localCache.readFromCache(cacheKey); // localCache 인스턴스를 통해 호출
+      const cachedData = await LocalCache.readFromCache(cacheKey);
 
       if (cachedData && cachedData.length > 0) {
         const data = cachedData;
@@ -74,11 +74,11 @@ const Map = ({ locations, center }) => {
           drawDirectLine(sy, sx, ey, ex, map, index);
         }
       } else {
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
+        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOAAAAA`;
         fetch(url)
           .then((response) => response.json())
           .then((data) => {
-            localCache.writeToCache(cacheKey, data); // localCache 인스턴스를 통해 호출
+            LocalCache.writeToCache(cacheKey, data);
             if (data.result && data.result.path && data.result.path.length > 0) {
               const mapObj = data.result.path[0].info.mapObj;
               callMapObjApiAJAX(mapObj, sx, sy, ex, ey, index, false);
@@ -94,17 +94,17 @@ const Map = ({ locations, center }) => {
 
     const callMapObjApiAJAX = async (mapObj, sx, sy, ex, ey, index, isCached) => {
       const cacheKey = `mapObj_${mapObj}`;
-      const cachedData = await localCache.readFromCache(cacheKey); // localCache 인스턴스를 통해 호출
+      const cachedData = await LocalCache.readFromCache(cacheKey);
 
       let data;
 
       if (cachedData && isCached) {
         data = cachedData;
       } else {
-        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
+        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOAAAAA`;
         const response = await fetch(url);
         data = await response.json();
-        localCache.writeToCache(cacheKey, data); // localCache 인스턴스를 통해 호출
+        LocalCache.writeToCache(cacheKey, data);
       }
 
       if (data && data.result && data.result.lane && data.result.lane.length > 0) {
@@ -232,7 +232,7 @@ const Map = ({ locations, center }) => {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3`;
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb333`;
     script.async = true;
     script.onload = () => {
       if (window.naver) {
