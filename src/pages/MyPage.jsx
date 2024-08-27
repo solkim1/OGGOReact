@@ -4,10 +4,12 @@ import { useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 
 const MyPage = () => {
-  const {user} = useContext(UserContext);
+  const {user,googleToken,isAuthenticated} = useContext(UserContext);
 
   useEffect(()=>{
-    console.log(user)
+    console.log(user);
+    console.log(googleToken);
+    console.log(isAuthenticated);
   });
 
   return (

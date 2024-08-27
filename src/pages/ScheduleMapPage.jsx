@@ -3,6 +3,8 @@ import LocalCache from "../components/LocalCache";
 import ScheduleMapBtn from "../components/ScheduleMapBtn";
 import Map from "../components/Map";
 import DaySchedule from "../components/DaySchedule";
+import logo from "../images/logo.png"; // Assuming the path is correct
+import styles from "../styles/ScheduleMapPage.module.css";
 
 const ScheduleMapPage = () => {
   const [locationData, setLocationData] = useState(null);
@@ -15,16 +17,14 @@ const ScheduleMapPage = () => {
   const itemsPerPage = 3;
 
   const fetchLocationData = useCallback(async () => {
-    const localCache = new LocalCache(); // useCallback 내부로 이동
     const cacheKey = "travel_data_all";
-    let data = await localCache.readFromCache(cacheKey);
+    let data = await LocalCache.readFromCache(cacheKey);
 
     if (!data) {
       try {
         const response = await fetch("http://localhost:8090/plan/map/mapdata");
         data = await response.json();
-
-        await localCache.writeToCache(cacheKey, data);
+        await LocalCache.writeToCache(cacheKey, data);
       } catch (err) {
         setError("데이터를 가져오는 중에 오류가 발생했습니다.");
         setLoading(false);
@@ -32,13 +32,33 @@ const ScheduleMapPage = () => {
       }
     }
 
-    setLocationData(data);
+    const transformedData = transformDataWithIds(data);
+
+    setLocationData(transformedData);
     setLoading(false);
   }, []);
 
-  const displayedDays = locationData
-    ? Object.keys(locationData).slice(pageIndex * itemsPerPage, pageIndex * itemsPerPage + itemsPerPage)
-    : [];
+  const transformDataWithIds = (data) => {
+    return Object.keys(data).reduce((acc, day) => {
+      acc[day] = data[day].map((item, index) => ({
+        ...item,
+        draggableId: `${day}-${index}`,
+      }));
+      return acc;
+    }, {});
+  };
+
+  const handleNextPage = () => {
+    if (pageIndex < totalPages - 1) {
+      setPageIndex(pageIndex + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pageIndex > 0) {
+      setPageIndex(pageIndex - 1);
+    }
+  };
 
   const totalPages = locationData ? Math.ceil(Object.keys(locationData).length / itemsPerPage) : 0;
 
@@ -56,18 +76,6 @@ const ScheduleMapPage = () => {
     }
   }, [fetchLocationData, selectedDay, locationData]);
 
-  const handleNextPage = () => {
-    if (pageIndex < totalPages - 1) {
-      setPageIndex(pageIndex + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (pageIndex > 0) {
-      setPageIndex(pageIndex - 1);
-    }
-  };
-
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -80,11 +88,15 @@ const ScheduleMapPage = () => {
     return <p>데이터가 없습니다.</p>;
   }
 
+  const displayedDays = locationData
+    ? Object.keys(locationData).slice(pageIndex * itemsPerPage, pageIndex * itemsPerPage + itemsPerPage)
+    : [];
+
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ width: "50%", padding: "20px", boxSizing: "border-box" }}>
-        <h1>Plan Maker</h1>
-        <h1>서울</h1>
+    <div className={styles.container}>
+      <div className={styles.leftPanel}>
+        <img src={logo} alt="Plan Maker" className={styles.logo} />
+        <h2>서울</h2>
         <h3>2024.08.21(수)-08.23(금)</h3>
         <ScheduleMapBtn
           handleNextPage={handleNextPage}
@@ -98,7 +110,8 @@ const ScheduleMapPage = () => {
           locationData={displayedDays.reduce((acc, day) => {
             acc[day] = locationData[day];
             return acc;
-          }, {})} // 페이징된 데이터만 전달
+          }, {})}
+          setLocationData={setLocationData}
         />
       </div>
       <Map locations={locationData[selectedDay]} center={mapCenter} />

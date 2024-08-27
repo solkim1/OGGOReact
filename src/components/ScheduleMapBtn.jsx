@@ -1,16 +1,21 @@
 
-// src/components/ScheduleMapBtn.jsx
-
 import React from "react";
+import leftArrow from "../images/left-arrow.png"; // Assuming the path is correct
+import rightArrow from "../images/right-arrow.png";
+import styles from "../styles/ScheduleMapBtn.module.css";
 
 const ScheduleMapBtn = ({ handleNextPage, handlePrevPage, pageIndex, totalPages }) => {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <button onClick={handlePrevPage} disabled={pageIndex === 0}>
-        {"<"}
+    <div className={styles.btnContainer}>
+      <button className={styles.arrowBtn} onClick={handlePrevPage} disabled={pageIndex === 0}>
+        <img src={leftArrow} alt="Previous" className={styles.arrowIcon} />
       </button>
-      <button onClick={handleNextPage} disabled={pageIndex === totalPages - 1}>
-        {">"}
+      <div className={styles.actionButtons}>
+        <button className={styles.actionBtn}>다시 생성</button>
+        <button className={styles.actionBtn}>일정 저장</button>
+      </div>
+      <button className={styles.arrowBtn} onClick={handleNextPage} disabled={pageIndex === totalPages - 1}>
+        <img src={rightArrow} alt="Next" className={styles.arrowIcon} />
       </button>
     </div>
   );

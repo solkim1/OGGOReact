@@ -1,6 +1,5 @@
-
-/* global google */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { UserContext } from '../context/UserProvider';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -12,25 +11,38 @@ const CLIENT_ID = '492030565512-v26kv67d7eq37mqsbt9vtlmub48ourim.apps.googleuser
 const API_URL = 'http://localhost:8090/plan/api/events';
 
 const Calendar = () => {
-  const [isSignedIn, setIsSignedIn] = useState(false); // 로그인 상태
-  const [events, setEvents] = useState([]); // 캘린더 이벤트
-  const [selectedEvent, setSelectedEvent] = useState(null); // 선택된 이벤트
-  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
-  const [accessToken, setAccessToken] = useState(null); // 액세스 토큰 상태
+  const { googleToken, setGoogleToken } = useContext(UserContext);
+  const [isSignedIn, setIsSignedIn] = useState(!!googleToken || !!sessionStorage.getItem('googleToken')); // sessionStorage에서 토큰 복원
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
 
   // 컴포넌트가 마운트될 때 Google Identity Services 스크립트 로드
   useEffect(() => {
     const loadGisScript = () => {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeGis; // 스크립트 로드 후 초기화 함수 호출
-      document.body.appendChild(script);
+      if (!window.google) {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = initializeGis;
+        document.body.appendChild(script);
+      } else {
+        initializeGis();
+      }
     };
 
     loadGisScript();
-  }, []);
+
+    const storedToken = sessionStorage.getItem('googleToken');
+    if (storedToken && !googleToken) {
+      setGoogleToken(storedToken);
+    }
+    if (storedToken) {
+      fetchEventsFromGoogle(storedToken);
+    }
+  }, [googleToken, setGoogleToken]);
 
   // Google Identity Services 초기화 함수
   const initializeGis = () => {
@@ -48,7 +60,9 @@ const Calendar = () => {
   const handleCredentialResponse = (response) => {
     const idToken = response.credential;
     console.log('ID Token:', idToken);
-    // ID 토큰을 사용하여 추가적인 사용자 정보를 가져올 수 있습니다.
+
+    setGoogleToken(idToken);
+    sessionStorage.setItem('googleToken', idToken); // sessionStorage에 토큰 저장
   };
 
   // Google Calendar에서 이벤트를 가져오는 함수
@@ -74,7 +88,7 @@ const Calendar = () => {
         start: event.start.dateTime || event.start.date,
         end: event.end.dateTime || event.end.date,
         description: event.description || '',
-        location: event.location || ''
+        location: event.location || '',
       }));
 
       setEvents(formattedEvents); // 이벤트 상태 업데이트
@@ -112,7 +126,10 @@ const Calendar = () => {
           console.error('Login failed:', response.error);
           return;
         }
-        setIsSignedIn(true); // 로그인 상태 업데이트
+        setIsSignedIn(true);
+        setGoogleToken(response.access_token);
+        sessionStorage.setItem('googleToken', response.access_token); // sessionStorage에 토큰 저장
+        fetchEventsFromGoogle(response.access_token);
         setAccessToken(response.access_token); // 액세스 토큰 저장
       },
     });
@@ -125,6 +142,9 @@ const Calendar = () => {
     window.google.accounts.id.disableAutoSelect();
     setIsSignedIn(false);
     setAccessToken(null); // 로그아웃 시 액세스 토큰 제거
+    setGoogleToken(null); // Google Token도 제거
+    sessionStorage.removeItem('googleToken'); // sessionStorage에서 토큰 제거
+    setEvents([]); // 이벤트 목록 초기화
   };
 
   // 액세스 토큰이 업데이트되면 Google Calendar 이벤트를 가져옴
@@ -163,7 +183,7 @@ const Calendar = () => {
             eventTimeFormat={{
               hour: '2-digit',
               minute: '2-digit',
-              meridiem: false
+              meridiem: false,
             }}
             eventContent={(eventInfo) => (
               <div>
@@ -209,4 +229,3 @@ const Calendar = () => {
 };
 
 export default Calendar;
-
