@@ -7,7 +7,6 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
   const [scheduleData, setScheduleData] = useState({});
 
   useEffect(() => {
-    // locationData에서 시간을 가져와서 설정
     setScheduleData(
       Object.keys(locationData).reduce((acc, day) => {
         acc[day] = locationData[day].map((item, index) => ({
@@ -29,7 +28,6 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
       const [reorderedItem] = items.splice(source.index, 1);
       items.splice(destination.index, 0, reorderedItem);
 
-      // 드래그 후 순서에 맞게 시간을 다시 설정
       const updatedItems = items.map((item, index) => ({
         ...item,
         departTime: locationData[source.droppableId][index].departTime,
@@ -54,6 +52,21 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
     }
   };
 
+  const handleExcludeSchedule = (day, index) => {
+    setLocationData((prev) => {
+      const newLocationData = {
+        ...prev,
+        [day]: prev[day].map((item, i) => 
+          i === index ? { ...item, excluded: !item.excluded } : item
+        ),
+      };
+
+      LocalCache.writeToCache("travel_data_all", newLocationData);
+
+      return newLocationData;
+    });
+  };
+
   const renderSchedule = (day) => {
     const daySchedule = scheduleData[day];
     const result = [];
@@ -71,7 +84,7 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
-              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ""}`}
+              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ""} ${item.excluded ? style.excluded : ""}`}
             >
               <div className={style.scheduleItemIcon}></div>
               <div>
@@ -81,6 +94,12 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
                   {item.departTime} - {item.arriveTime}
                 </div>
               </div>
+              <button 
+                className={style.excludeButton} 
+                onClick={() => handleExcludeSchedule(day, i)}
+              >
+                {item.excluded ? '+' : '-'}
+              </button>
             </div>
           )}
         </Draggable>
