@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const UserContext = createContext();
 
-const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com';
+const CLIENT_ID = '492030565512-v26kv67d7eq37mqsbt9vtlmub48ourim.apps.googleusercontent.com';
 const REDIRECT_URI = 'http://localhost:3000/oauth2/callback';
 
 const UserProvider = ({ children }) => {
@@ -16,8 +16,8 @@ const UserProvider = ({ children }) => {
     return !!sessionStorage.getItem("user");
   });
 
-  const [googleToken, setGoogleToken] = useState(() => {
-    return sessionStorage.getItem("googleToken");
+  const [accessToken, setAccessToken] = useState(() => {
+    return sessionStorage.getItem("accessToken");
   });
 
   useEffect(() => {
@@ -40,14 +40,13 @@ const UserProvider = ({ children }) => {
         callback: handleCredentialResponse,
       });
     } else {
-      console.error('Google Identity Services 라이브러리가 로드되지 않았습니다.');
+      console.error('Google Identity Services library not loaded.');
     }
   };
 
   const handleCredentialResponse = (response) => {
     const idToken = response.credential;
     console.log('ID Token:', idToken);
-    // 백엔드 인증이나 사용자 정보 가져올 때 이 토큰을 사용할 수 있음
   };
 
   const loginWithGoogle = async () => {
@@ -69,8 +68,8 @@ const UserProvider = ({ children }) => {
         tokenClient.requestAccessToken();
       });
 
-      setGoogleToken(response.access_token);
-      sessionStorage.setItem("googleToken", response.access_token);
+      setAccessToken(response.access_token);
+      sessionStorage.setItem("accessToken", response.access_token);
 
       const { data } = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
         headers: {
@@ -78,7 +77,7 @@ const UserProvider = ({ children }) => {
         },
       });
 
-      await axios({
+      axios({
         url: 'http://localhost:8090/plan/user/googleLogin',
         method: 'POST',
         data: {
@@ -86,17 +85,17 @@ const UserProvider = ({ children }) => {
           userNick: data.name,
           userEmail: data.email
         }
-      });
-
-      login({
-        userId: data.id,
-        userNick: data.name,
-        userEmail: data.email,
-        image: data.picture
+      }).then((res) => {
+        login({
+          userId: res.data.userId,
+          userNick: res.data.userNick,
+          userEmail: res.data.userEmail,
+          image: data.picture
+        });
       });
 
     } catch (error) {
-      console.error('오류 발생:', error);
+      console.error('Error:', error);
     }
   };
 
@@ -108,14 +107,14 @@ const UserProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    setGoogleToken(null);
+    setAccessToken(null);
     setIsAuthenticated(false);
     sessionStorage.removeItem("user");
-    sessionStorage.removeItem("googleToken");
+    sessionStorage.removeItem("accessToken");
   };
 
   return (
-    <UserContext.Provider value={{ user, googleToken, setGoogleToken, login, logout, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
+    <UserContext.Provider value={{ user, accessToken, setAccessToken, login, logout, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
       {children}
     </UserContext.Provider>
   );

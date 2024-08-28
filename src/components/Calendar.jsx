@@ -1,3 +1,4 @@
+/* global google */
 import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 import FullCalendar from '@fullcalendar/react';
@@ -5,196 +6,209 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import '../styles/Calendar.css';
+import googleIcon from '../images/googleIcon.png';
+import styles from '../styles/LoginJoin.module.css';
 
-// Google Client ID와 백엔드 API URL을 설정
 const CLIENT_ID = '492030565512-v26kv67d7eq37mqsbt9vtlmub48ourim.apps.googleusercontent.com';
 const API_URL = 'http://localhost:8090/plan/api/events';
 
 const Calendar = () => {
-  const { googleToken, setGoogleToken } = useContext(UserContext);
-  const [isSignedIn, setIsSignedIn] = useState(!!googleToken || !!sessionStorage.getItem('googleToken')); // sessionStorage에서 토큰 복원
+  const { accessToken, setAccessToken } = useContext(UserContext);
+  const [isSignedIn, setIsSignedIn] = useState(!!accessToken);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
 
-  // 컴포넌트가 마운트될 때 Google Identity Services 스크립트 로드
   useEffect(() => {
+    // 초기 렌더링 시 sessionStorage에서 accessToken 확인
+    const storedToken = sessionStorage.getItem('accessToken');
+    if (storedToken) {
+      setAccessToken(storedToken);
+      setIsSignedIn(true);
+    }
+    
+    // Google Identity Services 스크립트 로드
     const loadGisScript = () => {
-      if (!window.google) {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = initializeGis;
-        document.body.appendChild(script);
-      } else {
-        initializeGis();
-      }
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGis;
+      document.body.appendChild(script);
     };
 
     loadGisScript();
+  }, [setAccessToken]);
 
-    const storedToken = sessionStorage.getItem('googleToken');
-    if (storedToken && !googleToken) {
-      setGoogleToken(storedToken);
-    }
-    if (storedToken) {
-      fetchEventsFromGoogle(storedToken);
-    }
-  }, [googleToken, setGoogleToken]);
-
-  // Google Identity Services 초기화 함수
+  // Google Identity Services 초기화
   const initializeGis = () => {
     if (window.google && window.google.accounts) {
-      google.accounts.id.initialize({
+      window.google.accounts.id.initialize({
         client_id: CLIENT_ID,
         callback: handleCredentialResponse,
       });
     } else {
-      console.error('Google Identity Services library not loaded.');
+      console.error('Google Identity Services 라이브러리가 로드되지 않았습니다.');
     }
   };
 
-  // Google 로그인 후 자격 증명 처리
+  // Google 로그인 후 응답 처리
   const handleCredentialResponse = (response) => {
-    const idToken = response.credential;
-    console.log('ID Token:', idToken);
-
-    setGoogleToken(idToken);
-    sessionStorage.setItem('googleToken', idToken); // sessionStorage에 토큰 저장
+    if (window.google && response.credential) {
+      const idToken = response.credential;
+      console.log('ID 토큰:', idToken);
+      setAccessToken(idToken);
+      sessionStorage.setItem('accessToken', idToken);
+      setIsSignedIn(true);
+      fetchEventsFromGoogle(idToken); // 로그인 후 이벤트 가져오기
+    } else {
+      console.error('Google Identity Services가 초기화되지 않았거나 응답 자격 증명이 없습니다.');
+    }
   };
 
-  // Google Calendar에서 이벤트를 가져오는 함수
+  // Google Calendar에서 이벤트 가져오기
   const fetchEventsFromGoogle = async (token) => {
     if (!token) {
-      console.error("Access token is missing.");
+      console.error("Access token이 없습니다.");
       return;
     }
 
     try {
-      // Google Calendar API 요청
+      const startTime = new Date();
+      const endTime = new Date();
+      endTime.setMonth(endTime.getMonth() + 1); // 한 달 후까지
+
       const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          timeMin: startTime.toISOString(),
+          timeMax: endTime.toISOString(),
+          singleEvents: true,
+          orderBy: 'startTime',
+        },
       });
 
-      // 가져온 이벤트를 형식화하여 저장
-      const events = response.data.items;
+      console.log('Google Calendar 이벤트:', response.data); // API 응답 확인
+
+      const events = response.data.items || []; // 기본 빈 배열로 설정
       const formattedEvents = events.map(event => ({
         id: event.id,
-        title: event.summary,
+        title: event.summary || '제목 없음',
         start: event.start.dateTime || event.start.date,
         end: event.end.dateTime || event.end.date,
         description: event.description || '',
-        location: event.location || '',
+        location: event.location || ''
       }));
 
-      setEvents(formattedEvents); // 이벤트 상태 업데이트
+      setEvents(formattedEvents);
       syncEventsWithBackend(formattedEvents); // 백엔드와 이벤트 동기화
     } catch (error) {
-      console.error('Error fetching events from Google Calendar:', error.response ? error.response.data : error.message);
+      console.error('Google Calendar에서 이벤트 가져오기 오류:', error.response ? error.response.data : error.message);
     }
   };
 
-  // 가져온 이벤트를 백엔드와 동기화하는 함수
+  // 백엔드와 이벤트 동기화
   const syncEventsWithBackend = async (events) => {
     if (!accessToken) {
-      console.error("Access token is missing.");
+      console.error("Access token이 없습니다.");
       return;
     }
 
     try {
       const response = await axios.post(`${API_URL}/sync-db`, {
-        accessToken, // 액세스 토큰과 이벤트 전송
+        accessToken,
         events
       });
-      console.log('Events synced successfully:', response.data);
+      console.log('이벤트가 성공적으로 동기화되었습니다:', response.data);
     } catch (error) {
-      console.error('Error syncing events with backend:', error.response ? error.response.data : error.message);
+      console.error('백엔드와 이벤트 동기화 오류:', error.response ? error.response.data : error.message);
     }
   };
 
-  // Google 로그인을 처리하는 함수
+  // Google 로그인 처리
   const handleLogin = () => {
     const tokenClient = window.google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: 'https://www.googleapis.com/auth/calendar.readonly',
       callback: (response) => {
         if (response.error) {
-          console.error('Login failed:', response.error);
+          console.error('로그인 실패:', response.error);
           return;
         }
+        setAccessToken(response.access_token);
+        sessionStorage.setItem('accessToken', response.access_token);
         setIsSignedIn(true);
-        setGoogleToken(response.access_token);
-        sessionStorage.setItem('googleToken', response.access_token); // sessionStorage에 토큰 저장
-        fetchEventsFromGoogle(response.access_token);
-        setAccessToken(response.access_token); // 액세스 토큰 저장
+        fetchEventsFromGoogle(response.access_token); // 로그인 후 이벤트 가져오기
       },
     });
 
-    tokenClient.requestAccessToken(); // 액세스 토큰 요청
+    tokenClient.requestAccessToken();
   };
 
-  // 로그아웃 처리 함수
+  // 로그아웃 처리
   const handleLogout = () => {
     window.google.accounts.id.disableAutoSelect();
     setIsSignedIn(false);
-    setAccessToken(null); // 로그아웃 시 액세스 토큰 제거
-    setGoogleToken(null); // Google Token도 제거
-    sessionStorage.removeItem('googleToken'); // sessionStorage에서 토큰 제거
-    setEvents([]); // 이벤트 목록 초기화
+    setAccessToken(null);
+    sessionStorage.removeItem('accessToken');
   };
 
-  // 액세스 토큰이 업데이트되면 Google Calendar 이벤트를 가져옴
   useEffect(() => {
     if (accessToken) {
-      console.log('Access Token Updated:', accessToken);
-      fetchEventsFromGoogle(accessToken);
+      console.log('Access Token 업데이트됨:', accessToken);
+      fetchEventsFromGoogle(accessToken); // accessToken 변경 시 이벤트 가져오기
     }
   }, [accessToken]);
 
-  // 이벤트 클릭 시 호출되는 함수
+  // 이벤트 클릭 시 처리
   const handleEventClick = (info) => {
+    console.log('클릭한 이벤트:', info.event);
     const clickedEvent = events.find(event => event.id === info.event.id);
     setSelectedEvent(clickedEvent);
-    setModalIsOpen(true); // 모달 열기
+    setModalIsOpen(true);
   };
 
-  // 모달 닫기 함수
+  // 모달 닫기
   const closeModal = () => {
     setModalIsOpen(false);
-    setSelectedEvent(null); // 선택된 이벤트 초기화
+    setSelectedEvent(null);
   };
 
   return (
     <div className="Calendar">
       <h1>Plan Maker Calendar</h1>
       {!isSignedIn ? (
-        <button onClick={handleLogin}>Login with Google</button>
+        <div className={styles.googleSignIn} onClick={handleLogin}>
+          <img src={googleIcon} alt="Google logo" width="20" />
+          <span>Google Login</span>
+        </div>
       ) : (
         <>
-          <button onClick={handleLogout}>Logout</button>
+        <div className={styles.googleSignIn} onClick={handleLogout}>
+          <img src={googleIcon} alt="Google logo" width="20" />
+          <span>Google Logout</span>
+        </div>
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
-            events={events} // 불러온 이벤트들을 FullCalendar에 전달
+            events={events}
             eventTimeFormat={{
               hour: '2-digit',
               minute: '2-digit',
-              meridiem: false,
+              meridiem: false
             }}
             eventContent={(eventInfo) => (
               <div>
                 <b>
-                  {new Date(eventInfo.event.start).toLocaleTimeString('en-US', {
+                  {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false,
                   })}
                   {' - '}
-                  {new Date(eventInfo.event.end).toLocaleTimeString('en-US', {
+                  {new Date(eventInfo.event.end).toLocaleTimeString('ko-KR', {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false,
@@ -204,21 +218,21 @@ const Calendar = () => {
                 <i>{eventInfo.event.title}</i>
               </div>
             )}
-            eventClick={handleEventClick} // 이벤트 클릭 처리
+            eventClick={handleEventClick}
           />
           {modalIsOpen && selectedEvent && (
             <div className="modal">
               <div className="modal-content">
                 <h2>{selectedEvent.title}</h2>
-                <p><strong>Start:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
-                <p><strong>End:</strong> {new Date(selectedEvent.end).toLocaleString()}</p>
+                <p><strong>시작:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
+                <p><strong>끝:</strong> {new Date(selectedEvent.end).toLocaleString()}</p>
                 {selectedEvent.description && (
-                  <p><strong>Description:</strong> {selectedEvent.description}</p>
+                  <p><strong>설명:</strong> {selectedEvent.description}</p>
                 )}
                 {selectedEvent.location && (
-                  <p><strong>Location:</strong> {selectedEvent.location}</p>
+                  <p><strong>위치:</strong> {selectedEvent.location}</p>
                 )}
-                <button onClick={closeModal}>Close</button>
+                <button onClick={closeModal}>닫기</button>
               </div>
             </div>
           )}

@@ -1,4 +1,3 @@
-// TravelSchedules.js
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/MySchedulesPage.module.css';
 import filledStar from '../images/filled_star.png';
@@ -6,7 +5,6 @@ import emptyStar from '../images/empty_star.png';
 import deleteIcon from '../images/delete.png';
 import editIcon from '../images/write.png';
 import saveIcon from '../images/save.png';
-import travelerIcon from '../images/traveler-icon.png';
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
 
@@ -71,7 +69,7 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
   return (
     <div className={styles.scheduleList}>
       {schedules && schedules.length > 0 ? schedules.map(schedule => (
-        <div key={schedule.scheNum} className={styles.scheduleItem}>
+        <div key={`${schedule.scheNum}-${schedule.scheTitle}`} className={styles.scheduleItem}>
           <div className={styles.scheduleLeftIcons}>
             <div className={styles.icon}>
               <img
@@ -79,13 +77,6 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
                 alt="Importance"
                 className={styles.star}
                 onClick={() => toggleImportance(schedule.scheNum)}
-              />
-            </div>
-            <div className={styles.icon}>
-              <img
-                src={travelerIcon}
-                alt="Traveler"
-                className={styles.scheduleIcon}
               />
             </div>
           </div>
