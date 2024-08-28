@@ -1,0 +1,184 @@
+/* 전체 컨테이너 */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headerBlock {
+  background-color: #f3f3f3;
+  width: 100%;
+  height: 130px;
+  position: relative;
+}
+
+/* 탭 컨테이너 */
+.tabContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f3f3f3;
+}
+
+/* 탭 항목 */
+.tabItem {
+  flex: 1; /* 탭을 균등하게 배분 */
+  text-align: center;
+  cursor: pointer;
+  padding: 15px 0;
+  font-weight: bold;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 활성화된 탭의 스타일 */
+.activeTab {
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+}
+
+/* 콘텐츠 영역 */
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+}
+
+/* 프로필 섹션 */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.profile span {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 폼 입력 그룹 */
+.inputGroup {
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.inputGroup label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+/* 입력 필드 스타일 */
+.inputField {
+  width: 100%;
+  padding: 12px;
+  margin: 3px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  color: #000000;
+  box-sizing: border-box;
+  background-color: #f7f7f7;
+  transition: border-color 0.3s ease;
+}
+
+/* 입력 필드 포커스 시 스타일 */
+.inputField:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* 비밀번호 입력 필드 컨테이너 */
+.passwordContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 눈 버튼 이미지 */
+.eyeImg {
+  cursor: pointer;
+  max-width: 23px;
+  max-height: 23px;
+}
+
+/* 눈 버튼 스타일 */
+.eyeButton {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #007bff;
+}
+
+/* 비밀번호 불일치 시 오류 스타일 */
+.error {
+  border-color: red;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* 버튼 컨테이너 */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px; /* 버튼 그룹의 최대 너비 */
+  margin-top: 20px;
+}
+
+/* 삭제 버튼 스타일 */
+.deleteButton {
+  border: 1px solid #ff4b4b;
+  color: #ff4b4b;
+  background-color: transparent;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 삭제 버튼 호버 효과 */
+.deleteButton:hover {
+  background-color: #ffcccc;
+}
+
+/* 저장 버튼 스타일 */
+.saveButton {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background-color: #0056b3;
+}

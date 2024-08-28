@@ -17,7 +17,6 @@ const LandingPage = () => {
     if (user) {
       setIsAuthenticated(true);
     } else {
-      alert('로그인을 해주세요');
       nav('/login'); // 로그인 페이지로 리다이렉트
     }
   };
@@ -41,7 +40,7 @@ const LandingPage = () => {
             </>
           ) : (
             <div>
-              <b>{user.userId}님 환영합니다 </b>
+              <b>{user.userNick}님 환영합니다 </b>
               <button className={styles.loginButton} onClick={logout}>로그아웃</button>
             </div>
           )}

@@ -50,6 +50,11 @@ const Header = () => {
     }
   };
 
+  const logoutBtn = ()=>{
+    logout();
+    alert("로그아웃 되었습니다");
+  }
+
   const goToHomePage = () => {
     if (isBusinessMode) {
       navigate("/business");
@@ -57,10 +62,6 @@ const Header = () => {
       navigate("/traveler");
     }
   };
-
-  const logoutBtn = () => {
-    logout();
-  }
 
   return (
     <div>
@@ -82,10 +83,11 @@ const Header = () => {
                 onClick={toggleMode}
               >
                 <div className={styles.toggleCircle} />
-                <span className={styles.toggleText}>
+                <span className={`${styles.toggleText} ${isBusinessMode?styles.rightText:styles.leftText}`}>
                   {isBusinessMode ? "출장자 모드" : "여행자 모드"}
                 </span>
               </div>
+
               <button className={styles.navButton} onClick={toggleCalendar}>
                 <img src={calendarIcon} alt="Calendar" className={styles.buttonIcon} />
                 여행 캘린더
