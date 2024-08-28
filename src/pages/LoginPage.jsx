@@ -10,10 +10,11 @@ import logoImage from '../images/logo.png';
 import closeEyeIcon from '../images/icon-close-eye.png';
 import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
+import userImg from '../images/dummyUserImg.png';
 
 const LoginPage = () => {
   const nav = useNavigate();
-  const { login, loginWithGoogle } = useContext(UserContext);
+  const { login, loginWithGoogle ,setIsAuthenticated} = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     userId: '',
@@ -50,10 +51,11 @@ const LoginPage = () => {
       login({
         userId: response.data.userId,
         userNick: response.data.userNick,
-        userEmail: response.data.userEmail
+        userEmail: response.data.userEmail,
+        image: userImg
       });
 
-      nav('/');
+      nav('/traveler');
     } catch (e) {
       if (e.response) {
         console.error(e.response.data);

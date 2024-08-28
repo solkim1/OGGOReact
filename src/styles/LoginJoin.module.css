@@ -45,223 +45,225 @@
 
 /* 제목 스타일 */
 .title {
-
   text-align: center;
 }
 
-  .title img {
-    width: 40%;
-    height: 40%;
-    margin-bottom: 8px;
-    vertical-align: middle;
+.title img {
+  width: 40%;
+  height: 40%;
+  margin-bottom: 8px;
+  vertical-align: middle;
 
+}
+
+/* 라벨 스타일 */
+.label {
+  font-weight: bold;
+}
+
+/* 입력 필드 스타일 */
+.inputField {
+  width: 100%;
+  padding: 12px;
+  margin: 3px 0;
+  border-radius: 8px;
+  border: 1px solid #ffffff;
+  font-size: 16px;
+  color: #000000;
+  box-sizing: border-box;
+  background-color: #dee3e7;
+  transition: border-color 0.3s ease;
+}
+
+.inputField:focus {
+  border-color: #007bff;
+  outline: none;
+
+}
+
+/* 버튼 스타일 */
+.button {
+  margin: 20px auto;
+  width: 100%;
+  padding: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* 하단의 구글 로그인 */
+.googleSignIn {
+  margin: 20px auto;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.googleSignIn:hover {
+  background-color: #e2e2e2;
+}
+
+.googleSignIn img {
+  margin-right: 8px;
+}
+
+.googleSignIn span {
+  font-size: 14px;
+  color: #333;
+}
+
+/* 가입 링크 */
+.formContainer p {
+  text-align: center;
+  margin-top: 15px;
+  color: #666;
+}
+
+.formContainer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.formContainer a:hover {
+  text-decoration: underline;
+}
+
+
+
+/* 비밀번호 입력 필드 컨테이너 */
+.passwordContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 눈 버튼 이미지 */
+.eyeImg {
+  cursor: pointer;
+  max-width: 23px;
+  max-height: 23px;
+}
+
+/* 눈 버튼 스타일 */
+.eyeButton {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #007bff;
+}
+
+.eyeButton:hover {
+  text-decoration: underline;
+}
+
+
+
+/* 비밀번호가 일치하지 않을 때 표시되는 스타일 */
+.error {
+  border-color: red;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* 비밀번호 입력 필드 컨테이너 */
+.passwordContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 비밀번호가 일치하지 않을 때 표시되는 스타일 */
+.error {
+  border-color: red;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.successMessage {
+  color: rgb(24, 208, 67);
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+
+/* 반응형 설정 */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    /* 세로 정렬로 변경 */
+    height: auto;
+    /* 높이 자동 조정 */
+    gap: 20px;
+    /* 이미지와 폼 사이 간격 추가 */
   }
 
-  /* 라벨 스타일 */
-  .label {
-    font-weight: bold;
+  .imageContainer {
+    max-width: 100%;
+    min-width: 0;
+    /* 모바일에서 최소 너비 제거 */
   }
 
-  /* 입력 필드 스타일 */
+  .formContainer {
+    max-width: 100%;
+    min-width: 0;
+    /* 모바일에서 최소 너비 제거 */
+  }
+
+  .buttonGroup {
+    padding: 0;
+    /* 버튼 그룹 패딩 조정 */
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+    /* 제목 크기 축소 */
+  }
+
   .inputField {
-    width: 100%;
-    padding: 12px;
-    margin: 3px 0;
-    border-radius: 8px;
-    border: 1px solid #ffffff;
-    font-size: 16px;
-    color: #000000;
-    box-sizing: border-box;
-    background-color: #dee3e7;
-    transition: border-color 0.3s ease;
+    padding: 10px;
+    /* 입력 필드 패딩 축소 */
+    font-size: 14px;
+    /* 입력 필드 글씨 크기 축소 */
   }
 
-  .inputField:focus {
-    border-color: #007bff;
-    outline: none;
-
-  }
-
-  /* 버튼 스타일 */
   .button {
-    margin: 20px auto;
-    width: 100%;
-    padding: 14px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-  }
-
-  .button:hover {
-    background-color: #0056b3;
-  }
-
-  /* 하단의 구글 로그인 */
-  .googleSignIn {
-    margin: 20px auto;
-    width: 70%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 12px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .googleSignIn:hover {
-    background-color: #e2e2e2;
-  }
-
-  .googleSignIn img {
-    margin-right: 8px;
-  }
-
-  .googleSignIn span {
+    /* 버튼 패딩 축소 */
     font-size: 14px;
-    color: #333;
+    /* 버튼 글씨 크기 축소 */
   }
 
-  /* 가입 링크 */
-  .formContainer p {
-    text-align: center;
-    margin-top: 15px;
-    color: #666;
+  .googleSignIn {
+    padding: 10px;
+    /* 구글 로그인 버튼 패딩 축소 */
+    font-size: 13px;
+    /* 구글 로그인 글씨 크기 축소 */
   }
-
-  .formContainer a {
-    color: #007bff;
-    text-decoration: none;
-  }
-
-  .formContainer a:hover {
-    text-decoration: underline;
-  }
-
-  /* 비밀번호 입력 필드 컨테이너 */
-  .passwordContainer {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-
-  /* 눈 버튼 스타일 */
-  .eyeButton {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    color: #007bff;
-  }
-
-  .eyeButton:hover {
-    text-decoration: underline;
-  }
-
-  /* 비밀번호가 일치하지 않을 때 표시되는 스타일 */
-  .error {
-    border-color: red;
-  }
-
-  .errorMessage {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-
-  /* 비밀번호 입력 필드 컨테이너 */
-  .passwordContainer {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-
-  /* 눈 버튼 스타일 */
-  .eyeImg {
-    cursor: pointer;
-    max-width: 23px;
-    max-height: 23px;
-  }
-
-  /* 비밀번호가 일치하지 않을 때 표시되는 스타일 */
-  .error {
-    border-color: red;
-  }
-
-  .errorMessage {
-    color: red;
-    font-size: 12px;
-    margin-left: 5px;
-  }
-
-  .successMessage {
-    color: rgb(24, 208, 67);
-    font-size: 12px;
-    margin-left: 5px;
-  }
-
-
-  /* 반응형 설정 */
-  @media (max-width: 768px) {
-    .container {
-      flex-direction: column;
-      /* 세로 정렬로 변경 */
-      height: auto;
-      /* 높이 자동 조정 */
-      gap: 20px;
-      /* 이미지와 폼 사이 간격 추가 */
-    }
-
-    .imageContainer {
-      max-width: 100%;
-      min-width: 0;
-      /* 모바일에서 최소 너비 제거 */
-    }
-
-    .formContainer {
-      max-width: 100%;
-      min-width: 0;
-      /* 모바일에서 최소 너비 제거 */
-    }
-
-    .buttonGroup {
-      padding: 0;
-      /* 버튼 그룹 패딩 조정 */
-    }
-  }
-
-  @media (max-width: 480px) {
-    .title {
-      font-size: 28px;
-      /* 제목 크기 축소 */
-    }
-
-    .inputField {
-      padding: 10px;
-      /* 입력 필드 패딩 축소 */
-      font-size: 14px;
-      /* 입력 필드 글씨 크기 축소 */
-    }
-
-    .button {
-      padding: 12px;
-      /* 버튼 패딩 축소 */
-      font-size: 14px;
-      /* 버튼 글씨 크기 축소 */
-    }
-
-    .googleSignIn {
-      padding: 10px;
-      /* 구글 로그인 버튼 패딩 축소 */
-      font-size: 13px;
-      /* 구글 로그인 글씨 크기 축소 */
-    }
-  }
-
+}

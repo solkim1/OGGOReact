@@ -13,7 +13,9 @@ const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleuser
 const API_URL = 'http://localhost:8090/plan/api/events'; // 백엔드 API URL
 
 const Calendar = () => {
+  
   const { googleToken, setGoogleToken } = useContext(UserContext);
+
   const [isSignedIn, setIsSignedIn] = useState(!!googleToken || !!sessionStorage.getItem('googleToken')); // sessionStorage에서 토큰 복원
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);

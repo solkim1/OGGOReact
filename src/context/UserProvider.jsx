@@ -78,7 +78,7 @@ const UserProvider = ({ children }) => {
         },
       });
 
-      await axios({
+      axios({
         url: 'http://localhost:8090/plan/user/googleLogin',
         method: 'POST',
         data: {
@@ -86,15 +86,15 @@ const UserProvider = ({ children }) => {
           userNick: data.name,
           userEmail: data.email
         }
-      });
-
-      login({
-        userId: data.id,
-        userNick: data.name,
-        userEmail: data.email,
-        image: data.picture
-      });
-
+      }).then((res)=>{
+        login({
+          userId: res.data.userId,
+          userNick: res.data.userNick,
+          userEmail: res.data.userEmail,
+          image: data.picture
+        });
+      })
+      
     } catch (error) {
       console.error('오류 발생:', error);
     }
@@ -115,7 +115,7 @@ const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, googleToken, setGoogleToken, login, logout, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
+    <UserContext.Provider value={{ user,setUser, googleToken, setGoogleToken, login, logout, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
       {children}
     </UserContext.Provider>
   );
