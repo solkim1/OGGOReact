@@ -1,3 +1,4 @@
+
 // 메인페이지(여행자모드),메인페이지(출장자모드),마이페이지, 나의 일정 페이지에서에 푸터 통합
 
 import React from "react";
@@ -62,3 +63,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

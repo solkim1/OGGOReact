@@ -26,10 +26,13 @@ const UserProvider = ({ children }) => {
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
       script.defer = true;
-      script.onload = initializeGoogleIdentityServices;
+      script.onload = () => {
+        console.log('Google Identity Services 스크립트가 성공적으로 로드되었습니다.');
+        initializeGoogleIdentityServices();
+      };
       document.body.appendChild(script);
     };
-
+  
     loadGisScript();
   }, []);
 

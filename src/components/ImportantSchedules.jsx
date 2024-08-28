@@ -1,3 +1,4 @@
+// ImportantSchedules.js
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/MySchedulesPage.module.css';
 import filledStar from '../images/filled_star.png';
@@ -5,15 +6,16 @@ import emptyStar from '../images/empty_star.png';
 import deleteIcon from '../images/delete.png';
 import editIcon from '../images/write.png';
 import saveIcon from '../images/save.png';
-import businessIcon from '../images/business-icon.png';
-import travelerIcon from '../images/traveler-icon.png';
 import axios from 'axios';
+import DeleteModal from '../pages/DeleteModal';
 
 const ImportantSchedules = ({ schedules, fetchSchedules }) => {
   const [loading, setLoading] = useState(true);
   const [editingScheduleId, setEditingScheduleId] = useState(null);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDesc, setEditedDesc] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scheduleToDelete, setScheduleToDelete] = useState(null);
 
   useEffect(() => {
     setLoading(false);
@@ -21,7 +23,10 @@ const ImportantSchedules = ({ schedules, fetchSchedules }) => {
 
   const handleDelete = (scheduleNum) => {
     axios.delete(`/plan/api/schedules/delete/${scheduleNum}`)
-      .then(() => fetchSchedules())
+      .then(() => {
+        fetchSchedules();
+        setIsModalOpen(false);
+      })
       .catch(error => console.error('Error deleting schedule:', error));
   };
 
@@ -42,7 +47,7 @@ const ImportantSchedules = ({ schedules, fetchSchedules }) => {
     params.append('scheNum', editingScheduleId);
     params.append('scheTitle', editedTitle);
     params.append('scheDesc', editedDesc);
-  
+
     axios.put(`/plan/api/schedules/update`, params)
       .then(() => {
         setEditingScheduleId(null);
@@ -53,8 +58,13 @@ const ImportantSchedules = ({ schedules, fetchSchedules }) => {
       });
   };
 
+  const openDeleteModal = (scheduleNum) => {
+    setScheduleToDelete(scheduleNum);
+    setIsModalOpen(true);
+  };
+
   if (loading) {
-    return <div>중요 일정을 불러오는 중...</div>;
+    return <div>일정을 불러오는 중...</div>;
   }
 
   return (
@@ -64,17 +74,10 @@ const ImportantSchedules = ({ schedules, fetchSchedules }) => {
           <div className={styles.scheduleLeftIcons}>
             <div className={styles.icon}>
               <img
-                src={filledStar}
-                alt="Important"
+                src={schedule.isImportance === 'Y' ? filledStar : emptyStar}
+                alt="Importance"
                 className={styles.star}
                 onClick={() => toggleImportance(schedule.scheNum)}
-              />
-            </div>
-            <div className={styles.icon}>
-              <img
-                src={schedule.isBusiness === 'Y' ? businessIcon : travelerIcon}
-                alt="Business/Travel"
-                className={styles.scheduleIcon}
               />
             </div>
           </div>
@@ -118,11 +121,17 @@ const ImportantSchedules = ({ schedules, fetchSchedules }) => {
               src={deleteIcon}
               alt="Delete"
               className={styles.icon}
-              onClick={() => handleDelete(schedule.scheNum)}
+              onClick={() => openDeleteModal(schedule.scheNum)}
             />
           </div>
         </div>
-      )) : <p>사용 가능한 중요 일정이 없습니다.</p>}
+      )) : <p>사용 가능한 일정이 없습니다.</p>}
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => handleDelete(scheduleToDelete)}
+        message="정말로 이 일정을 삭제하시겠습니까?"
+      />
     </div>
   );
 };

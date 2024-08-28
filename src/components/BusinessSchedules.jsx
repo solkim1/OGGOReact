@@ -1,3 +1,4 @@
+// BusinessSchedules.js
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/MySchedulesPage.module.css';
 import filledStar from '../images/filled_star.png';
@@ -5,14 +6,16 @@ import emptyStar from '../images/empty_star.png';
 import deleteIcon from '../images/delete.png';
 import editIcon from '../images/write.png';
 import saveIcon from '../images/save.png';
-import businessIcon from '../images/business-icon.png';
 import axios from 'axios';
+import DeleteModal from '../pages/DeleteModal';
 
 const BusinessSchedules = ({ schedules, fetchSchedules }) => {
   const [loading, setLoading] = useState(true);
   const [editingScheduleId, setEditingScheduleId] = useState(null);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDesc, setEditedDesc] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scheduleToDelete, setScheduleToDelete] = useState(null);
 
   useEffect(() => {
     setLoading(false);
@@ -20,7 +23,10 @@ const BusinessSchedules = ({ schedules, fetchSchedules }) => {
 
   const handleDelete = (scheduleNum) => {
     axios.delete(`/plan/api/schedules/delete/${scheduleNum}`)
-      .then(() => fetchSchedules())
+      .then(() => {
+        fetchSchedules();
+        setIsModalOpen(false);
+      })
       .catch(error => console.error('Error deleting schedule:', error));
   };
 
@@ -41,7 +47,7 @@ const BusinessSchedules = ({ schedules, fetchSchedules }) => {
     params.append('scheNum', editingScheduleId);
     params.append('scheTitle', editedTitle);
     params.append('scheDesc', editedDesc);
-  
+
     axios.put(`/plan/api/schedules/update`, params)
       .then(() => {
         setEditingScheduleId(null);
@@ -52,8 +58,13 @@ const BusinessSchedules = ({ schedules, fetchSchedules }) => {
       });
   };
 
+  const openDeleteModal = (scheduleNum) => {
+    setScheduleToDelete(scheduleNum);
+    setIsModalOpen(true);
+  };
+
   if (loading) {
-    return <div>출장 일정을 불러오는 중...</div>;
+    return <div>일정을 불러오는 중...</div>;
   }
 
   return (
@@ -67,13 +78,6 @@ const BusinessSchedules = ({ schedules, fetchSchedules }) => {
                 alt="Importance"
                 className={styles.star}
                 onClick={() => toggleImportance(schedule.scheNum)}
-              />
-            </div>
-            <div className={styles.icon}>
-              <img
-                src={businessIcon}
-                alt="Business"
-                className={styles.scheduleIcon}
               />
             </div>
           </div>
@@ -117,11 +121,17 @@ const BusinessSchedules = ({ schedules, fetchSchedules }) => {
               src={deleteIcon}
               alt="Delete"
               className={styles.icon}
-              onClick={() => handleDelete(schedule.scheNum)}
+              onClick={() => openDeleteModal(schedule.scheNum)}
             />
           </div>
         </div>
-      )) : <p>사용 가능한 출장 일정이 없습니다.</p>}
+      )) : <p>사용 가능한 일정이 없습니다.</p>}
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => handleDelete(scheduleToDelete)}
+        message="정말로 이 일정을 삭제하시겠습니까?"
+      />
     </div>
   );
 };

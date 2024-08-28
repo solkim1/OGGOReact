@@ -1,197 +1,89 @@
-/* global google */
-/* global google */
 import React, { useEffect, useState, useContext } from 'react';
-import { UserContext } from '../context/UserProvider';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
-import '../styles/Calendar.css'
-
-const CLIENT_ID = '774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com'; // 여기에 클라이언트 ID를 입력하세요
-const API_URL = 'http://localhost:8090/plan/api/events'; // 백엔드 API URL
+import { UserContext } from '../context/UserProvider';
+import '../styles/Calendar.css';
+import googleIcon from '../images/googleIcon.png';
+import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
-  
-  const { googleToken, setGoogleToken } = useContext(UserContext);
-
-  const [isSignedIn, setIsSignedIn] = useState(!!googleToken || !!sessionStorage.getItem('googleToken')); // sessionStorage에서 토큰 복원
+  const { isAuthenticated, googleToken, loginWithGoogle } = useContext(UserContext);
   const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
-    const loadGisScript = () => {
-      if (!window.google) {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = initializeGis;
-        document.body.appendChild(script);
-      } else {
-        initializeGis();
-      }
-    };
-
-    loadGisScript();
-
-    const storedToken = sessionStorage.getItem('googleToken');
-    if (storedToken && !googleToken) {
-      setGoogleToken(storedToken);
+    if (isAuthenticated && googleToken) {
+      fetchEventsFromGoogle(googleToken); // Google 토큰이 있는 경우에만 이벤트를 가져옵니다.
     }
-    if (storedToken) {
-      fetchEventsFromGoogle(storedToken);
-    }
-  }, [googleToken]);
+  }, [googleToken, isAuthenticated]);
 
-  const initializeGis = () => {
-    if (window.google && window.google.accounts) {
-      google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredentialResponse,
-      });
-    } else {
-      console.error('Google Identity Services 라이브러리가 로드되지 않았습니다.');
-    }
-  };
-
-  const handleCredentialResponse = (response) => {
-    const idToken = response.credential;
-    console.log('ID Token:', idToken);
-
-    setGoogleToken(idToken);
-    sessionStorage.setItem('googleToken', idToken); // sessionStorage에 토큰 저장
-  };
-
-  const fetchEventsFromGoogle = async (accessToken) => {
+  const fetchEventsFromGoogle = async (token) => {
     try {
       const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${token}`,
+        },
+        params: {
+          timeMin: (new Date()).toISOString(),
+          singleEvents: true,
+          orderBy: 'startTime'
         },
       });
 
-      const events = response.data.items;
-      const formattedEvents = events.map(event => ({
+      const events = response.data.items.map(event => ({
         id: event.id,
         title: event.summary,
         start: event.start.dateTime || event.start.date,
         end: event.end.dateTime || event.end.date,
         description: event.description || '',
-        location: event.location || '',
+        location: event.location || ''
       }));
-
-      setEvents(formattedEvents);
-      syncEventsWithBackend(formattedEvents);
+      setEvents(events);
     } catch (error) {
-      console.error('Error fetching events from Google Calendar:', error);
+      console.error('Google Calendar 이벤트 불러오기 오류:', error);
     }
   };
 
-  const syncEventsWithBackend = async (events) => {
-    try {
-      await axios.post(API_URL, events); // 백엔드에 이벤트 저장
-    } catch (error) {
-      console.error('Error syncing events with backend:', error);
-    }
-  };
-
-  const handleLogin = () => {
-    const tokenClient = window.google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/calendar.readonly',
-      callback: (response) => {
-        if (response.error) {
-          console.error('Login failed:', response.error);
-          return;
-        }
-        setIsSignedIn(true);
-        setGoogleToken(response.access_token);
-        sessionStorage.setItem('googleToken', response.access_token); // sessionStorage에 토큰 저장
-        fetchEventsFromGoogle(response.access_token);
-      },
-    });
-
-    tokenClient.requestAccessToken();
-  };
-
-  const handleLogout = () => {
-    window.google.accounts.id.disableAutoSelect();
-    setIsSignedIn(false);
-    setGoogleToken(null);
-    sessionStorage.removeItem('googleToken'); // sessionStorage에서 토큰 제거
-    setEvents([]);
-  };
-
-  const handleEventClick = (info) => {
-    const clickedEvent = events.find(event => event.id === info.event.id);
-    setSelectedEvent(clickedEvent);
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-    setSelectedEvent(null);
+  const handleGoogleLogin = () => {
+    loginWithGoogle(); // Google 로그인 함수 호출
   };
 
   return (
-    <div className="Calendar">
+    <div className={styles.calendarContainer}>
       <h1>Plan Maker Calendar</h1>
-      {!isSignedIn ? (
-        <button onClick={handleLogin}>Login with Google</button>
-      ) : (
-        <>
-          <button onClick={handleLogout}>Logout</button>
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            events={events}
-            eventTimeFormat={{
-              hour: '2-digit',
-              minute: '2-digit',
-              meridiem: false,
-            }}
-            eventContent={(eventInfo) => (
-              <div>
-                <b>
-                  {new Date(eventInfo.event.start).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                  })}
-                  {' - '}
-                  {new Date(eventInfo.event.end).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                  })}
-                </b>
-                <br />
-                <i>{eventInfo.event.title}</i>
-              </div>
-            )}
-            eventClick={handleEventClick}
-          />
-          {modalIsOpen && selectedEvent && (
-            <div className="modal">
-              <div className="modal-content">
-                <h2>{selectedEvent.title}</h2>
-                <p><strong>Start:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
-                <p><strong>End:</strong> {new Date(selectedEvent.end).toLocaleString()}</p>
-                {selectedEvent.description && (
-                  <p><strong>Description:</strong> {selectedEvent.description}</p>
-                )}
-                {selectedEvent.location && (
-                  <p><strong>Location:</strong> {selectedEvent.location}</p>
-                )}
-                <button onClick={closeModal}>Close</button>
-              </div>
+      {isAuthenticated && !googleToken ? ( // 일반 로그인은 되어 있지만 Google 로그인은 안된 상태
+        <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
+          <img src={googleIcon} alt="Google logo" width="20" />
+          <span>Google 계정으로 로그인</span>
+        </div>
+      ) : null}
+      {googleToken ? ( // Google 로그인이 완료된 상태에서만 캘린더를 보여줍니다.
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          events={events}
+          eventContent={(eventInfo) => (
+            <div>
+              <b>
+                {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                })}
+                {' - '}
+                {new Date(eventInfo.event.end).toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                })}
+              </b>
+              <br />
+              <i>{eventInfo.event.title}</i>
             </div>
           )}
-        </>
-      )}
+        />
+      ) : null}
     </div>
   );
 };
