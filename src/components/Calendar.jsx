@@ -9,7 +9,9 @@ import googleIcon from '../images/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
+
   const { isAuthenticated, googleToken, getGoogleToken, user } = useContext(UserContext);
+
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -19,6 +21,7 @@ const Calendar = () => {
   }, [googleToken, isAuthenticated]);
 
   const fetchEventsFromGoogle = async (token) => {
+
     fetchEventsFromDB();
     // try {
     //   const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
@@ -64,10 +67,12 @@ const Calendar = () => {
         start: event.scheStDt+"T09:00:00+09:00",
         end: event.scheEdDt+"T22:15:00+09:00",
         description: event.scheDesc || '',
+
         location: event.location || ''
       }));
       setEvents(events);
     } catch (error) {
+
       console.error("DB 일정 가져오기 실패 : ", error);
     }
   };
@@ -75,6 +80,7 @@ const Calendar = () => {
 
   const handleGoogleLogin = () => {
     getGoogleToken(); // Google 로그인 함수 호출
+
   };
 
   return (
@@ -93,7 +99,9 @@ const Calendar = () => {
           events={events}
           eventContent={(eventInfo) => (
             <div>
+
               {/* <b>
+
                 {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
                   hour: '2-digit',
                   minute: '2-digit',
@@ -106,7 +114,9 @@ const Calendar = () => {
                   hour12: false,
                 })}
               </b>
+
               <br /> */}
+
               <i>{eventInfo.event.title}</i>
             </div>
           )}
@@ -116,4 +126,6 @@ const Calendar = () => {
   );
 };
 
+
 export default Calendar;
+

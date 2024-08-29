@@ -2,11 +2,13 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import RecommendationsTheme from "../components/RecommendationsTheme";
 import styles from "../styles/TravelerMainPage.module.css";
-import { UserContext } from "../context/UserProvider";
+
+import { UserContext } from "../context/UserProvider"; // UserProvider 경로에 맞게 수정
 
 const TravelerMainPage = () => {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext); // UserContext에서 user 정보를 가져옴
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [ageGroup, setAgeGroup] = useState("10대~20대");
@@ -25,6 +27,9 @@ const TravelerMainPage = () => {
       }
 
       const days = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1;
+
+
+      // 백엔드로 userId를 포함하여 필터값과 함께 전달
 
       const response = await fetch(`http://localhost:8090/plan/api/schedules/generate?userId=${user.id}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}`);
       

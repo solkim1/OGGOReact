@@ -33,6 +33,8 @@ const UserProvider = ({ children }) => {
       document.body.appendChild(script);
     };
 
+
+
     loadGisScript();
   }, []);
 
@@ -53,7 +55,9 @@ const UserProvider = ({ children }) => {
     // 백엔드 인증이나 사용자 정보 가져올 때 이 토큰을 사용할 수 있음
   };
 
+
   const getGoogleToken = async () => {
+
     try {
       const tokenClient = window.google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
@@ -74,6 +78,7 @@ const UserProvider = ({ children }) => {
 
       setGoogleToken(response.access_token);
       sessionStorage.setItem("googleToken", response.access_token);
+
       
       return response.access_token;
 
@@ -112,6 +117,7 @@ const UserProvider = ({ children }) => {
   };
   
 
+
   const login = (userData) => {
     setUser(userData);
     sessionStorage.setItem("user", JSON.stringify(userData));
@@ -127,7 +133,9 @@ const UserProvider = ({ children }) => {
   };
 
   return (
+
     <UserContext.Provider value={{ user, setUser, googleToken, setGoogleToken, login, logout, getGoogleToken, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
+
       {children}
     </UserContext.Provider>
   );

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserProvider';
@@ -20,6 +21,7 @@ const MyPage = () => {
     userNick: '',
     userPw: '',
     pwCheck: ''
+
   });
 
   const [pwVisible, setPwVisible] = useState(false);
@@ -29,15 +31,19 @@ const MyPage = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
+
       [name]: value
     });
 
     if (name === 'userPw' || name === 'pwCheck') {
+
       setPwMatch(formData.userPw === value || formData.pwCheck === value);
     }
   };
 
+
   // 비밀번호 보이기/안보이기 토글
+
   const togglePwVisibility = () => {
     setPwVisible(!pwVisible);
   };
@@ -49,13 +55,16 @@ const MyPage = () => {
   const editProfile = async (e) => {
     e.preventDefault();
 
+
     // 유효성검사
     if (!pwMatch) {
       alert('비밀번호가 일치하지 않습니다.');
+
       return;
     }
 
     const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&^#]{8,}$/;
+
     if(formData.userPw !== ""){
       if (!pwRegex.test(formData.userPw)) {
         alert('비밀번호는 최소 8자 이상이어야 하며, 대문자와 숫자를 포함해야 합니다.');
@@ -83,6 +92,7 @@ const MyPage = () => {
         isGoogle: response.data.isGoogle
       });
 
+
     } catch (error) {
       console.log(error);
     }
@@ -97,13 +107,16 @@ const MyPage = () => {
 
   // 탭에 따라 다른 컴포넌트를 렌더링
   const renderContent = () => {
+
     if (activeTab === 'info') {
+
       return (
         <div className={styles.profile}>
           <img src={user.image} alt="User Profile" />
           <span>{user.userNick}</span>
           <div className={styles.inputGroup}>
             <label className={styles.label}>이메일</label>
+
             <input
               type="email"
               className={styles.inputField}
@@ -139,6 +152,7 @@ const MyPage = () => {
       return (
         <div className={styles.formContainer}>
 
+
           <div className={styles.inputGroup}>
             <label className={styles.label}>패스워드</label>
             <div className={styles.passwordContainer}>
@@ -146,11 +160,14 @@ const MyPage = () => {
                 type={pwVisible ? "text" : "password"}
                 placeholder="비밀번호를 입력하세요"
                 className={styles.inputField}
+
                 name='userPw'
+
                 value={formData.userPw}
                 onChange={handleChange}
                 autoComplete="new-password"
               />
+
               <button
                 type="button"
                 className={styles.eyeButton}
@@ -164,18 +181,22 @@ const MyPage = () => {
           </div>
 
 
+
           <div className={styles.inputGroup}>
             <label className={styles.label}>패스워드 재입력</label>
             <div className={styles.passwordContainer}>
               <input
                 type={pwVisible ? "text" : "password"}
                 placeholder="비밀번호를 다시 입력하세요"
+
                 className={`${styles.inputField} ${!pwMatch ? styles.error : ''}`}
                 name='pwCheck'
+
                 value={formData.pwCheck}
                 onChange={handleChange}
                 autoComplete="new-password"
               />
+
               <button
                 type="button"
                 className={styles.eyeButton}
@@ -197,6 +218,7 @@ const MyPage = () => {
             <button className={styles.saveButton} onClick={editProfile}>정보수정</button>
           </div>
         </div>)
+
     }
   };
 
@@ -206,6 +228,7 @@ const MyPage = () => {
       <div className={styles.headerBlock}>
         <div className={styles.tabContainer}>
           <div
+
             className={`${styles.tabItem} ${activeTab === 'info' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('info')}
           >
@@ -225,13 +248,16 @@ const MyPage = () => {
               비밀번호 변경
             </div></>
             : ""}
+
         </div>
       </div>
 
       {/* 탭에 따라 다른 내용 렌더링 */}
+
       <div className={styles.content}>
         {renderContent()}
       </div>
+
     </div>
   );
 };

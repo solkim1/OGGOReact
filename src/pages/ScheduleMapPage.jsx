@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+
+import React, { useState, useEffect, useCallback, useMemo, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import ScheduleMapBtn from "../components/ScheduleMapBtn";
 import Map from "../components/Map";
 import DaySchedule from "../components/DaySchedule";
@@ -7,9 +9,17 @@ import logo from "../images/logo.png";
 import styles from "../styles/ScheduleMapPage.module.css";
 import LocalCache from "../components/LocalCache";
 
+import { UserContext } from "../context/UserProvider";
+import { v4 as uuidv4 } from "uuid";
+
 const ScheduleMapPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
+
   const { userId, days, ageGroup, gender, groupSize, theme, startDate, endDate } = location.state || {};
+
+  const [isBusinessMode, setIsBusinessMode] = useState(false);
 
   const [locationData, setLocationData] = useState({});
   const [scheduleTitle, setScheduleTitle] = useState("");
@@ -20,12 +30,22 @@ const ScheduleMapPage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const itemsPerPage = 3;
 
-  // 데이터 캐시에서 읽어오는 함수
+
+  useEffect(() => {
+    const fetchInitialMode = async () => {
+      const cachedMode = await LocalCache.readFromCache("userMode");
+      if (cachedMode) {
+        setIsBusinessMode(cachedMode === "business");
+      }
+    };
+    fetchInitialMode();
+  }, []);
+
   const fetchSchedule = useCallback(
     async (start, end) => {
-      const cacheKey = "scheduleData"; // 캐시 키 설정
+      const cacheKey = "scheduleData";
       try {
-        // 캐시에서 데이터 읽기
+
         const cachedData = await LocalCache.readFromCache(cacheKey);
         if (cachedData) {
           console.log("Cached data found:", cachedData);
@@ -38,10 +58,11 @@ const ScheduleMapPage = () => {
 
           setScheduleTitle(cachedData.title || "여행 일정");
           setLoading(false);
-          return; // 캐시 데이터가 있을 경우, API 호출 생략
+
+          return;
         }
 
-        // 캐시가 없을 경우 API 호출
+
         const response = await fetch(
           `/plan/api/schedules/generate?userId=${userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}&pageStart=${start}&pageEnd=${end}`
         );
@@ -53,9 +74,9 @@ const ScheduleMapPage = () => {
         const data = await response.json();
         console.log("Received data:", data);
 
-        // 데이터 저장 및 캐시에 쓰기
+
         setLocationData(data);
-        LocalCache.writeToCache(cacheKey, data); // 캐시에 저장
+        LocalCache.writeToCache(cacheKey, data);
 
         const firstLocation = data[selectedDay]?.[0];
         if (firstLocation) {
@@ -73,7 +94,9 @@ const ScheduleMapPage = () => {
   );
 
   useEffect(() => {
-    fetchSchedule(1, itemsPerPage); // 초기 데이터 가져오기
+
+    fetchSchedule(1, itemsPerPage);
+
   }, [fetchSchedule]);
 
   useEffect(() => {
@@ -105,18 +128,53 @@ const ScheduleMapPage = () => {
 
   const handleSaveSchedule = async () => {
     try {
+
+      const scheNum = uuidv4();
+      const baseDate = new Date(startDate);
+
+      const scheduleDataArray = Object.entries(locationData).flatMap(([day, locations]) => {
+        const dayIndex = parseInt(day.replace("day", "")) - 1;
+        const currentStartDate = new Date(baseDate);
+        currentStartDate.setDate(baseDate.getDate() + dayIndex);
+        const formattedStartDate = currentStartDate.toISOString().split("T")[0];
+
+        return locations.map((loc) => ({
+          userId: user?.userId,
+          title: scheduleTitle,
+          scheNum: scheNum,
+          startDate: formattedStartDate,
+          endDate: formattedStartDate,
+          isBusiness: isBusinessMode ? "Y" : "N",
+          name: loc.name,
+          description: loc.description,
+          departTime: loc.departTime,
+          arriveTime: loc.arriveTime,
+          lat: loc.lat,
+          lng: loc.lng,
+          type: loc.type,
+        }));
+      });
+
+      console.log("Sending data:", scheduleDataArray);
+
       const response = await fetch("/plan/api/schedules/save", {
         method: "POST",
-        body: JSON.stringify({ userId, locationData, startDate, endDate }),
+        body: JSON.stringify(scheduleDataArray),
         headers: { "Content-Type": "application/json" },
       });
-      if (response.ok) {
-        alert("일정이 성공적으로 저장되었습니다!");
-      } else {
-        throw new Error("Failed to save schedule");
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`일정 저장 실패: ${errorData}`);
       }
+
+      const result = await response.text();
+      console.log("저장 결과:", result);
+
+      alert("모든 일정이 성공적으로 저장되었습니다.");
     } catch (err) {
-      alert("일정 저장 중 오류가 발생했습니다: " + err.message);
+      alert(`일정 저장 중 오류가 발생했습니다: ${err.message}`);
+      console.error("일정 저장 중 오류 발생:", err);
     }
   };
 
@@ -153,10 +211,20 @@ const ScheduleMapPage = () => {
     return <p>데이터가 없습니다.</p>;
   }
 
+
+  const goToHomePage = () => {
+    if (isBusinessMode) {
+      navigate("/business");
+    } else {
+      navigate("/traveler");
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.leftPanel}>
-        <img src={logo} alt="Plan Maker" className={styles.logo} />
+        <img src={logo} alt="Plan Maker" className={styles.logo} onClick={goToHomePage} />
+
         <h2>{scheduleTitle}</h2>
         <h3>
           {startDate} - {endDate}

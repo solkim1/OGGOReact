@@ -13,6 +13,9 @@
   width: 200px;
   height: auto;
   margin-bottom: 20px;
+
+  cursor: pointer;
+
 }
 
 h2,

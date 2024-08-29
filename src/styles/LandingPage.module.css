@@ -2,11 +2,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
   justify-content: center;
   padding: 20px;
   font-family: 'Arial, sans-serif';
   min-height: 100vh;
   box-sizing: border-box;
+
 }
 
 .header {
@@ -44,7 +46,9 @@
   border: none;
   padding: 8px 16px;
   cursor: pointer;
+
   border-radius: 4px;
+
 }
 
 .main {
@@ -77,10 +81,12 @@
   background-color: black;
   color: white;
   border: none;
+
   padding: 10px 140px;
   font-size: 18px;
   cursor: pointer;
   border-radius: 4px;
+
 }
 
 .imageSection img {
@@ -88,6 +94,7 @@
   height: auto;
   border-radius: 10px;
 }
+
 
 @media (max-width: 768px) {
   .header {
@@ -110,14 +117,18 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+
   }
 
   .textSection h2 {
     font-size: 28px;
+
+
   }
 
   .textSection p {
     font-size: 16px;
+
   }
 
   .startButton {
@@ -125,3 +136,4 @@
     font-size: 16px;
   }
 }
+

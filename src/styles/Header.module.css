@@ -64,6 +64,8 @@
   margin-right: 8px;
 }
 
+
+
 .toggleSwitch {
   position: relative;
   width: 120px;
@@ -77,9 +79,12 @@
   padding: 0 4px;
 }
 
+
+
 .toggleSwitch.active {
   background-color: #1890FF;
 }
+
 
 .toggleCircle {
   width: 28px;
@@ -87,6 +92,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   background-color: white;
   border-radius: 50%;
   position: absolute;
@@ -95,6 +101,7 @@
   transition: transform 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 
 .toggleCircle img {
   width: 18px;  /* 아이콘의 너비 */
@@ -105,10 +112,12 @@
   transform: translateX(92px);
 }
 
+
 .toggleText {
   font-size: 14px;
   color: #333;
   position: absolute;
+
   left: 30px;
   right: 5px;
   text-align: center;
@@ -119,6 +128,7 @@
   left: 14px;
   right: 40px;
 }
+
 
 .weatherWidget {
   display: flex;
@@ -262,16 +272,20 @@
     text-align: center;
     padding: 10px 5px;
     font-size: 12px;
+
     flex-direction: row;
+
     align-items: center;
     justify-content: center;
   }
 
   .buttonIcon {
+
     width: 16px;
     height: 16px;
     margin-right: 8px;
     margin-bottom: 0;
+
   }
 
   .toggleSwitch {
@@ -284,10 +298,12 @@
     height: 24px;
   }
 
+
   .toggleCircle img {
     width: 16px; /* 작은 화면에서 아이콘 크기 줄이기 */
     height: 16px;
   }
+
 
   .toggleSwitch.active .toggleCircle {
     transform: translateX(108px);
@@ -343,10 +359,13 @@
     height: 22px;
   }
 
+
   .toggleCircle img {
     width: 14px; /* 모바일에서 아이콘 크기 줄이기 */
     height: 14px;
   }
+
+
 
   .toggleSwitch.active .toggleCircle {
     transform: translateX(91px);
@@ -366,4 +385,6 @@
   .calendarContainer {
     padding: 5px; /* 더 작은 패딩으로 모바일 최적화 */
   }
+
 }
+
