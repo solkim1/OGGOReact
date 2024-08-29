@@ -14,7 +14,7 @@ import userImg from '../images/dummyUserImg.png';
 
 const LoginPage = () => {
   const nav = useNavigate();
-  const { login, loginWithGoogle ,setIsAuthenticated} = useContext(UserContext);
+  const { login, getGoogleToken ,loginWithGoogle , googleToken} = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     userId: '',
@@ -73,13 +73,15 @@ const LoginPage = () => {
 
   const googleLoginBtn = async () => {
     try {
-      await loginWithGoogle();
-      nav('/');
+      const token = await getGoogleToken();  // getGoogleToken 함수에서 직접 토큰을 반환받음
+      await loginWithGoogle(token);  // 받은 토큰을 사용하여 로그인
+      nav('/');  // 성공적으로 로그인 시 메인 페이지로 리디렉션
     } catch (error) {
       console.error('로그인 실패:', error);
       alert("Google 로그인에 실패했습니다. 다시 시도해 주세요.");
     }
   };
+  
 
   return (
     <div className={styles.container}>

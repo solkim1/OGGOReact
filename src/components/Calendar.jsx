@@ -9,7 +9,7 @@ import googleIcon from '../images/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
-  const { isAuthenticated, googleToken, loginWithGoogle } = useContext(UserContext);
+  const { isAuthenticated, googleToken, getGoogleToken } = useContext(UserContext);
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Calendar = () => {
   };
 
   const handleGoogleLogin = () => {
-    loginWithGoogle(); // Google 로그인 함수 호출
+    getGoogleToken(); // Google 로그인 함수 호출
   };
 
   return (
