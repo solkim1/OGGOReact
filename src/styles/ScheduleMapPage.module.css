@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.leftPanel {
+  width: 50%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.logo {
+  width: 200px;
+  height: auto;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+h2,
+h3 {
+  margin: 0;
+  font-weight: normal;
+}

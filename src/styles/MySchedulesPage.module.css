@@ -1,0 +1,194 @@
+.pageContainer {
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+.headerBlock {
+  background-color: #f3f3f3;
+  width: 100%;
+  height: 130px;
+  position: relative;
+}
+
+.tabContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f3f3f3;
+}
+
+.tabItem {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px 0;
+  position: relative;
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabCount {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.tabLabel {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.tabItem.active .tabCount {
+  color: #007bff;
+}
+
+.tabItem.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #007bff;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scheduleItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+}
+
+.scheduleItem:hover {
+  transform: translateY(-5px); /* 살짝 들어올리기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+  background-color: #F3F3F3; /* 호버 시 배경색 변경 */
+}
+
+.scheduleLeftIcons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-right: 15px;
+  width: 24px;
+}
+
+.scheduleContent {
+  flex-grow: 1;
+}
+
+.scheduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.scheduleItemTitle {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.scheduleDate {
+  font-size: 14px;
+  color: #666;
+}
+
+.scheduleItemDescription {
+  color: #333;
+  font-size: 14px;
+}
+
+.scheduleRightIcons {
+  display: flex;
+  gap: 10px;
+  margin-left: 15px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.star, .scheduleIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.editInput {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .scheduleItem {
+    flex-direction: column;
+  }
+
+  .scheduleLeftIcons, .scheduleRightIcons {
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 10px 0;
+  }
+
+  .scheduleHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .scheduleDate {
+    margin-top: 5px;
+  }
+  /* 삭제 유무 CSS */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+ 
+  
+}

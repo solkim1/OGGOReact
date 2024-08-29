@@ -1,0 +1,203 @@
+.calendarContainer {
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.calendarContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.calendarContainer::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.calendarContainer::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.calendarContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}
+
+/* 전체 캘린더 스타일 */
+.fc {
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
+.fc-header-toolbar {
+  background: #f5f5f5;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fc-toolbar-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: #555;
+}
+
+/* 버튼 스타일 */
+.fc-button {
+  background: #ffffff;
+  color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.fc-button:hover {
+  background: #007bff;
+  color: #ffffff;
+}
+
+.fc-button-active {
+  background: #007bff;
+  color: #ffffff;
+}
+
+/* 날짜 셀 스타일 */
+.fc-daygrid-day-number {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* 오늘 날짜 강조 */
+.fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  background: #007bff;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 6px;
+  font-weight: 600;
+}
+
+/* 이벤트 스타일 */
+.fc-event {
+  background: #ff5722;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.fc-event:hover {
+  background: #e33905;
+  transform: scale(1.05);
+}
+
+/* 모달 스타일 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  text-align: left;
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #007bff;
+}
+
+.modal-content p {
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.modal-content button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  color: #888;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-content button:hover {
+  color: #333;
+}
+
+/* 모달 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .fc-header-toolbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fc-toolbar-title {
+    margin-bottom: 10px;
+  }
+
+  .fc-button {
+    margin-bottom: 5px;
+  }
+
+  .modal-content {
+    width: 80%;
+    max-width: none;
+    padding: 15px;
+  }
+
+  .modal-content h2 {
+    font-size: 20px;
+  }
+
+  .modal-content p {
+    font-size: 14px;
+  }
+}

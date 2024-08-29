@@ -1,0 +1,196 @@
+.pageContainer {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.contentWrapper {
+  width: 100%;
+}
+
+.filterSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 10px; /* 필터 항목들 사이의 여백 추가 */
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  max-width: calc(25% - 10px); /* 필터 아이템 크기 조정 */
+}
+
+.filterLabel {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 77px;
+  text-align: center;
+}
+
+.filterInput,
+.filterSelect {
+  flex: 1;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  border-radius: 0 4px 4px 0;
+  height: 35px;
+  width: 100px;
+  box-sizing: border-box;
+  min-width: 0;
+  text-align: center;
+  background-color: #ffffff; /* 선택 부분 바탕색 흰색으로 변경 */
+}
+
+.dateSeparator {
+  margin: 0 5px;
+}
+
+.dropdownContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdownContent {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1;
+  top: 38px; /* 드롭다운 위치 */
+  width: 100%;
+  border-radius: 0 0 4px 4px;
+}
+
+.dropdownContent label {
+  margin-bottom: 5px;
+}
+
+.checkbox {
+  margin-right: 5px;
+}
+
+.resetButton,
+.scheduleButton {
+  padding: 7px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: 35px;
+  white-space: nowrap;
+}
+
+.resetButton {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.scheduleButton {
+  background-color: #1890ff;
+  color: white;
+}
+
+.recommendationsTitle {
+  font-size: 24px;
+  color: #3c3b3b;
+  margin-bottom: 20px;
+  text-align: left;
+  width: 100%;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 767px) {
+  .filterSection {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .filterItem {
+    margin-bottom: 10px;
+    max-width: 100%;
+  }
+
+  .filterLabel {
+    width: 25%;
+    justify-content: center;
+  }
+
+  .filterInput,
+  .filterSelect {
+    width: 60%;
+  }
+
+  .buttonGroup {
+    justify-content: stretch;
+  }
+
+  .resetButton,
+  .scheduleButton {
+    flex: 1;
+  }
+
+  .dateInputs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dateSeparator {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .filterItem {
+    max-width: calc(33.333% - 10px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .filterSection {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .filterItem {
+    flex: 0 1 auto;
+    max-width: none;
+  }
+
+  .buttonGroup {
+    flex: 0 0 auto;
+  }
+
+  .resetButton,
+  .scheduleButton {
+    flex: 0 0 auto;
+  }
+
+  .dateInputs {
+    display: flex;
+    align-items: center;
+  }
+}
