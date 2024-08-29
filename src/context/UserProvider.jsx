@@ -76,7 +76,7 @@ const UserProvider = ({ children }) => {
       sessionStorage.setItem("googleToken", response.access_token);
       
       return response.access_token;
-      
+
     } catch (error) {
       console.error('오류 발생:', error);
     }
@@ -103,7 +103,8 @@ const UserProvider = ({ children }) => {
         userId: response.data.userId,
         userNick: response.data.userNick,
         userEmail: response.data.userEmail,
-        image: data.picture
+        image: data.picture,
+        isGoogle: response.data.isGoogle
       });
     } catch (error) {
       console.error('Google 로그인 중 오류 발생:', error);
