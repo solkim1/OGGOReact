@@ -31,12 +31,9 @@ const AppRoutes = () => {
 
   const PrivateRoutes = () => {
     const location = useLocation();
-    const isScheduleMapPage = location.pathname === "/schedulemap";
-
     return (
       <div className={styles.pageContainer}>
-        {/* ScheduleMapPage에서는 Header와 Footer를 렌더링하지 않음 */}
-        {!isScheduleMapPage && <Header />}
+        {location.pathname !== "/schedulemap" && <Header />}
         <div className={styles.contentWrap}>
           <Routes>
             <Route path="/mypage" element={<MyPage />} />
@@ -47,16 +44,12 @@ const AppRoutes = () => {
             <Route path="*" element={<Navigate to="/traveler" />} />
           </Routes>
         </div>
-        {!isScheduleMapPage && <Footer />}
+        {location.pathname !== "/schedulemap" && <Footer />}
       </div>
     );
   };
 
-  return (
-    <Router>
-      {isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}
-    </Router>
-  );
+  return <Router>{isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}</Router>;
 };
 
 export default AppRoutes;
