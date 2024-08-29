@@ -1,4 +1,3 @@
-// ImportantSchedules.js
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/MySchedulesPage.module.css';
 import filledStar from '../images/filled_star.png';
@@ -6,6 +5,8 @@ import emptyStar from '../images/empty_star.png';
 import deleteIcon from '../images/delete.png';
 import editIcon from '../images/write.png';
 import saveIcon from '../images/save.png';
+import businessIcon from '../images/business-icon.png';
+import travelerIcon from '../images/traveler-icon.png';
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
 
@@ -78,6 +79,13 @@ const ImportantSchedules = ({ schedules, fetchSchedules }) => {
                 alt="Importance"
                 className={styles.star}
                 onClick={() => toggleImportance(schedule.scheNum)}
+              />
+            </div>
+            <div className={styles.icon}>
+              <img
+                src={schedule.isBusiness === 'Y' ? businessIcon : travelerIcon}
+                alt="Business/Travel"
+                className={styles.scheduleIcon}
               />
             </div>
           </div>

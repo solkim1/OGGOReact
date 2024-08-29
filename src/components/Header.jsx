@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserProvider";
 
 import WeatherWidget from "./WeatherWidget";
+import travelerIcon from "../images/traveler-icon.png"
+import businessIcon from "../images/business-icon.png"
 import Calendar from "./Calendar";
 import logoImage from "../images/logo.png";
 import calendarIcon from "../images/calendar.png";
@@ -51,11 +52,6 @@ const Header = () => {
     }
   };
 
-  const logoutBtn = ()=>{
-    logout();
-    alert("로그아웃 되었습니다");
-  }
-
   const goToHomePage = () => {
     if (isBusinessMode) {
       navigate("/business");
@@ -63,6 +59,10 @@ const Header = () => {
       navigate("/traveler");
     }
   };
+
+  const logoutBtn = () => {
+    logout();
+  }
 
   return (
     <div>
@@ -83,12 +83,17 @@ const Header = () => {
                 className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`}
                 onClick={toggleMode}
               >
-                <div className={styles.toggleCircle} />
-                <span className={`${styles.toggleText} ${isBusinessMode?styles.rightText:styles.leftText}`}>
+                <div className={styles.toggleCircle}>
+                  <img
+                    src={isBusinessMode ? businessIcon : travelerIcon}
+                    alt={isBusinessMode ? "Business Mode" : "Traveler Mode"}
+                    className={styles.modeIcon}
+                    />
+                </div>
+                <span className={styles.toggleText}>
                   {isBusinessMode ? "출장자 모드" : "여행자 모드"}
                 </span>
               </div>
-
               <button className={styles.navButton} onClick={toggleCalendar}>
                 <img src={calendarIcon} alt="Calendar" className={styles.buttonIcon} />
                 여행 캘린더
@@ -122,6 +127,5 @@ const Header = () => {
     </div>
   );
 };
-
 
 export default Header;

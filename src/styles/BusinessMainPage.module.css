@@ -18,7 +18,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 50px;
   gap: 10px; /* 필터 항목들 사이의 여백 추가 */
 }
 
@@ -129,7 +130,7 @@
   }
 
   .filterItem {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     max-width: 100%;
   }
 

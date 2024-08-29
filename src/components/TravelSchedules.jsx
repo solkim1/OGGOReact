@@ -5,6 +5,7 @@ import emptyStar from '../images/empty_star.png';
 import deleteIcon from '../images/delete.png';
 import editIcon from '../images/write.png';
 import saveIcon from '../images/save.png';
+import travelerIcon from '../images/traveler-icon.png';
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
 
@@ -77,6 +78,13 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
                 alt="Importance"
                 className={styles.star}
                 onClick={() => toggleImportance(schedule.scheNum)}
+              />
+            </div>
+            <div className={styles.icon}>
+              <img
+                src={travelerIcon}
+                alt="Travel"
+                className={styles.scheduleIcon}
               />
             </div>
           </div>

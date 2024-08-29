@@ -1,4 +1,3 @@
-
 import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
 import spPinsSpotV3 from "../images/sp_pins_spot_v3.png";
@@ -249,4 +248,3 @@ const Map = ({ locations, center }) => {
 };
 
 export default Map;
-
