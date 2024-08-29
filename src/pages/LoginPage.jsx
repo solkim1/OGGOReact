@@ -52,7 +52,8 @@ const LoginPage = () => {
         userId: response.data.userId,
         userNick: response.data.userNick,
         userEmail: response.data.userEmail,
-        image: userImg
+        image: userImg,
+        isGoogle: response.data.isGoogle
       });
 
       nav('/traveler');

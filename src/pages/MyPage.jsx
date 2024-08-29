@@ -6,17 +6,18 @@ import styles from '../styles/MyPage.module.css';
 import closeEyeIcon from '../images/icon-close-eye.png';
 import eyeIcon from '../images/icon-eye.png';
 import axios from 'axios';
+import picture from '../images/dummyUserImg.png'
 
 const MyPage = () => {
   const nav = useNavigate();
-  const { user, googleToken, isAuthenticated } = useContext(UserContext);
+  const { user, googleToken, isAuthenticated, login } = useContext(UserContext);
 
   // 활성화된 탭을 관리하는 상태 (info: 정보보기, edit: 정보수정)
   const [activeTab, setActiveTab] = useState('info');
 
   const [formData, setFormData] = useState({
     userId: user.userId,
-    userEmail: user.userEmail,
+    userNick: '',
     userPw: '',
     pwCheck: ''
   });
@@ -36,6 +37,7 @@ const MyPage = () => {
     }
   };
 
+  // 비밀번호 보이기/안보이기 토글
   const togglePwVisibility = () => {
     setPwVisible(!pwVisible);
   };
@@ -47,32 +49,40 @@ const MyPage = () => {
   const editProfile = async (e) => {
     e.preventDefault();
 
-    if (!formData.userPw || !formData.pwCheck) {
-      alert('바꿀 비밀번호를 입력하세요');
-      return;
-    }
-
+    // 유효성검사
     if (!pwMatch) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&^#]{8,}$/;
-    if (!pwRegex.test(formData.userPw)) {
-      alert('비밀번호는 최소 8자 이상이어야 하며, 대문자와 숫자를 포함해야 합니다.');
-      return;
+    if(formData.userPw !== ""){
+      if (!pwRegex.test(formData.userPw)) {
+        alert('비밀번호는 최소 8자 이상이어야 하며, 대문자와 숫자를 포함해야 합니다.');
+        return;
+      }
     }
 
     if (formData.userNick === '') {
       formData.userNick = user.userNick;
     }
 
+    // 백로직
     try {
       const response = await axios.post(
         'http://localhost:8090/plan/user/editProfile',
         formData
       );
       console.log('Response:', response.data);
+
+      login({
+        userId: response.data.userId,
+        userNick: response.data.userNick,
+        userEmail: response.data.userEmail,
+        image: picture,
+        isGoogle: response.data.isGoogle
+      });
+
     } catch (error) {
       console.log(error);
     }
@@ -101,20 +111,34 @@ const MyPage = () => {
               readOnly
             />
           </div>
+        </div>
+      );
+    } else if (activeTab === 'infoEdit') {
+      return (
+        <div className={styles.formContainer}>
+
           <div className={styles.inputGroup}>
             <label className={styles.label}>닉네임</label>
             <input
               type="text"
               className={styles.inputField}
-              value={user.userNick}
-              readOnly
+              name='userNick'
+              defaultValue={user.userNick}
+              onChange={handleChange}
+              autoComplete="new-nickname"
             />
+          </div>
+
+          <div className={styles.buttons}>
+            <button className={styles.deleteButton} onClick={deleteId}>회원 탈퇴</button>
+            <button className={styles.saveButton} onClick={editProfile}>정보수정</button>
           </div>
         </div>
       );
-    } else if (activeTab === 'edit') {
+    } else if (activeTab === 'pwEdit') {
       return (
         <div className={styles.formContainer}>
+
           <div className={styles.inputGroup}>
             <label className={styles.label}>패스워드</label>
             <div className={styles.passwordContainer}>
@@ -138,6 +162,8 @@ const MyPage = () => {
               </button>
             </div>
           </div>
+
+
           <div className={styles.inputGroup}>
             <label className={styles.label}>패스워드 재입력</label>
             <div className={styles.passwordContainer}>
@@ -164,12 +190,13 @@ const MyPage = () => {
               <span className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</span>
             )}
           </div>
+
+
           <div className={styles.buttons}>
             <button className={styles.deleteButton} onClick={deleteId}>회원 탈퇴</button>
             <button className={styles.saveButton} onClick={editProfile}>정보수정</button>
           </div>
-        </div>
-      );
+        </div>)
     }
   };
 
@@ -183,13 +210,21 @@ const MyPage = () => {
             onClick={() => setActiveTab('info')}
           >
             정보 보기
+
           </div>
-          <div
-            className={`${styles.tabItem} ${activeTab === 'edit' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('edit')}
+          {user.isGoogle === 'N' ? <><div
+            className={`${styles.tabItem} ${activeTab === 'infoEdit' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('infoEdit')}
           >
             정보 수정
           </div>
+            <div
+              className={`${styles.tabItem} ${activeTab === 'pwEdit' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('pwEdit')}
+            >
+              비밀번호 변경
+            </div></>
+            : ""}
         </div>
       </div>
 
