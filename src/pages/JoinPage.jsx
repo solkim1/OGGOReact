@@ -14,7 +14,7 @@ import googleIcon from '../images/googleIcon.png';
 
 const JoinPage = () => {
   const nav = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
-  const { loginWithGoogle } = useContext(UserContext); // Google 로그인 함수 가져오기
+  const { loginWithGoogle, getGoogleToken} = useContext(UserContext); // Google 로그인 함수 가져오기
 
   // 백으로 보낼 회원가입 데이터 상태 관리
   const [formData, setFormData] = useState({
@@ -159,10 +159,12 @@ const JoinPage = () => {
   // Google 로그인 버튼 눌렀을 때
   const googleLoginBtn = async () => {
     try {
-      await loginWithGoogle();
-      nav('/');
+      const token = await getGoogleToken();  // getGoogleToken 함수에서 직접 토큰을 반환받음
+      await loginWithGoogle(token);  // 받은 토큰을 사용하여 로그인
+      nav('/');  // 성공적으로 로그인 시 메인 페이지로 리디렉션
     } catch (error) {
       console.error('로그인 실패:', error);
+      alert("Google 로그인에 실패했습니다. 다시 시도해 주세요.");
     }
   };
 

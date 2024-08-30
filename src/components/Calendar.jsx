@@ -11,6 +11,7 @@ import styles from '../styles/LoginJoin.module.css';
 const Calendar = () => {
   const { isAuthenticated, googleToken, getGoogleToken, user } = useContext(UserContext);
   const [events, setEvents] = useState([]);
+  const [events2, setEvents2] = useState([]);
 
   useEffect(() => {
     if (isAuthenticated && googleToken) {
@@ -18,79 +19,88 @@ const Calendar = () => {
     }
   }, [googleToken, isAuthenticated]);
 
-  const fetchEventsFromGoogle = async (token) => {
+  useEffect(() => {
+    const fetchEventsFromDB = async () => {
+      try {
+        // GET 요청 시 쿼리 매개변수를 URL에 포함
+        const response = await axios.get(`http://localhost:8090/plan/api/schedules/all`, {
+          params: { userId: "102077899703612717472" } // 쿼리 매개변수로 userId 전달
+        });
+        
+        console.log("DB의 일정",response.data);
+  
+        // response.data가 예상된 구조를 가지는지 확인
+        if (response.data && Array.isArray(response.data)) {
+          const dbEvents = response.data.map(event => ({
+            id: event.scheNum,
+            title: event.scheTitle,
+            start: event.scheStDt + "T09:00:00+09:00",
+            end: event.scheEdDt + "T22:15:00+09:00",
+            description: event.scheDesc || '',
+            location: event.location || ''
+          }));
+  
+          setEvents(prevEvents => [...prevEvents, ...dbEvents]);
+        } else {
+          console.error("Unexpected response structure:", response.data);
+        }
+      } catch (error) {
+        console.error("DB 일정 가져오기 실패 : ", error);
+      }
+    };
     fetchEventsFromDB();
-    // try {
-    //   const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`,
-    //     },
-    //     params: {
-    //       timeMin: (new Date()).toISOString(),
-    //       singleEvents: true,
-    //       orderBy: 'startTime'
-    //     },
-    //   });
+  }, []);
 
-    //   const events = response.data.items.map(event => ({
-    //     id: event.id,
-    //     title: event.summary,
-    //     start: event.start.dateTime || event.start.date,
-    //     end: event.end.dateTime || event.end.date,
-    //     description: event.description || '',
-    //     location: event.location || ''
-    //   }));
-
-    //   console.log(events);
-    //   setEvents(events);
-    // } catch (error) {
-    //   console.error('Google Calendar 이벤트 불러오기 오류:', error);
-    // }
-  };
-
-
-  const fetchEventsFromDB = async () => {
+  const fetchEventsFromGoogle = async (token) => {
     try {
-      // GET 요청 시 쿼리 매개변수를 URL에 포함
-      const response = await axios.get(`http://localhost:8090/plan/api/schedules/all`, {
-        params: { userId: 
-          "102077899703612717472"
-        } // 쿼리 매개변수로 userId 전달
+      const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        params: {
+          timeMin: (new Date()).toISOString(),
+          singleEvents: true,
+          orderBy: 'startTime'
+        },
       });
-      console.log(response.data);
-      const events = response.data.map(event => ({
-        id: event.scheIdx,
-        title: event.scheTitle,
-        start: event.scheStDt+"T09:00:00+09:00",
-        end: event.scheEdDt+"T22:15:00+09:00",
-        description: event.scheDesc || '',
+
+      const googleEvents = response.data.items.map(event => ({
+        id: event.id,
+        title: event.summary,
+        start: event.start.dateTime || event.start.date,
+        end: event.end.dateTime || event.end.date,
+        description: event.description || '',
         location: event.location || ''
       }));
-      setEvents(events);
+      setEvents2(googleEvents);
+      console.log("Google의 일정",googleEvents);
     } catch (error) {
-      console.error("DB 일정 가져오기 실패 : ", error);
+      console.error('Google Calendar 이벤트 불러오기 오류:', error);
     }
   };
-
 
   const handleGoogleLogin = () => {
     getGoogleToken(); // Google 로그인 함수 호출
   };
 
+  const dataCheck = ()=>{
+    console.log([...events, ...events2]);
+  }
+
   return (
     <div className={styles.calendarContainer}>
-      <h1>Plan Maker Calendar</h1>
-      {isAuthenticated && !googleToken ? ( // 일반 로그인은 되어 있지만 Google 로그인은 안된 상태
+      <h1>Plan Maker Calendar<button onClick={dataCheck}>데이터확인</button></h1> 
+      {!googleToken ? ( // 일반 로그인은 되어 있지만 Google 로그인은 안된 상태
         <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
           <img src={googleIcon} alt="Google logo" width="20" />
-          <span>Google 계정으로 로그인</span>
+          <span>Google 계정 연동하기</span>
         </div>
       ) : null}
-      {googleToken ? ( // Google 로그인이 완료된 상태에서만 캘린더를 보여줍니다.
+       {/* Google 로그인이 완료된 상태에서만 캘린더를 보여줍니다. */}
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
-          events={events}
+          events={[...events, ...events2]}
           eventContent={(eventInfo) => (
             <div>
               {/* <b>
@@ -111,7 +121,7 @@ const Calendar = () => {
             </div>
           )}
         />
-      ) : null}
+      
     </div>
   );
 };
