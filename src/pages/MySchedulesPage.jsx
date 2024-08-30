@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import styles from '../styles/MySchedulesPage.module.css';
-import AllSchedules from '../components/AllSchedules';
-import TravelSchedules from '../components/TravelSchedules';
-import BusinessSchedules from '../components/BusinessSchedules';
-import ImportantSchedules from '../components/ImportantSchedules';
-import { UserContext } from '../context/UserProvider';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import styles from "../styles/MySchedulesPage.module.css";
+import AllSchedules from "../components/AllSchedules";
+import TravelSchedules from "../components/TravelSchedules";
+import BusinessSchedules from "../components/BusinessSchedules";
+import ImportantSchedules from "../components/ImportantSchedules";
+import { UserContext } from "../context/UserProvider";
 
 const MySchedulesPage = () => {
   // 활성화된 탭 상태를 저장합니다.
-  const [activeTab, setActiveTab] = useState('all');
-  
+  const [activeTab, setActiveTab] = useState("all");
+
   // 일정 목록과 각 탭에 대한 일정 수를 저장합니다.
   const [schedules, setSchedules] = useState([]);
   const [counts, setCounts] = useState({ all: 0, travel: 0, business: 0, important: 0 });
-  
+
   // 사용자 정보를 UserContext에서 가져옵니다.
   const { user } = useContext(UserContext);
 
@@ -52,7 +52,7 @@ const MySchedulesPage = () => {
       });
     } catch (error) {
       // 에러 발생 시 콘솔에 오류 메시지를 출력합니다.
-      console.error('Error fetching schedule counts:', error);
+      console.error("Error fetching schedule counts:", error);
     }
   };
 
@@ -62,12 +62,12 @@ const MySchedulesPage = () => {
       // 활성화된 탭에 맞는 API 요청 URL을 정의합니다.
       const url = `/plan/api/schedules/${activeTab}?userId=${user.userId}`;
       const response = await axios.get(url);
-      
+
       // 일정 데이터를 상태에 저장합니다.
       setSchedules(response.data);
     } catch (error) {
       // 에러 발생 시 콘솔에 오류 메시지를 출력합니다.
-      console.error('Error fetching schedules:', error);
+      console.error("Error fetching schedules:", error);
     }
   };
 
@@ -81,15 +81,20 @@ const MySchedulesPage = () => {
   const renderSchedules = () => {
     const props = {
       schedules,
-      fetchSchedules: handleActionComplete // 일정 클릭 및 삭제 후 동적으로 탭 개수 갱신
+      fetchSchedules: handleActionComplete, // 일정 클릭 및 삭제 후 동적으로 탭 개수 갱신
     };
 
     switch (activeTab) {
-      case 'all': return <AllSchedules {...props} />;
-      case 'travel': return <TravelSchedules {...props} />;
-      case 'business': return <BusinessSchedules {...props} />;
-      case 'important': return <ImportantSchedules {...props} />;
-      default: return <AllSchedules {...props} />;
+      case "all":
+        return <AllSchedules {...props} />;
+      case "travel":
+        return <TravelSchedules {...props} />;
+      case "business":
+        return <BusinessSchedules {...props} />;
+      case "important":
+        return <ImportantSchedules {...props} />;
+      default:
+        return <AllSchedules {...props} />;
     }
   };
 
@@ -99,14 +104,14 @@ const MySchedulesPage = () => {
       <div className={styles.headerBlock}>
         <div className={styles.tabContainer}>
           {[
-            { key: 'all', label: '전체 일정' },
-            { key: 'travel', label: '여행 일정' },
-            { key: 'business', label: '출장 일정' },
-            { key: 'important', label: '주요 일정' }
+            { key: "all", label: "전체 일정" },
+            { key: "travel", label: "여행 일정" },
+            { key: "business", label: "출장 일정" },
+            { key: "important", label: "주요 일정" },
           ].map((tab) => (
             <div
               key={tab.key}
-              className={`${styles.tabItem} ${activeTab === tab.key ? styles.active : ''}`}
+              className={`${styles.tabItem} ${activeTab === tab.key ? styles.active : ""}`}
               onClick={() => setActiveTab(tab.key)}
             >
               <div className={styles.tabContent}>
@@ -118,9 +123,7 @@ const MySchedulesPage = () => {
         </div>
       </div>
       {/* 일정 목록 영역 */}
-      <div className={styles.container}>
-        {renderSchedules()}
-      </div>
+      <div className={styles.container}>{renderSchedules()}</div>
     </div>
   );
 };

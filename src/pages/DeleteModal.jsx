@@ -1,3 +1,4 @@
+
 import React from 'react';
 import styles from '../styles/DeleteModal.module.css'; // 필요한 경우 스타일 추가
 
@@ -23,3 +24,4 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
 };
 
 export default DeleteModal;
+

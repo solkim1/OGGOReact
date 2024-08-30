@@ -1,21 +1,9 @@
 .btnContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: 20px;
-}
-
-.arrowBtn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  height: 50%;
-}
-
-.arrowIcon {
-  width: 40px;
-  height: 40px;
+  position: relative;
 }
 
 .actionButtons {
@@ -26,13 +14,79 @@
 .actionBtn {
   background-color: black;
   color: white;
-  padding: 10px 20px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 20px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.actionBtn:last-of-type {
+  margin-right: 45px;
 }
 
 .actionBtn:hover {
   background-color: #333;
+}
+
+.arrowBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: none; /* 기본적으로 숨김 */
+  align-items: center;
+  justify-content: center;
+}
+
+.arrowIcon {
+  width: 30px;
+  height: 30px;
+}
+
+/* 반응형 디자인: 1024px 이하 */
+@media (max-width: 1024px) {
+  .btnContainer {
+    justify-content: space-between;
+  }
+
+  .actionButtons {
+    order: 2;
+  }
+
+  .arrowBtn {
+    display: flex;
+    order: 1;
+  }
+
+  .arrowBtn:last-child {
+    order: 3;
+  }
+
+  .actionBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* 반응형 디자인: 768px 이하 */
+@media (max-width: 768px) {
+  .actionButtons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 반응형 디자인: 320px 이하 */
+@media (max-width: 320px) {
+  .actionButtons {
+    gap: 5px;
+  }
+
+  .actionBtn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
 }

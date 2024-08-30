@@ -8,6 +8,10 @@ import calendarIcon from "../images/calendar.png";
 import scheduleIcon from "../images/schedule.png";
 import mypageIcon from "../images/mypage.png";
 import logoutIcon from "../images/logout.png";
+
+import travelerIcon from "../images/traveler-icon.png";
+import businessIcon from "../images/business-icon.png";
+
 import styles from "../styles/Header.module.css";
 import LocalCache from "../components/LocalCache";
 
@@ -76,7 +80,15 @@ const Header = () => {
             <WeatherWidget />
             <div className={styles.headerButtons}>
               <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`} onClick={toggleMode}>
-                <div className={styles.toggleCircle} />
+
+                <div className={styles.toggleCircle}>
+                  <img
+                    src={isBusinessMode ? businessIcon : travelerIcon}
+                    alt={isBusinessMode ? "출장자 모드 아이콘" : "여행자 모드 아이콘"}
+                    className={styles.modeIcon}
+                  />
+                </div>
+
                 <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
                   {isBusinessMode ? "출장자 모드" : "여행자 모드"}
                 </span>

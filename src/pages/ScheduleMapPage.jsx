@@ -24,7 +24,22 @@ const ScheduleMapPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pageIndex, setPageIndex] = useState(0);
-  const itemsPerPage = 3;
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setItemsPerPage(1);
+      } else {
+        setItemsPerPage(3);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchInitialMode = async () => {
@@ -39,17 +54,12 @@ const ScheduleMapPage = () => {
   const fetchSchedule = useCallback(
     async (start, end) => {
       const cacheKey = "scheduleData";
+      setLoading(true);
       try {
         const cachedData = await LocalCache.readFromCache(cacheKey);
         if (cachedData) {
           console.log("Cached data found:", cachedData);
           setLocationData(cachedData);
-
-          const firstLocation = cachedData[selectedDay]?.[0];
-          if (firstLocation) {
-            setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
-          }
-
           setScheduleTitle(cachedData.title || "여행 일정");
           setLoading(false);
           return;
@@ -86,7 +96,7 @@ const ScheduleMapPage = () => {
 
   useEffect(() => {
     fetchSchedule(1, itemsPerPage);
-  }, [fetchSchedule]);
+  }, [fetchSchedule, itemsPerPage]);
 
   useEffect(() => {
     if (locationData[selectedDay] && locationData[selectedDay].length > 0) {
@@ -127,6 +137,7 @@ const ScheduleMapPage = () => {
         const formattedStartDate = currentStartDate.toISOString().split("T")[0];
 
         return locations.map((loc) => ({
+          scheduleDesc: "일정을 입력하세요",
           userId: user?.userId,
           title: scheduleTitle,
           scheNum: scheNum,
@@ -210,27 +221,37 @@ const ScheduleMapPage = () => {
     <div className={styles.container}>
       <div className={styles.leftPanel}>
         <img src={logo} alt="Plan Maker" className={styles.logo} onClick={goToHomePage} />
-        <h2>{scheduleTitle}</h2>
-        <h3>
-          {startDate} - {endDate}
-        </h3>
-        <ScheduleMapBtn
-          handleNextPage={handleNextPage}
-          handlePrevPage={handlePrevPage}
-          pageIndex={pageIndex}
-          totalPages={totalPages}
-          handleRegenerate={handleRegenerate}
-          handleSaveSchedule={handleSaveSchedule}
-        />
-        <DaySchedule
-          selectedDay={selectedDay}
-          setSelectedDay={setSelectedDay}
-          locationData={displayedDays.reduce((acc, day) => {
-            acc[day] = locationData[day];
-            return acc;
-          }, {})}
-          setLocationData={setLocationData}
-        />
+        <h2 className={styles.scheduleTitleContainer}>
+          <span className={styles.scheduleTitle}>{scheduleTitle}</span>
+          <span className={styles.scheduleDate}>
+            {startDate} - {endDate}
+          </span>
+        </h2>
+        <div className={styles.buttonAndScheduleContainer}>
+          <div className={styles.navigationButtons}>
+            <ScheduleMapBtn
+              handleRegenerate={handleRegenerate}
+              handleSaveSchedule={handleSaveSchedule}
+              handleNextPage={handleNextPage}
+              handlePrevPage={handlePrevPage}
+              pageIndex={pageIndex}
+              totalPages={totalPages}
+            />
+          </div>
+          <DaySchedule
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            pageIndex={pageIndex}
+            totalPages={totalPages}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+            locationData={displayedDays.reduce((acc, day) => {
+              acc[day] = locationData[day];
+              return acc;
+            }, {})}
+            setLocationData={setLocationData}
+          />
+        </div>
       </div>
       <Map locations={locationData[selectedDay] || []} center={mapCenter} />
     </div>

@@ -32,7 +32,9 @@ const UserProvider = ({ children }) => {
       };
       document.body.appendChild(script);
     };
-  
+
+
+
     loadGisScript();
   }, []);
 
@@ -53,7 +55,9 @@ const UserProvider = ({ children }) => {
     // 백엔드 인증이나 사용자 정보 가져올 때 이 토큰을 사용할 수 있음
   };
 
-  const loginWithGoogle = async () => {
+
+  const getGoogleToken = async () => {
+
     try {
       const tokenClient = window.google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
@@ -75,33 +79,44 @@ const UserProvider = ({ children }) => {
       setGoogleToken(response.access_token);
       sessionStorage.setItem("googleToken", response.access_token);
 
-      const { data } = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
-        headers: {
-          'Authorization': `Bearer ${response.access_token}`,
-        },
-      });
-
-      axios({
-        url: 'http://localhost:8090/plan/user/googleLogin',
-        method: 'POST',
-        data: {
-          userId: data.id,
-          userNick: data.name,
-          userEmail: data.email
-        }
-      }).then((res)=>{
-        login({
-          userId: res.data.userId,
-          userNick: res.data.userNick,
-          userEmail: res.data.userEmail,
-          image: data.picture
-        });
-      })
       
+      return response.access_token;
+
     } catch (error) {
       console.error('오류 발생:', error);
     }
+    
   };
+
+  const loginWithGoogle = async (googleToken) => {
+    try {
+      const { data } = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${googleToken}`,
+        },
+      });
+  
+      console.log(data);
+  
+      const response = await axios.post('http://localhost:8090/plan/user/googleLogin', {
+        userId: data.id,
+        userNick: data.name,
+        userEmail: data.email
+      });
+  
+      login({
+        userId: response.data.userId,
+        userNick: response.data.userNick,
+        userEmail: response.data.userEmail,
+        image: data.picture,
+        isGoogle: response.data.isGoogle
+      });
+    } catch (error) {
+      console.error('Google 로그인 중 오류 발생:', error);
+    }
+  };
+  
+
 
   const login = (userData) => {
     setUser(userData);
@@ -118,7 +133,9 @@ const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user,setUser, googleToken, setGoogleToken, login, logout, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
+
+    <UserContext.Provider value={{ user, setUser, googleToken, setGoogleToken, login, logout, getGoogleToken, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
+
       {children}
     </UserContext.Provider>
   );

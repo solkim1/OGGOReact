@@ -9,7 +9,9 @@ import googleIcon from '../images/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
-  const { isAuthenticated, googleToken, loginWithGoogle } = useContext(UserContext);
+
+  const { isAuthenticated, googleToken, getGoogleToken, user } = useContext(UserContext);
+
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -19,34 +21,66 @@ const Calendar = () => {
   }, [googleToken, isAuthenticated]);
 
   const fetchEventsFromGoogle = async (token) => {
-    try {
-      const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        params: {
-          timeMin: (new Date()).toISOString(),
-          singleEvents: true,
-          orderBy: 'startTime'
-        },
-      });
 
-      const events = response.data.items.map(event => ({
-        id: event.id,
-        title: event.summary,
-        start: event.start.dateTime || event.start.date,
-        end: event.end.dateTime || event.end.date,
-        description: event.description || '',
+    fetchEventsFromDB();
+    // try {
+    //   const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+    //     headers: {
+    //       'Authorization': `Bearer ${token}`,
+    //     },
+    //     params: {
+    //       timeMin: (new Date()).toISOString(),
+    //       singleEvents: true,
+    //       orderBy: 'startTime'
+    //     },
+    //   });
+
+    //   const events = response.data.items.map(event => ({
+    //     id: event.id,
+    //     title: event.summary,
+    //     start: event.start.dateTime || event.start.date,
+    //     end: event.end.dateTime || event.end.date,
+    //     description: event.description || '',
+    //     location: event.location || ''
+    //   }));
+
+    //   console.log(events);
+    //   setEvents(events);
+    // } catch (error) {
+    //   console.error('Google Calendar 이벤트 불러오기 오류:', error);
+    // }
+  };
+
+
+  const fetchEventsFromDB = async () => {
+    try {
+      // GET 요청 시 쿼리 매개변수를 URL에 포함
+      const response = await axios.get(`http://localhost:8090/plan/api/schedules/all`, {
+        params: { userId: 
+          "104924240078843053738"
+        } // 쿼리 매개변수로 userId 전달
+      });
+      console.log(response.data);
+      const events = response.data.map(event => ({
+        id: event.scheIdx,
+        title: event.scheTitle,
+        start: event.scheStDt+"T09:00:00+09:00",
+        end: event.scheEdDt+"T22:15:00+09:00",
+        description: event.scheDesc || '',
+
         location: event.location || ''
       }));
       setEvents(events);
     } catch (error) {
-      console.error('Google Calendar 이벤트 불러오기 오류:', error);
+
+      console.error("DB 일정 가져오기 실패 : ", error);
     }
   };
 
+
   const handleGoogleLogin = () => {
-    loginWithGoogle(); // Google 로그인 함수 호출
+    getGoogleToken(); // Google 로그인 함수 호출
+
   };
 
   return (
@@ -65,7 +99,9 @@ const Calendar = () => {
           events={events}
           eventContent={(eventInfo) => (
             <div>
-              <b>
+
+              {/* <b>
+
                 {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
                   hour: '2-digit',
                   minute: '2-digit',
@@ -78,7 +114,9 @@ const Calendar = () => {
                   hour12: false,
                 })}
               </b>
-              <br />
+
+              <br /> */}
+
               <i>{eventInfo.event.title}</i>
             </div>
           )}
@@ -88,4 +126,6 @@ const Calendar = () => {
   );
 };
 
+
 export default Calendar;
+
