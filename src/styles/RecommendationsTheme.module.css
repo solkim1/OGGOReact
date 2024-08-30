@@ -17,7 +17,9 @@
 }
 
 .themeItem img {
-  width: 100%;
+  width: 45vh;
+  height: 45vh; /* 고정된 높이 설정 */
+  object-fit: cover; /* 이미지가 컨테이너에 꽉 차게 맞춤 */
   border-radius: 8px;
   margin-bottom: 10px;
 }
@@ -35,11 +37,16 @@
   .themeItem {
     flex: 1 1 calc(33.333% - 20px);
     max-width: calc(33.333% - 20px);
+    
   }
 
   .themeTitle {
     font-size: 14px;
     font-weight: bold;
+  }
+  .themeItem img {
+    height: 11vh;
+    width:11vh; /* 매우 작은 화면 크기에서 높이 조정 */
   }
 }
 

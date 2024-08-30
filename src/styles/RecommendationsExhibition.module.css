@@ -20,7 +20,8 @@
 }
 
 .exhibitionItem img {
-  width: 100%;
+  width: 35vh;
+  height: 40vh; /* 고정된 높이 설정 */
   border-radius: 8px;
   margin-bottom: 10px;
 }
@@ -40,7 +41,10 @@
     flex: 1 1 calc(33.333% - 20px);
   max-width: calc(33.333% - 20px);
   }
-
+  .exhibitionItem img {
+    width: 13vh;
+    height: 15vh; /* 고정된 높이 설정 */
+  }
   .exhibitionTitle {
     font-size: 14px;
     font-weight: bold;
