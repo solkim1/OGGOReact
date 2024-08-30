@@ -1,4 +1,3 @@
-
 import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
 import spPinsSpotV3 from "../images/sp_pins_spot_v3.png";
@@ -75,7 +74,9 @@ const Map = ({ locations, center }) => {
           drawDirectLine(sy, sx, ey, ex, map, index);
         }
       } else {
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
+
+        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOAA`;
+
         fetch(url)
           .then((response) => response.json())
           .then((data) => {
@@ -102,7 +103,9 @@ const Map = ({ locations, center }) => {
       if (cachedData && isCached) {
         data = cachedData;
       } else {
-        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
+
+        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOAA`;
+
         const response = await fetch(url);
         data = await response.json();
         LocalCache.writeToCache(cacheKey, data);
@@ -233,7 +236,9 @@ const Map = ({ locations, center }) => {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3`;
+
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3A`;
+
     script.async = true;
     script.onload = () => {
       if (window.naver) {
@@ -249,4 +254,3 @@ const Map = ({ locations, center }) => {
 };
 
 export default Map;
-

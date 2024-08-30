@@ -1,27 +1,52 @@
 .themesContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-    width: 100%;
-    padding: 0;
-    margin: 0 auto;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 60px;
+  width: 100%;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.themeItem {
+  flex: 1 1 calc(33.333% - 60px);
+  max-width: calc(33.333% - 60px);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.themeItem img {
+  width: 45vh;
+  height: 45vh; /* 고정된 높이 설정 */
+  object-fit: cover; /* 이미지가 컨테이너에 꽉 차게 맞춤 */
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.themeTitle {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .themesContainer {
+      gap: 20px;
   }
-  
+
   .themeItem {
     flex: 1 1 calc(33.333% - 20px);
     max-width: calc(33.333% - 20px);
-    text-align: center;
-    margin-bottom: 20px;
+    
   }
-  
-  .themeItem img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  
+
   .themeTitle {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
   }
+  .themeItem img {
+    height: 11vh;
+    width:11vh; /* 매우 작은 화면 크기에서 높이 조정 */
+  }
+}
+

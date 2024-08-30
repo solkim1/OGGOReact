@@ -1,3 +1,4 @@
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -70,4 +71,3 @@
   .cancelButton:hover {
     background-color: #999; /* 진한 회색 */
   }
-  

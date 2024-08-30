@@ -9,7 +9,9 @@ import googleIcon from '../images/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
+
   const { isAuthenticated, googleToken, getGoogleToken, user } = useContext(UserContext);
+
   const [events, setEvents] = useState([]);
   const [events2, setEvents2] = useState([]);
 
@@ -18,6 +20,7 @@ const Calendar = () => {
       fetchEventsFromGoogle(googleToken); // Google 토큰이 있는 경우에만 이벤트를 가져옵니다.
     }
   }, [googleToken, isAuthenticated]);
+
 
   useEffect(() => {
     const fetchEventsFromDB = async () => {
@@ -48,11 +51,13 @@ const Calendar = () => {
         console.error("DB 일정 가져오기 실패 : ", error);
       }
     };
+
     fetchEventsFromDB();
   }, []);
 
   const fetchEventsFromGoogle = async (token) => {
     try {
+
       const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -70,17 +75,20 @@ const Calendar = () => {
         start: event.start.dateTime || event.start.date,
         end: event.end.dateTime || event.end.date,
         description: event.description || '',
+
         location: event.location || ''
       }));
       setEvents2(googleEvents);
       console.log("Google의 일정",googleEvents);
     } catch (error) {
+
       console.error('Google Calendar 이벤트 불러오기 오류:', error);
     }
   };
 
   const handleGoogleLogin = () => {
     getGoogleToken(); // Google 로그인 함수 호출
+
   };
 
   const dataCheck = ()=>{
@@ -103,7 +111,9 @@ const Calendar = () => {
           events={[...events, ...events2]}
           eventContent={(eventInfo) => (
             <div>
+
               {/* <b>
+
                 {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
                   hour: '2-digit',
                   minute: '2-digit',
@@ -116,7 +126,9 @@ const Calendar = () => {
                   hour12: false,
                 })}
               </b>
+
               <br /> */}
+
               <i>{eventInfo.event.title}</i>
             </div>
           )}
@@ -126,4 +138,6 @@ const Calendar = () => {
   );
 };
 
+
 export default Calendar;
+

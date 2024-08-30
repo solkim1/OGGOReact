@@ -1,5 +1,6 @@
+
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import JoinPage from "../pages/JoinPage";
@@ -29,29 +30,27 @@ const AppRoutes = () => {
     </div>
   );
 
-  const PrivateRoutes = () => (
-    <div className={styles.pageContainer}>
-      {/* ScheduleMapPage에서는 Header와 Footer를 렌더링하지 않음 */}
-      {window.location.pathname !== "/schedulemap" && <Header />}
-      <div className={styles.contentWrap}>
-        <Routes>
-          <Route path="/mypage" element={<MyPage />} />
-          <Route path="/traveler" element={<TravelerMainPage />} /> 
-          <Route path="/business" element={<BusinessMainPage />} />
-          <Route path="/myschedules" element={<MySchedulesPage />} />
-          <Route path="/schedulemap" element={<ScheduleMapPage />} />
-          <Route path="*" element={<Navigate to="/traveler" />} />
-        </Routes>
+  const PrivateRoutes = () => {
+    const location = useLocation();
+    return (
+      <div className={styles.pageContainer}>
+        {location.pathname !== "/schedulemap" && <Header />}
+        <div className={styles.contentWrap}>
+          <Routes>
+            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/traveler" element={<TravelerMainPage />} />
+            <Route path="/business" element={<BusinessMainPage />} />
+            <Route path="/myschedules" element={<MySchedulesPage />} />
+            <Route path="/schedulemap" element={<ScheduleMapPage />} />
+            <Route path="*" element={<Navigate to="/traveler" />} />
+          </Routes>
+        </div>
+        {location.pathname !== "/schedulemap" && <Footer />}
       </div>
-      {window.location.pathname !== "/schedulemap" && <Footer />}
-    </div>
-  );
+    );
+  };
 
-  return (
-    <Router>
-      {isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}
-    </Router>
-  );
+  return <Router>{isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}</Router>;
 };
 
 export default AppRoutes;

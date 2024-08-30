@@ -1,8 +1,6 @@
-
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserProvider";
-
 import WeatherWidget from "./WeatherWidget";
 import Calendar from "./Calendar";
 import logoImage from "../images/logo.png";
@@ -10,31 +8,38 @@ import calendarIcon from "../images/calendar.png";
 import scheduleIcon from "../images/schedule.png";
 import mypageIcon from "../images/mypage.png";
 import logoutIcon from "../images/logout.png";
+
+import travelerIcon from "../images/traveler-icon.png";
+import businessIcon from "../images/business-icon.png";
+
 import styles from "../styles/Header.module.css";
+import LocalCache from "../components/LocalCache";
 
 const Header = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isBusinessMode, setIsBusinessMode] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
 
   const { logout } = useContext(UserContext);
 
   useEffect(() => {
-    if (location.pathname === "/business") {
-      setIsBusinessMode(true);
-    } else {
-      setIsBusinessMode(false);
-    }
-  }, [location.pathname]);
+    const fetchInitialMode = async () => {
+      const cachedMode = await LocalCache.readFromCache("userMode");
+      if (cachedMode) {
+        setIsBusinessMode(cachedMode === "business");
+      }
+    };
+    fetchInitialMode();
+  }, []);
 
-  const toggleMode = () => {
-    if (isBusinessMode) {
-      navigate("/traveler");
-    } else {
-      navigate("/business");
-    }
-    setIsBusinessMode(!isBusinessMode);
+  const toggleMode = async () => {
+    const newMode = !isBusinessMode;
+    setIsBusinessMode(newMode);
+
+    const modeToSave = newMode ? "business" : "traveler";
+    await LocalCache.writeToCache("userMode", modeToSave);
+
+    navigate(newMode ? "/business" : "/traveler");
   };
 
   const toggleCalendar = () => {
@@ -51,10 +56,10 @@ const Header = () => {
     }
   };
 
-  const logoutBtn = ()=>{
+  const logoutBtn = () => {
     logout();
     alert("로그아웃 되었습니다");
-  }
+  };
 
   const goToHomePage = () => {
     if (isBusinessMode) {
@@ -69,22 +74,22 @@ const Header = () => {
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.logoContainer}>
-            <img
-              src={logoImage}
-              alt="플랜메이커 로고"
-              className={styles.logo}
-              onClick={goToHomePage}
-            />
+            <img src={logoImage} alt="플랜메이커 로고" className={styles.logo} onClick={goToHomePage} />
           </div>
           <div className={styles.rightContent}>
             <WeatherWidget />
             <div className={styles.headerButtons}>
-              <div
-                className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`}
-                onClick={toggleMode}
-              >
-                <div className={styles.toggleCircle} />
-                <span className={`${styles.toggleText} ${isBusinessMode?styles.rightText:styles.leftText}`}>
+              <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`} onClick={toggleMode}>
+
+                <div className={styles.toggleCircle}>
+                  <img
+                    src={isBusinessMode ? businessIcon : travelerIcon}
+                    alt={isBusinessMode ? "출장자 모드 아이콘" : "여행자 모드 아이콘"}
+                    className={styles.modeIcon}
+                  />
+                </div>
+
+                <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
                   {isBusinessMode ? "출장자 모드" : "여행자 모드"}
                 </span>
               </div>
@@ -122,6 +127,5 @@ const Header = () => {
     </div>
   );
 };
-
 
 export default Header;

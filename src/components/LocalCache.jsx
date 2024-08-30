@@ -1,6 +1,8 @@
 
+
 class LocalCache {
   static EXPIRE_TIME = 5 * 60 * 1000; // 캐시 만료 시간 설정 (5분)
+
 
   static addUniqueIds(data) {
     if (data && typeof data === "object" && !Array.isArray(data)) {
@@ -16,6 +18,8 @@ class LocalCache {
     return data;
   }
 
+
+
   static async writeToCache(key, data, expireTime = LocalCache.EXPIRE_TIME) {
     try {
       const cache = await caches.open("sick-cache-v1");
@@ -25,14 +29,18 @@ class LocalCache {
       const response = new Response(JSON.stringify(responseData));
       cache.put(request, response);
 
+
+
       localStorage.setItem(key, JSON.stringify({ data, expired }));
     } catch (error) {
       console.error("데이터 캐싱 중 오류가 발생했습니다:", error);
     }
   }
 
+
   static async readFromCache(key) {
     try {
+
       const localStorageData = localStorage.getItem(key);
       if (localStorageData) {
         const { data, expired } = JSON.parse(localStorageData);
@@ -43,6 +51,8 @@ class LocalCache {
           localStorage.removeItem(key);
         }
       }
+
+
 
       const cache = await caches.open("sick-cache-v1");
       const response = await cache.match(key);
@@ -61,6 +71,8 @@ class LocalCache {
     }
   }
 
+
+
   static async updateCache(key, updateFunc) {
     try {
       const data = await this.readFromCache(key);
@@ -75,4 +87,3 @@ class LocalCache {
 }
 
 export default LocalCache;
-
