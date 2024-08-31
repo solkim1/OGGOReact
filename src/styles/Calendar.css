@@ -5,7 +5,8 @@
   border-radius: 8px;
   margin-top: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-height: calc(100vh - 100px);
+  height: 100vh; /* 화면 전체 높이를 사용 */
+  max-height: 100vh;
   overflow-y: auto;
   width: 100%;
   max-width: 1200px;
@@ -34,30 +35,40 @@
   font-family: 'Arial', sans-serif;
   font-size: 16px;
   color: #333;
+  width: 100%;
+  height: auto; /* 높이 자동 조정 */
+  overflow: hidden;
 }
 
 .fc-header-toolbar {
   background: #f5f5f5;
   color: #333;
   border-bottom: 1px solid #ddd;
-
-  padding: 10px 40px; /* 수정: padding 통합 */
+  padding: 10px 20px; /* 패딩 조정 */
   border-radius: 6px 6px 0 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 60px; /* 일정표 툴 바 높이 */
-  background-color: #76c3c5; /* 일정표 툴 바 색상 */
-
+  height: auto; /* 높이 자동 조정 */
+  background-color: #76c3c5; /* 캘린더 툴 바 색상 */
+  display: flex;
+  justify-content: space-between; /* 버튼과 타이틀이 양쪽으로 정렬되도록 */
+  align-items: center;
+  flex-wrap: wrap; /* 작은 화면에서 버튼이 줄바꿈되도록 */
 }
 
 .fc-toolbar-title {
   font-size: 24px;
   font-weight: 600;
-  margin: 0;
-  color: #555;
+  color: #fafafa;
+  flex: 1; /* 타이틀이 공간을 차지하도록 */
+  text-align: center; /* 타이틀 중앙 정렬 */
+  margin: 5px 0; /* 여백 추가 */
 }
 
-
-/* 버튼 스타일 */
+.fc-button-group {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end; /* 버튼이 오른쪽에 정렬되도록 */
+}
 
 .fc-button {
   background: #ffffff;
@@ -67,18 +78,14 @@
   padding: 8px 16px;
   font-size: 14px;
   transition: all 0.3s ease;
-
-  margin-bottom: 5px; /* 모바일에서 버튼 간격 */
+  margin: 0 5px; /* 버튼 간격 조정 */
 }
 
 .fc-button:hover,
-
 .fc-button-active {
   background: #007bff;
   color: #ffffff;
 }
-
-
 
 .fc-daygrid-day-number {
   font-size: 16px;
@@ -86,46 +93,61 @@
   color: #444;
 }
 
-
 /* 일요일 날짜 숫자 스타일 */
 .fc .fc-day-sun .fc-daygrid-day-number {
   color: red; /* 일요일 날짜 숫자를 빨간색으로 변경 */
+}
+.fc .fc-day-sun i{
+  color: white;
 }
 
 /* 토요일 날짜 숫자 스타일 */
 .fc .fc-day-sat .fc-daygrid-day-number {
   color: blue; /* 토요일 날짜 숫자를 파란색으로 변경 */
 }
+
 /* 일요일 및 토요일 날짜 스타일 */
-.fc .fc-day-sun a {
-  color:white;
+.fc .fc-day-sun {
+  color: red;
 }
 
-.fc .fc-day-sat a {
-  color: white;
+.fc .fc-day-sat {
+  color: blue;
 }
 
+.fc-daygrid-more-link {
+  color: #585050 /* 부모의 색상을 따르지 않고 기본값 유지 */
+}
+
+/* 공휴일 이벤트 스타일 */
+.holiday-event {
+  background: #ff8080 !important; /* 공휴일 배경색 */
+  color: white !important;        /* 공휴일 텍스트 색상 */
+  border: none !important;
+}
+
+.fc-daygrid-day.fc-daygrid-day-holiday .fc-daygrid-day-number {
+  color: red; /* !important로 우선 순위 강제 */
+}
 
 /* 오늘 날짜 강조 */
 .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-  background: #007bff;
+  background: #ffa600;
   color: #ffffff;
   border-radius: 50%;
   padding: 6px;
   font-weight: 600;
 }
 
-
 /* 오늘 날짜 셀에 배경색 추가 */
 .fc .fc-daygrid-day.fc-day-today {
-  background-color: #e6895724;
+  background-color: #e3fab7;
 }
 
 /* 이벤트 스타일 */
 .fc-event {
-  background: #91eff2;
-
-  color: #ffffff;
+  background: #dfc260;
+  color: white;
   border: none;
   border-radius: 6px;
   padding: 6px 12px;
@@ -136,10 +158,23 @@
 }
 
 .fc-event:hover {
-
   background: #66cfd3;
-
   transform: scale(1.05);
+}
+
+/* FullCalendar popover 스타일 */
+.fc-popover {
+  max-height: 75vh; /* 팝오버의 최대 높이 설정 */
+  overflow-y: auto; /* 넘치는 내용에 대해 스크롤 가능하도록 설정 */
+  z-index: 1200; /* 모달보다 높은 z-index 설정 */
+  transform: translateY(-40%); /* 팝오버를 약간 위로 이동 */
+}
+
+.fc-more-popover {
+  max-height: 75vh; /* 팝오버의 최대 높이 설정 */
+  overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  transform: translateY(-40%);
+  /* 팝오버를 약간 위로 이동 */
 }
 
 /* 모달 스타일 */
@@ -152,7 +187,7 @@
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* 중앙 정렬 */
   z-index: 1000;
 }
 
@@ -163,6 +198,8 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 600px;
+  max-height: 80vh; /* 최대 높이 설정 */
+  overflow-y: auto; /* 높이를 넘는 내용에 대해 스크롤 가능하도록 설정 */
   text-align: left;
   position: relative;
   animation: fadeIn 0.3s ease-out;
@@ -171,7 +208,7 @@
 .modal-content h2 {
   margin-top: 0;
   font-size: 24px;
-  color: #007bff;
+  color: #000000;
 }
 
 .modal-content p {
@@ -208,7 +245,6 @@
   }
 }
 
-
 /* 요일 스타일 */
 .fc-theme-standard th {
   height: 40px;
@@ -222,27 +258,111 @@
 }
 
 /* 반응형 디자인 */
-@media (max-width: 768px) {
-
+@media (max-width: 1200px) {
+  .calendarContainer {
+    max-width: 100%;
+    padding: 15px;
+  }
   .fc-toolbar-title {
+    font-size: 22px;
+  }
+  .fc-button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 992px) {
+  .fc-toolbar-title {
+    font-size: 20px;
+    text-align: center;
+  }
+  .fc-button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .fc-daygrid-day-number {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fc-toolbar-title {
+    font-size: 18px;
     margin-bottom: 10px;
   }
-
-
-
+  .fc-button {
+    padding: 4px 8px;
+    font-size: 12px;
+    margin-bottom: 0;
+  }
   .modal-content {
     width: 80%;
     max-width: none;
     padding: 15px;
   }
-
   .modal-content h2 {
     font-size: 20px;
   }
-
   .modal-content p {
     font-size: 14px;
   }
-
 }
 
+@media (max-width: 576px) {
+  .fc-header-toolbar {
+    flex-direction: column;
+    padding: 5px 10px; /* 작은 화면에서 패딩 조정 */
+    height: auto;
+  }
+  
+  .fc-toolbar-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    flex: unset; /* 타이틀이 자동으로 크기 조정 */
+  }
+  
+  .fc-button-group {
+    flex-wrap: wrap;
+    justify-content: center; /* 버튼들이 중앙에 정렬되도록 */
+  }
+  
+  .fc-button {
+    padding: 5px 10px;
+    font-size: 12px;
+    margin: 3px 2px; /* 버튼 간격 축소 */
+  }
+
+  .calendarContainer {
+    padding: 10px;
+    height: 100vh; /* 화면 전체 높이를 사용 */
+    max-height: 100vh; /* 모바일에서는 더 작은 높이 설정 */
+  }
+  .fc-toolbar-title {
+    font-size: 16px;
+  }
+  .fc-button {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+  .fc-event {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .modal-content {
+    padding: 10px;
+    max-height: 65vh; /* 작은 화면에서 모달의 최대 높이 */
+    overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  }
+
+  .fc-popover {
+    max-height: 65vh; /* 작은 화면에서 팝오버의 최대 높이 설정 */
+    transform: translateY(-10%); /* 팝오버를 약간 위로 이동 */
+  }
+
+  .fc-more-popover {
+    max-height: 65vh; /* 작은 화면에서 팝오버의 최대 높이 설정 */
+    transform: translateY(-30%); /* 팝오버를 약간 위로 이동 */
+   
+  }
+}
