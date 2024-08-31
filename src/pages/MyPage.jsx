@@ -14,7 +14,9 @@ const MyPage = () => {
   const { user, googleToken, isAuthenticated, login } = useContext(UserContext);
 
   // 활성화된 탭을 관리하는 상태 (info: 정보보기, edit: 정보수정)
+
   // const [activeTab, setActiveTab] = useState('info');
+
 
   const [formData, setFormData] = useState({
     userId: user.userId,
@@ -65,7 +67,9 @@ const MyPage = () => {
 
     const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&^#]{8,}$/;
 
+
     if (formData.userPw !== "") {
+
       if (!pwRegex.test(formData.userPw)) {
         alert('비밀번호는 최소 8자 이상이어야 하며, 대문자와 숫자를 포함해야 합니다.');
         return;
@@ -92,7 +96,9 @@ const MyPage = () => {
         isGoogle: response.data.isGoogle
       });
 
+
       alert("정보가 수정 되었습니다")
+
     } catch (error) {
       console.log(error);
     }
@@ -104,6 +110,7 @@ const MyPage = () => {
     console.log("인증 상태(라우터관리용)", isAuthenticated);
     console.log("유저이미지", user.image);
   }, [user, googleToken, isAuthenticated]);
+
 
 
   return (<>
@@ -134,6 +141,7 @@ const MyPage = () => {
           </div>
 
 
+
           <div className={styles.inputGroup}>
             <label className={styles.label}>비밀번호 변경</label>
             <div className={styles.passwordContainer}>
@@ -160,6 +168,7 @@ const MyPage = () => {
               </button>
             </div>
           </div>
+
 
 
           <div className={styles.inputGroup}>
@@ -193,6 +202,7 @@ const MyPage = () => {
           </div>
 
 
+
           <div className={styles.buttons}>
             <button className={styles.deleteButton} onClick={deleteId}>회원 탈퇴</button>
             <button className={styles.saveButton} onClick={editProfile}>정보수정</button>
@@ -202,6 +212,7 @@ const MyPage = () => {
       </div>
     </div>:"" }
   </>
+
   );
 };
 

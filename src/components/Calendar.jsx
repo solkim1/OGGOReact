@@ -9,7 +9,9 @@ import googleIcon from '../images/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
+
   const { isAuthenticated, googleToken, getGoogleToken, user } = useContext(UserContext);
+
   const [events, setEvents] = useState([]);
   const [dbEvents, setDbEvents] = useState([]); // DB에서 가져온 일정 저장
   const [holidayEvents, setHolidayEvents] = useState([]); // 공휴일 저장
@@ -62,13 +64,14 @@ const Calendar = () => {
     try {
       const holidays = await fetchHolidaysFromGoogle(googleToken);
       setHolidayEvents(holidays);
-      console.log('공휴일 데이터:', holidays);  // 공휴일 데이터 로깅
+    // 공휴일 데이터 로깅
     } catch (error) {
       console.error("공휴일 가져오기 실패 : ", error);
     }
   };
 
   const fetchEventsFromGoogle = async (token) => {
+
     try {
       const userEvents = await fetchUserEventsFromGoogle(token);
       setGoogleEvents(userEvents); // 구글 이벤트만 따로 저장
@@ -117,7 +120,7 @@ const Calendar = () => {
         className: ['holiday-event'],
       })) : [];
 
-      console.log('Fetched Holidays:', holidays);  // 공휴일 데이터 확인
+
 
       return holidays;
     } catch (error) {
@@ -154,11 +157,14 @@ const Calendar = () => {
     } catch (error) {
       console.error("사용자 일정 가져오기 실패 : ", error);
       return [];
+
     }
   };
 
+
   const handleGoogleLogin = () => {
     getGoogleToken(); // Google 로그인 함수 호출
+
   };
 
   const handleEventClick = (eventInfo) => {
@@ -169,6 +175,7 @@ const Calendar = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedEvent(null);
+
   };
 
   return (
@@ -179,6 +186,7 @@ const Calendar = () => {
           <img src={googleIcon} alt="Google logo" width="20" />
           <span>Google 계정 연동하기</span>
         </div>
+
       )}
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -210,8 +218,11 @@ const Calendar = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };
 
+
 export default Calendar;
+

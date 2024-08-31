@@ -1,7 +1,7 @@
 
 
 class LocalCache {
-  static EXPIRE_TIME = 5 * 60 * 1000; // 캐시 만료 시간 설정 (5분)
+  static EXPIRE_TIME = 60 * 60 * 1000; // 캐시 만료 시간 설정 (60분)
 
 
   static addUniqueIds(data) {

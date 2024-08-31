@@ -44,6 +44,7 @@
   background: #f5f5f5;
   color: #333;
   border-bottom: 1px solid #ddd;
+
   padding: 10px 20px; /* 패딩 조정 */
   border-radius: 6px 6px 0 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -53,6 +54,7 @@
   justify-content: space-between; /* 버튼과 타이틀이 양쪽으로 정렬되도록 */
   align-items: center;
   flex-wrap: wrap; /* 작은 화면에서 버튼이 줄바꿈되도록 */
+
 }
 
 .fc-toolbar-title {
@@ -70,6 +72,11 @@
   justify-content: flex-end; /* 버튼이 오른쪽에 정렬되도록 */
 }
 
+
+
+/* 버튼 스타일 */
+
+
 .fc-button {
   background: #ffffff;
   color: #007bff;
@@ -78,14 +85,20 @@
   padding: 8px 16px;
   font-size: 14px;
   transition: all 0.3s ease;
+
   margin: 0 5px; /* 버튼 간격 조정 */
 }
 
 .fc-button:hover,
+
 .fc-button-active {
   background: #007bff;
   color: #ffffff;
 }
+
+
+
+
 
 .fc-daygrid-day-number {
   font-size: 16px;
@@ -93,18 +106,22 @@
   color: #444;
 }
 
+
 /* 일요일 날짜 숫자 스타일 */
 .fc .fc-day-sun .fc-daygrid-day-number {
   color: red; /* 일요일 날짜 숫자를 빨간색으로 변경 */
 }
+
 .fc .fc-day-sun i{
   color: white;
 }
+
 
 /* 토요일 날짜 숫자 스타일 */
 .fc .fc-day-sat .fc-daygrid-day-number {
   color: blue; /* 토요일 날짜 숫자를 파란색으로 변경 */
 }
+
 
 /* 일요일 및 토요일 날짜 스타일 */
 .fc .fc-day-sun {
@@ -130,6 +147,7 @@
   color: red; /* !important로 우선 순위 강제 */
 }
 
+
 /* 오늘 날짜 강조 */
 .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
   background: #ffa600;
@@ -139,15 +157,19 @@
   font-weight: 600;
 }
 
+
 /* 오늘 날짜 셀에 배경색 추가 */
 .fc .fc-daygrid-day.fc-day-today {
   background-color: #e3fab7;
+
 }
 
 /* 이벤트 스타일 */
 .fc-event {
+
   background: #dfc260;
   color: white;
+
   border: none;
   border-radius: 6px;
   padding: 6px 12px;
@@ -158,7 +180,9 @@
 }
 
 .fc-event:hover {
+
   background: #66cfd3;
+
   transform: scale(1.05);
 }
 
@@ -245,6 +269,8 @@
   }
 }
 
+
+
 /* 요일 스타일 */
 .fc-theme-standard th {
   height: 40px;
@@ -256,6 +282,8 @@
   color: #7b7b7b;
   vertical-align: middle;
 }
+
+
 
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
@@ -291,11 +319,13 @@
     font-size: 18px;
     margin-bottom: 10px;
   }
+
   .fc-button {
     padding: 4px 8px;
     font-size: 12px;
     margin-bottom: 0;
   }
+
   .modal-content {
     width: 80%;
     max-width: none;
@@ -307,6 +337,7 @@
   .modal-content p {
     font-size: 14px;
   }
+
 }
 
 @media (max-width: 576px) {
@@ -366,3 +397,4 @@
    
   }
 }
+

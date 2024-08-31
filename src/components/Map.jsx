@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
 import spPinsSpotV3 from "../images/sp_pins_spot_v3.png";
 import spPinsSpotV3Over from "../images/sp_pins_spot_v3_over.png";
+import styles from "../styles/Map.module.css";
 
 const Map = ({ locations, center }) => {
   const initializeMap = useCallback(() => {
@@ -75,7 +76,8 @@ const Map = ({ locations, center }) => {
         }
       } else {
 
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOAA`;
+        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjO`;
+
 
         fetch(url)
           .then((response) => response.json())
@@ -104,7 +106,8 @@ const Map = ({ locations, center }) => {
         data = cachedData;
       } else {
 
-        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOAA`;
+        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjO`;
+
 
         const response = await fetch(url);
         data = await response.json();
@@ -237,7 +240,9 @@ const Map = ({ locations, center }) => {
   useEffect(() => {
     const script = document.createElement("script");
 
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3A`;
+
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3`;
+
 
     script.async = true;
     script.onload = () => {
@@ -250,7 +255,7 @@ const Map = ({ locations, center }) => {
     document.head.appendChild(script);
   }, [initializeMap, center]);
 
-  return <div id="map" style={{ width: "50%", height: "100%", float: "right" }} />;
+  return <div id="map" className={styles.mapContainer} />;
 };
 
 export default Map;
