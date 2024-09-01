@@ -14,9 +14,25 @@ const ScheduleMapPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
-  const { userId, days, ageGroup, gender, groupSize, theme, startDate, endDate } = location.state || {};
+  const {
+    userId = user?.userId,
+    days = 3,
+    ageGroup = "10대~20대",
+    gender = "남성",
+    groupSize = "개인",
+    theme = "레포츠",
+    startDate,
+    endDate,
+    exhibitionData,
+    exhibitionName,
+    isBusiness = false,
+    region = "서울",
+    includeOptions = ["전시회", "식당", "카페"],
+    startTime = "09:00",
+    endTime = "18:00",
+  } = location.state || {};
 
-  const [isBusinessMode, setIsBusinessMode] = useState(false);
+  const [isBusinessMode, setIsBusinessMode] = useState(isBusiness);
   const [locationData, setLocationData] = useState({});
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [selectedDay, setSelectedDay] = useState("day1");
@@ -25,6 +41,8 @@ const ScheduleMapPage = () => {
   const [error, setError] = useState(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [isThemeSchedule, setIsThemeSchedule] = useState(false);
+  const [isExhibitionSchedule, setIsExhibitionSchedule] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,52 +69,63 @@ const ScheduleMapPage = () => {
     fetchInitialMode();
   }, []);
 
-  const fetchSchedule = useCallback(
-    async (start, end) => {
-      const cacheKey = "scheduleData";
+  useEffect(() => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        const cachedData = await LocalCache.readFromCache(cacheKey);
-        if (cachedData) {
-          console.log("Cached data found:", cachedData);
-          setLocationData(cachedData);
-          setScheduleTitle(cachedData.title || "여행 일정");
+        let fetchUrl = "";
+        if (location.state?.themeData) {
+          setLocationData(location.state.themeData);
+          setIsThemeSchedule(true);
+          setScheduleTitle(`${location.state.themeName} 테마 여행`);
           setLoading(false);
-          return;
+        } else if (location.state?.exhibitionData) {
+          const exhibitionSchedule = Array.isArray(location.state.exhibitionData)
+            ? { day1: location.state.exhibitionData }
+            : location.state.exhibitionData;
+          setLocationData(exhibitionSchedule);
+          setIsExhibitionSchedule(true);
+          setScheduleTitle(`${location.state.exhibitionName} 전시회 일정`);
+          setLoading(false);
+        } else {
+          if (isBusinessMode) {
+            fetchUrl = await generateBusinessPrompt();
+          } else {
+            fetchUrl = await generateTravelPrompt();
+          }
+
+          console.log("Fetch URL:", fetchUrl);
+
+          const response = await fetch(fetchUrl);
+          if (!response.ok) {
+            throw new Error("Failed to fetch schedule");
+          }
+
+          const data = await response.json();
+          console.log("Fetched data:", data);
+
+          if (!data || typeof data !== "object") {
+            throw new Error("Invalid data format");
+          }
+
+          setLocationData(data);
+
+          const firstDay = Object.keys(data)[0];
+          const firstLocation = data[firstDay]?.[0];
+          if (firstLocation) {
+            setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
+          }
+          setScheduleTitle(data.title || (isBusinessMode ? "출장 일정" : "여행 일정"));
         }
-
-        const response = await fetch(
-          `/plan/api/schedules/generate?userId=${userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}&pageStart=${start}&pageEnd=${end}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch schedule");
-        }
-
-        const data = await response.json();
-        console.log("Received data:", data);
-
-        setLocationData(data);
-        LocalCache.writeToCache(cacheKey, data);
-
-        const firstLocation = data[selectedDay]?.[0];
-        if (firstLocation) {
-          setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
-        }
-        setScheduleTitle(data.title || "여행 일정");
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError("데이터를 불러오는 데 실패했습니다: " + error.message);
+        setError("일정을 생성하는 중 오류가 발생했습니다. 다시 시도해 주세요.");
       } finally {
         setLoading(false);
       }
-    },
-    [userId, days, ageGroup, gender, groupSize, theme, startDate, endDate, selectedDay]
-  );
-
-  useEffect(() => {
-    fetchSchedule(1, itemsPerPage);
-  }, [fetchSchedule, itemsPerPage]);
+    };
+    fetchData();
+  }, [location.state, isBusinessMode]);
 
   useEffect(() => {
     if (locationData[selectedDay] && locationData[selectedDay].length > 0) {
@@ -104,6 +133,16 @@ const ScheduleMapPage = () => {
       setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
     }
   }, [selectedDay, locationData]);
+
+  const generateBusinessPrompt = async () => {
+    return `/plan/api/schedules/business/generate?userId=${userId}&days=${days}&region=${region}&includeOptions=${includeOptions.join(
+      ","
+    )}&startTime=${startTime}&endTime=${endTime}&startDate=${startDate}&endDate=${endDate}`;
+  };
+
+  const generateTravelPrompt = async () => {
+    return `/plan/api/schedules/travel/generate?userId=${userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}`;
+  };
 
   const handleRegenerate = async () => {
     setLoading(true);
@@ -130,28 +169,46 @@ const ScheduleMapPage = () => {
       const scheNum = uuidv4();
       const baseDate = new Date(startDate);
 
-      const scheduleDataArray = Object.entries(locationData).flatMap(([day, locations]) => {
+      const cachedData = await LocalCache.readFromCache("scheduleData");
+      const currentLocationData = cachedData || locationData;
+
+      const scheduleDataArray = Object.entries(currentLocationData).flatMap(([day, locations]) => {
         const dayIndex = parseInt(day.replace("day", "")) - 1;
         const currentStartDate = new Date(baseDate);
         currentStartDate.setDate(baseDate.getDate() + dayIndex);
         const formattedStartDate = currentStartDate.toISOString().split("T")[0];
 
-        return locations.map((loc) => ({
-          scheduleDesc: "일정을 입력하세요",
-          userId: user?.userId,
-          title: scheduleTitle,
-          scheNum: scheNum,
-          startDate: formattedStartDate,
-          endDate: formattedStartDate,
-          isBusiness: isBusinessMode ? "Y" : "N",
-          name: loc.name,
-          description: loc.description,
-          departTime: loc.departTime,
-          arriveTime: loc.arriveTime,
-          lat: loc.lat,
-          lng: loc.lng,
-          type: loc.type,
-        }));
+        return locations.map((loc) => {
+          let departTime = loc.departTime;
+          let arriveTime = loc.arriveTime;
+
+          if (loc.type === "숙박") {
+            departTime = loc.checkInTime || "15:00";
+            arriveTime = loc.checkOutTime || "11:00";
+          }
+
+          if (!departTime) departTime = "09:00";
+          if (!arriveTime) arriveTime = "18:00";
+
+          return {
+            scheduleDesc: "일정을 입력하세요",
+            userId: user?.userId,
+            title: scheduleTitle,
+            scheNum: scheNum,
+            startDate: formattedStartDate,
+            endDate: formattedStartDate,
+            isBusiness: isBusinessMode ? "Y" : "N",
+            name: loc.name,
+            description: loc.description,
+            departTime: departTime,
+            arriveTime: arriveTime,
+            lat: loc.lat,
+            lng: loc.lng,
+            type: loc.type,
+            sche_st_tm: departTime,
+            sche_ed_tm: arriveTime,
+          };
+        });
       });
 
       console.log("Sending data:", scheduleDataArray);
@@ -176,19 +233,17 @@ const ScheduleMapPage = () => {
       console.error("일정 저장 중 오류 발생:", err);
     }
   };
+
   const handleNextPage = () => {
     const nextPageIndex = pageIndex + 1;
     setPageIndex(nextPageIndex);
-    if (!locationData[`day${nextPageIndex * itemsPerPage + 1}`]) {
-      fetchSchedule(nextPageIndex * itemsPerPage + 1, (nextPageIndex + 1) * itemsPerPage);
-    }
   };
 
   const handlePrevPage = () => {
     setPageIndex((prev) => Math.max(prev - 1, 0));
   };
 
-  const totalPages = useMemo(() => Math.ceil(days / itemsPerPage), [days]);
+  const totalPages = useMemo(() => Math.ceil(days / itemsPerPage), [days, itemsPerPage]);
   const displayedDays = useMemo(
     () =>
       Array.from({ length: itemsPerPage }, (_, i) => `day${pageIndex * itemsPerPage + i + 1}`).filter(
@@ -196,6 +251,12 @@ const ScheduleMapPage = () => {
       ),
     [locationData, pageIndex, itemsPerPage]
   );
+
+  const calculateEndDate = (startDate, days) => {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + days - 1);
+    return date.toISOString().split("T")[0];
+  };
 
   if (loading && Object.keys(locationData).length === 0) {
     return <p>Loading...</p>;
@@ -224,7 +285,11 @@ const ScheduleMapPage = () => {
         <h2 className={styles.scheduleTitleContainer}>
           <span className={styles.scheduleTitle}>{scheduleTitle}</span>
           <span className={styles.scheduleDate}>
-            {startDate} - {endDate}
+            {isExhibitionSchedule
+              ? startDate
+              : isThemeSchedule
+              ? `${startDate} - ${calculateEndDate(startDate, Object.keys(locationData).length)}`
+              : `${startDate} - ${endDate}`}
           </span>
         </h2>
         <div className={styles.buttonAndScheduleContainer}>
@@ -246,7 +311,7 @@ const ScheduleMapPage = () => {
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}
             locationData={displayedDays.reduce((acc, day) => {
-              acc[day] = locationData[day];
+              acc[day] = locationData[day] || [];
               return acc;
             }, {})}
             setLocationData={setLocationData}
