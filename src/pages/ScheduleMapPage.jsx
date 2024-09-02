@@ -37,25 +37,40 @@ const ScheduleMapPage = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 37.5666103, lng: 126.9783882 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+
+  // 인덱스 관리
+  const [responsivePageIndex, setResponsivePageIndex] = useState(0);
+  const [standardPageIndex, setStandardPageIndex] = useState(0);
+  const [isResponsive, setIsResponsive] = useState(window.innerWidth <= 1024);
+
+  const [scheduleItemsPerPage, setScheduleItemsPerPage] = useState(isResponsive ? 1 : 3);
+  const [btnItemsPerPage, setBtnItemsPerPage] = useState(1);
+
   const [isThemeSchedule, setIsThemeSchedule] = useState(false);
   const [isExhibitionSchedule, setIsExhibitionSchedule] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1024) {
-        setItemsPerPage(1);
-      } else {
-        setItemsPerPage(3);
+      const isResponsiveMode = window.innerWidth <= 1024;
+
+      if (isResponsiveMode !== isResponsive) {
+        setIsResponsive(isResponsiveMode);
+
+        if (isResponsiveMode) {
+          setResponsivePageIndex(0);
+        } else {
+          setStandardPageIndex(0);
+        }
       }
+
+      setScheduleItemsPerPage(isResponsiveMode ? 1 : 3);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [isResponsive]);
 
   useEffect(() => {
     const fetchInitialMode = async () => {
@@ -143,11 +158,11 @@ const ScheduleMapPage = () => {
   };
 
   const handleRegenerate = async () => {
-    setLoading(true); // 로딩 상태 시작
+    setLoading(true);
     try {
       const excludedItems = {};
       Object.entries(locationData).forEach(([day, locations]) => {
-        const excluded = locations.filter((item) => item.excluded); // 'excluded' 상태의 항목만 필터링
+        const excluded = locations.filter((item) => item.excluded);
         if (excluded.length > 0) {
           excludedItems[day] = excluded.map((item) => ({
             name: item.name,
@@ -195,8 +210,7 @@ const ScheduleMapPage = () => {
           });
         });
 
-        // 업데이트된 데이터를 LocalCache에 반영
-        LocalCache.writeToCache("scheduleData", updatedData); // 캐시에 정확한 키로 저장
+        LocalCache.writeToCache("scheduleData", updatedData);
 
         return updatedData;
       });
@@ -218,7 +232,7 @@ const ScheduleMapPage = () => {
       const scheduleDataArray = Object.entries(currentLocationData).flatMap(([day, locations]) => {
         const dayIndex = parseInt(day.replace("day", "")) - 1;
         const currentStartDate = new Date(baseDate);
-        currentStartDate.setDate(baseDate.getDate() + dayIndex);
+        currentStartDate.setDate(currentStartDate.getDate() + dayIndex);
         const formattedStartDate = currentStartDate.toISOString().split("T")[0];
 
         return locations.map((loc) => {
@@ -284,22 +298,34 @@ const ScheduleMapPage = () => {
       console.error("일정 저장 중 오류 발생:", err);
     }
   };
+
   const handleNextPage = () => {
-    const nextPageIndex = pageIndex + 1;
-    setPageIndex(nextPageIndex);
+    if (isResponsive) {
+      setResponsivePageIndex((prev) => Math.min(prev + 1, totalSchedulePages - 1));
+    } else {
+      setStandardPageIndex((prev) => Math.min(prev + 1, totalSchedulePages - 1));
+    }
   };
 
   const handlePrevPage = () => {
-    setPageIndex((prev) => Math.max(prev - 1, 0));
+    if (isResponsive) {
+      setResponsivePageIndex((prev) => Math.max(prev - 1, 0));
+    } else {
+      setStandardPageIndex((prev) => Math.max(prev - 1, 0));
+    }
   };
 
-  const totalPages = useMemo(() => Math.ceil(days / itemsPerPage), [days, itemsPerPage]);
-  const displayedDays = useMemo(
+  // 페이지 수 계산
+  const totalBtnPages = Math.ceil(Object.keys(locationData).length / btnItemsPerPage);
+  const totalSchedulePages = Math.ceil(Object.keys(locationData).length / scheduleItemsPerPage);
+
+  const displayedScheduleDays = useMemo(
     () =>
-      Array.from({ length: itemsPerPage }, (_, i) => `day${pageIndex * itemsPerPage + i + 1}`).filter(
-        (day) => locationData[day]
-      ),
-    [locationData, pageIndex, itemsPerPage]
+      Array.from(
+        { length: scheduleItemsPerPage },
+        (_, i) => `day${(isResponsive ? responsivePageIndex : standardPageIndex) * scheduleItemsPerPage + i + 1}`
+      ).filter((day) => locationData[day]),
+    [locationData, scheduleItemsPerPage, isResponsive, responsivePageIndex, standardPageIndex]
   );
 
   const calculateEndDate = (startDate, days) => {
@@ -349,18 +375,19 @@ const ScheduleMapPage = () => {
               handleSaveSchedule={handleSaveSchedule}
               handleNextPage={handleNextPage}
               handlePrevPage={handlePrevPage}
-              pageIndex={pageIndex}
-              totalPages={totalPages}
+              pageIndex={isResponsive ? responsivePageIndex : standardPageIndex}
+              totalPages={totalSchedulePages}
+              setSelectedDay={setSelectedDay}
             />
           </div>
           <DaySchedule
             handleNextPage={handleNextPage}
             handlePrevPage={handlePrevPage}
-            pageIndex={pageIndex}
-            totalPages={totalPages}
+            pageIndex={isResponsive ? responsivePageIndex : standardPageIndex}
+            totalPages={totalSchedulePages}
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}
-            locationData={displayedDays.reduce((acc, day) => {
+            locationData={displayedScheduleDays.reduce((acc, day) => {
               acc[day] = locationData[day] || [];
               return acc;
             }, {})}
