@@ -14,7 +14,9 @@ const MyPage = () => {
   const { user, googleToken, isAuthenticated, login } = useContext(UserContext);
 
   // 활성화된 탭을 관리하는 상태 (info: 정보보기, edit: 정보수정)
-  const [activeTab, setActiveTab] = useState('info');
+
+  // const [activeTab, setActiveTab] = useState('info');
+
 
   const [formData, setFormData] = useState({
     userId: user.userId,
@@ -65,7 +67,9 @@ const MyPage = () => {
 
     const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&^#]{8,}$/;
 
-    if(formData.userPw !== ""){
+
+    if (formData.userPw !== "") {
+
       if (!pwRegex.test(formData.userPw)) {
         alert('비밀번호는 최소 8자 이상이어야 하며, 대문자와 숫자를 포함해야 합니다.');
         return;
@@ -93,6 +97,8 @@ const MyPage = () => {
       });
 
 
+      alert("정보가 수정 되었습니다")
+
     } catch (error) {
       console.log(error);
     }
@@ -105,29 +111,20 @@ const MyPage = () => {
     console.log("유저이미지", user.image);
   }, [user, googleToken, isAuthenticated]);
 
-  // 탭에 따라 다른 컴포넌트를 렌더링
-  const renderContent = () => {
 
-    if (activeTab === 'info') {
 
-      return (
-        <div className={styles.profile}>
-          <img src={user.image} alt="User Profile" />
-          <span>{user.userNick}</span>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>이메일</label>
+  return (<>
+    <div className={styles.grayContainer}>
+      {/* <h2>{user.userNick}님 환영합니다</h2> */}
+    </div>
+    <div className={styles.profile}>
+      <img src={user.image} alt="User Profile" />
+      <span>{user.userNick}</span>
+      <p className={styles.label}>{user.userEmail}</p>
+    </div>
+    {user.isGoogle==="N"?<div className={styles.container}>
+      <div className={styles.content}>
 
-            <input
-              type="email"
-              className={styles.inputField}
-              value={user.userEmail}
-              readOnly
-            />
-          </div>
-        </div>
-      );
-    } else if (activeTab === 'infoEdit') {
-      return (
         <div className={styles.formContainer}>
 
           <div className={styles.inputGroup}>
@@ -139,22 +136,14 @@ const MyPage = () => {
               defaultValue={user.userNick}
               onChange={handleChange}
               autoComplete="new-nickname"
+              readOnly={false}
             />
           </div>
 
-          <div className={styles.buttons}>
-            <button className={styles.deleteButton} onClick={deleteId}>회원 탈퇴</button>
-            <button className={styles.saveButton} onClick={editProfile}>정보수정</button>
-          </div>
-        </div>
-      );
-    } else if (activeTab === 'pwEdit') {
-      return (
-        <div className={styles.formContainer}>
 
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>패스워드</label>
+            <label className={styles.label}>비밀번호 변경</label>
             <div className={styles.passwordContainer}>
               <input
                 type={pwVisible ? "text" : "password"}
@@ -183,7 +172,7 @@ const MyPage = () => {
 
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>패스워드 재입력</label>
+            <label className={styles.label}>비밀번호 재입력</label>
             <div className={styles.passwordContainer}>
               <input
                 type={pwVisible ? "text" : "password"}
@@ -213,52 +202,17 @@ const MyPage = () => {
           </div>
 
 
+
           <div className={styles.buttons}>
             <button className={styles.deleteButton} onClick={deleteId}>회원 탈퇴</button>
             <button className={styles.saveButton} onClick={editProfile}>정보수정</button>
           </div>
-        </div>)
-
-    }
-  };
-
-  return (
-    <div className={styles.container}>
-      {/* 탭 컨테이너 */}
-      <div className={styles.headerBlock}>
-        <div className={styles.tabContainer}>
-          <div
-
-            className={`${styles.tabItem} ${activeTab === 'info' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('info')}
-          >
-            정보 보기
-
-          </div>
-          {user.isGoogle === 'N' ? <><div
-            className={`${styles.tabItem} ${activeTab === 'infoEdit' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('infoEdit')}
-          >
-            정보 수정
-          </div>
-            <div
-              className={`${styles.tabItem} ${activeTab === 'pwEdit' ? styles.activeTab : ''}`}
-              onClick={() => setActiveTab('pwEdit')}
-            >
-              비밀번호 변경
-            </div></>
-            : ""}
 
         </div>
       </div>
+    </div>:"" }
+  </>
 
-      {/* 탭에 따라 다른 내용 렌더링 */}
-
-      <div className={styles.content}>
-        {renderContent()}
-      </div>
-
-    </div>
   );
 };
 

@@ -96,7 +96,7 @@
   margin-right: 5px;
 }
 
-.resetButton,
+
 .scheduleButton {
   padding: 7px 12px;
   border: none;
@@ -107,10 +107,7 @@
   white-space: nowrap;
 }
 
-.resetButton {
-  background-color: #f0f0f0;
-  color: #333;
-}
+
 
 .scheduleButton {
   background-color: #1890ff;
@@ -154,7 +151,7 @@
     justify-content: stretch;
   }
 
-  .resetButton,
+
   .scheduleButton {
     flex: 1;
   }
@@ -191,7 +188,7 @@
     flex: 0 0 auto;
   }
 
-  .resetButton,
+
   .scheduleButton {
     flex: 0 0 auto;
   }

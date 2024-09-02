@@ -43,10 +43,15 @@ const DaySchedule = ({
   useEffect(() => {
     setScheduleData(
       Object.keys(locationData).reduce((acc, day) => {
-        acc[day] = locationData[day].map((item, index) => ({
-          ...item,
-          draggableId: `${day}-${index}`,
-        }));
+        if (Array.isArray(locationData[day])) {
+          acc[day] = locationData[day].map((item, index) => ({
+            ...item,
+            draggableId: `${day}-${index}`,
+          }));
+        } else {
+          console.error(`Invalid data for day: ${day}`, locationData[day]);
+          acc[day] = []; // 빈 배열로 초기화하여 오류를 방지
+        }
         return acc;
       }, {})
     );

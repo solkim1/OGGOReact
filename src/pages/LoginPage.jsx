@@ -15,7 +15,9 @@ import userImg from '../images/dummyUserImg.png';
 const LoginPage = () => {
   const nav = useNavigate();
 
-  const { login, getGoogleToken ,loginWithGoogle , googleToken} = useContext(UserContext);
+
+  const { login, getGoogleToken ,loginWithGoogle } = useContext(UserContext);
+
 
   const [formData, setFormData] = useState({
     userId: '',

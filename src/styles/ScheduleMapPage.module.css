@@ -12,11 +12,14 @@
 }
 
 .logo {
+
   width: 238px;
   height: 53px;
   margin-top: 5px;
   margin-left: 10px;
+
   cursor: pointer;
+
 }
 
 h2,
