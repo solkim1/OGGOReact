@@ -27,7 +27,7 @@ const Calendar = () => {
       try {
         // GET 요청 시 쿼리 매개변수를 URL에 포함
         const response = await axios.get(`http://localhost:8090/plan/api/schedules/all`, {
-          params: { userId: "102077899703612717472" } // 쿼리 매개변수로 userId 전달
+          params: { userId: user.userId } // 쿼리 매개변수로 userId 전달
         });
         
         console.log("DB의 일정",response.data);

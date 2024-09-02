@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/MySchedulesPage.module.css';
 import filledStar from '../images/filled_star.png';
@@ -11,7 +11,7 @@ import travelerIcon from '../images/traveler-icon.png';
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
 
-const AllSchedules = ({ schedules, fetchSchedules }) => {
+const ScheduleList = ({ schedules, fetchSchedules }) => {
   const [loading, setLoading] = useState(true);
   const [editingScheduleId, setEditingScheduleId] = useState(null);
   const [editedTitle, setEditedTitle] = useState('');
@@ -35,21 +35,21 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
   };
 
   const toggleImportance = (scheduleNum, event) => {
-    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
+    event.stopPropagation();  
     axios.put(`/plan/api/schedules/toggleImportance/${scheduleNum}`)
       .then(() => fetchSchedules())
       .catch(error => console.error('Error updating importance:', error));
   };
 
   const startEditing = (schedule, event) => {
-    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
+    event.stopPropagation();  
     setEditingScheduleId(schedule.scheNum);
     setEditedTitle(schedule.scheTitle);
     setEditedDesc(schedule.scheDesc);
   };
 
   const saveChanges = (event) => {
-    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
+    event.stopPropagation();  
     const params = new URLSearchParams();
     params.append('scheNum', editingScheduleId);
     params.append('scheTitle', editedTitle);
@@ -60,18 +60,16 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
         setEditingScheduleId(null);
         fetchSchedules();
       })
-      .catch(error => {
-        console.error('Error updating schedule:', error.response ? error.response.data : error);
-      });
+      .catch(error => console.error('Error updating schedule:', error));
   };
 
   const openDeleteModal = (scheduleNum, event) => {
-    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
+    event.stopPropagation();  
     setScheduleToDelete(scheduleNum);
     setIsModalOpen(true);
   };
 
-  const testCheck = (num) => {
+  const navigateToMap = (num) => {
     nav("/schedulemap", { state: { scheNum: num } });
   }
 
@@ -82,7 +80,7 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
   return (
     <div className={styles.scheduleList}>
       {schedules && schedules.length > 0 ? schedules.map(schedule => (
-        <div key={schedule.scheNum} className={styles.scheduleItem} onClick={() => testCheck(schedule.scheNum)}>
+        <div key={schedule.scheNum} className={styles.scheduleItem} onClick={() => navigateToMap(schedule.scheNum)}>
           <div className={styles.scheduleLeftIcons}>
             <div className={styles.icon}>
               <img
@@ -95,7 +93,7 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
             <div className={styles.icon}>
               <img
                 src={schedule.isBusiness === 'Y' ? businessIcon : travelerIcon}
-                alt="Business/Travel"
+                alt={schedule.isBusiness === 'Y' ? "Business" : "Travel"}
                 className={styles.scheduleIcon}
               />
             </div>
@@ -109,7 +107,7 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
                     value={editedTitle}
                     onChange={(e) => setEditedTitle(e.target.value)}
                     className={styles.editInput}
-                    onClick={(event) => event.stopPropagation()} // 입력 필드 클릭 시 이벤트 전파 방지
+                    onClick={(event) => event.stopPropagation()}
                   />
                 ) : (
                   schedule.scheTitle
@@ -124,7 +122,7 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
                   value={editedDesc}
                   onChange={(e) => setEditedDesc(e.target.value)}
                   className={styles.editInput}
-                  onClick={(event) => event.stopPropagation()} // 입력 필드 클릭 시 이벤트 전파 방지
+                  onClick={(event) => event.stopPropagation()}
                 />
               ) : (
                 schedule.scheDesc
@@ -157,4 +155,4 @@ const AllSchedules = ({ schedules, fetchSchedules }) => {
   );
 };
 
-export default AllSchedules;
+export default ScheduleList;

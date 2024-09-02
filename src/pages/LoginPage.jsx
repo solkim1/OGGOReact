@@ -77,9 +77,9 @@ const LoginPage = () => {
 
   const googleLoginBtn = async () => {
     try {
-
       const token = await getGoogleToken();  // getGoogleToken 함수에서 직접 토큰을 반환받음
       await loginWithGoogle(token);  // 받은 토큰을 사용하여 로그인
+      
       nav('/');  // 성공적으로 로그인 시 메인 페이지로 리디렉션
 
     } catch (error) {

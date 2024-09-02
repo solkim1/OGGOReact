@@ -84,6 +84,7 @@
   border-radius: 8px;
   margin-bottom: 10px;
   transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+  cursor: pointer;
 }
 
 .scheduleItem:hover {
