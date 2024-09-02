@@ -44,7 +44,6 @@ const ScheduleMapPage = () => {
   const [isResponsive, setIsResponsive] = useState(window.innerWidth <= 1024);
 
   const [scheduleItemsPerPage, setScheduleItemsPerPage] = useState(isResponsive ? 1 : 3);
-  const [btnItemsPerPage, setBtnItemsPerPage] = useState(1);
 
   const [isThemeSchedule, setIsThemeSchedule] = useState(false);
   const [isExhibitionSchedule, setIsExhibitionSchedule] = useState(false);
@@ -316,7 +315,6 @@ const ScheduleMapPage = () => {
   };
 
   // 페이지 수 계산
-  const totalBtnPages = Math.ceil(Object.keys(locationData).length / btnItemsPerPage);
   const totalSchedulePages = Math.ceil(Object.keys(locationData).length / scheduleItemsPerPage);
 
   const displayedScheduleDays = useMemo(
