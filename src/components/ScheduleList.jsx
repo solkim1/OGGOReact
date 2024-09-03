@@ -10,6 +10,7 @@ import businessIcon from '../images/business-icon.png';
 import travelerIcon from '../images/traveler-icon.png';
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
+import LocalCache from './LocalCache';
 
 const ScheduleList = ({ schedules, fetchSchedules }) => {
   const [loading, setLoading] = useState(true);
@@ -69,8 +70,17 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
     setIsModalOpen(true);
   };
 
-  const navigateToMap = (num) => {
-    nav("/schedulemap", { state: { scheNum: num } });
+  const navigateToMap = (schedule) => {
+    if(LocalCache.readFromCache("userMode")!=null){
+      LocalCache.updateCache("userMode",schedule.isBusiness=="Y"?"business":"notBusiness");
+    }else{
+      LocalCache.writeToCache("userMode",schedule.isBusiness=="Y"?"business":"notBusiness");
+    }
+    nav("/schedulemap", { state: { 
+      scheNum: schedule.scheNum,
+      startDate: schedule.scheStDt,
+      endDate: schedule.scheEdDt
+    } });
   }
 
   if (loading) {
@@ -80,7 +90,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   return (
     <div className={styles.scheduleList}>
       {schedules && schedules.length > 0 ? schedules.map(schedule => (
-        <div key={schedule.scheNum} className={styles.scheduleItem} onClick={() => navigateToMap(schedule.scheNum)}>
+        <div key={schedule.scheNum} className={styles.scheduleItem} onClick={() => navigateToMap(schedule)}>
           <div className={styles.scheduleLeftIcons}>
             <div className={styles.icon}>
               <img
