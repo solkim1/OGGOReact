@@ -27,6 +27,7 @@ const ScheduleMapPage = () => {
     includeOptions,
     startTime,
     endTime,
+    scheNum,
   } = location.state || {};
 
   // 두 날짜 사이의 일수 계산
@@ -113,10 +114,14 @@ const ScheduleMapPage = () => {
           setScheduleTitle(`${location.state.exhibitionName} 전시회 일정`);
           setLoading(false);
         } else {
-          if (isBusinessMode) {
-            fetchUrl = await generateBusinessPrompt();
+          if (!scheNum) {
+            if (isBusinessMode) {
+              fetchUrl = await generateBusinessPrompt();
+            } else {
+              fetchUrl = await generateTravelPrompt();
+            }
           } else {
-            fetchUrl = await generateTravelPrompt();
+            fetchUrl = await patchschedule();
           }
 
           console.log("Fetch URL:", fetchUrl);
@@ -150,6 +155,7 @@ const ScheduleMapPage = () => {
       }
     };
     fetchData();
+    console.log(locationData);
   }, [location.state, isBusinessMode]);
 
   useEffect(() => {
@@ -167,6 +173,10 @@ const ScheduleMapPage = () => {
 
   const generateTravelPrompt = async () => {
     return `/plan/api/schedules/travel/generate?userId=${userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}`;
+  };
+
+  const patchschedule = async () => {
+    return `/plan/api/schedules/patchschedule?scheNum=${scheNum}`;
   };
 
   const handleRegenerate = async () => {
@@ -239,7 +249,12 @@ const ScheduleMapPage = () => {
 
   const handleSaveSchedule = async () => {
     try {
-      const scheNum = uuidv4();
+      let num;
+      if (scheNum) {
+        num = scheNum;
+      } else {
+        num = uuidv4();
+      }
       const baseDate = new Date(startDate);
 
       const cachedData = await LocalCache.readFromCache("scheduleData");
@@ -267,7 +282,7 @@ const ScheduleMapPage = () => {
             scheduleDesc: "일정을 입력하세요",
             userId: user?.userId,
             title: scheduleTitle,
-            scheNum: scheNum,
+            scheNum: num,
             startDate: formattedStartDate,
             endDate: formattedStartDate,
             isBusiness: isBusinessMode ? "Y" : "N",

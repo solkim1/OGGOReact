@@ -21,7 +21,11 @@ const getIcon = (type) => {
       return lodgingIcon;
     case "식당":
       return restaurantIcon;
+    case "맛집":
+      return restaurantIcon;
     case "관광지":
+      return tourSpotIcon;
+    case "관광":
       return tourSpotIcon;
     case "쇼핑":
       return shoppingIcon;
