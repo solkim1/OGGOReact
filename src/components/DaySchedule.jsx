@@ -17,6 +17,8 @@ const getIcon = (type) => {
       return cafeIcon;
     case "숙박":
       return lodgingIcon;
+    case "숙소":
+      return lodgingIcon;
     case "식당":
       return restaurantIcon;
     case "관광지":

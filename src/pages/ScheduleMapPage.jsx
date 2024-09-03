@@ -16,19 +16,32 @@ const ScheduleMapPage = () => {
 
   const {
     userId = user?.userId,
-    days = 3,
-    ageGroup = "10대~20대",
-    gender = "남성",
-    groupSize = "개인",
-    theme = "레포츠",
     startDate,
     endDate,
-    isBusiness = false,
-    region = "서울",
-    includeOptions = ["전시회", "식당", "카페"],
-    startTime = "09:00",
-    endTime = "18:00",
+    ageGroup,
+    gender,
+    groupSize,
+    theme,
+    isBusiness,
+    region,
+    includeOptions,
+    startTime,
+    endTime,
   } = location.state || {};
+
+  // 두 날짜 사이의 일수 계산
+  const calculateDaysBetween = (startDate, endDate) => {
+    if (!startDate || !endDate) return 0;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeDiff = Math.abs(end - start);
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    return daysDiff;
+  };
+
+  const days = calculateDaysBetween(startDate, endDate);
 
   const [isBusinessMode, setIsBusinessMode] = useState(isBusiness);
   const [locationData, setLocationData] = useState({});
@@ -180,14 +193,18 @@ const ScheduleMapPage = () => {
         return;
       }
 
-      const response = await fetch("/plan/api/schedules/recall", {
+      const regenerateUrl = isBusinessMode
+        ? "/plan/api/schedules/business/recall"
+        : "/plan/api/schedules/travel/recall";
+
+      const response = await fetch(regenerateUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(excludedItems),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to regenerate schedule");
+        throw new Error("스케쥴 재생성에 실패했습니다.");
       }
 
       const data = await response.json();
