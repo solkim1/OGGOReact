@@ -28,8 +28,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   }, [schedules]);
 
   const handleDelete = (scheduleNum) => {
-    axios
-      .delete(`/plan/api/schedules/delete/${scheduleNum}`)
+    axios.delete(`/plan/api/schedules/delete/${scheduleNum}`)
       .then(() => {
         fetchSchedules();
         setIsModalOpen(false);

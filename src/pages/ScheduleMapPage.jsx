@@ -154,7 +154,7 @@ const ScheduleMapPage = () => {
           if (firstLocation) {
             setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
           }
-          setScheduleTitle(data.title || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
+          setScheduleTitle(schedule?.scheTitle || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -411,11 +411,13 @@ const ScheduleMapPage = () => {
         <h2 className={styles.scheduleTitleContainer}>
           <span className={styles.scheduleTitle}>{scheduleTitle}</span>
           <span className={styles.scheduleDate}>
-            {isExhibitionSchedule
-              ? startDate
-              : isThemeSchedule
-              ? `${startDate} - ${calculateEndDate(startDate, Object.keys(locationData).length)}`
-              : `${startDate} - ${endDate}`}
+            {isExhibitionSchedule ? (
+              startDate
+            ) : isThemeSchedule ? (
+              `${(schedule?.scheStDt || startDate)} - ${calculateEndDate(schedule?.scheStDt || startDate, Object.keys(locationData).length)}`
+            ) : (
+              `${(schedule?.scheStDt || startDate)} - ${(schedule?.scheEdDt || endDate)}`
+            )}
           </span>
         </h2>
         <div className={styles.buttonAndScheduleContainer}>

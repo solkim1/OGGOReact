@@ -8,6 +8,7 @@ import closeEyeIcon from '../images/icon-close-eye.png';
 import eyeIcon from '../images/icon-eye.png';
 import axios from 'axios';
 import picture from '../images/dummyUserImg.png'
+import { HeaderColorContext } from "../context/HeaderColorContext"; // 추가
 
 const MyPage = () => {
   const nav = useNavigate();
@@ -28,6 +29,7 @@ const MyPage = () => {
 
   const [pwVisible, setPwVisible] = useState(false);
   const [pwMatch, setPwMatch] = useState(true);
+  const { headerColor } = useContext(HeaderColorContext); // 헤더 컬러 컨텍스트 사용
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -114,8 +116,10 @@ const MyPage = () => {
 
 
   return (<>
-    <div className={styles.grayContainer}>
-      {/* <h2>{user.userNick}님 환영합니다</h2> */}
+    <div style={{ backgroundColor: headerColor }}>
+      <div className={styles.grayContainer}>
+        {/* <h2>{user.userNick}님 환영합니다</h2> */}
+      </div>
     </div>
     <div className={styles.profile}>
       <img src={user.image} alt="User Profile" />

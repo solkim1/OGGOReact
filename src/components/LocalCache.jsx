@@ -1,6 +1,7 @@
 class LocalCache {
   static EXPIRE_TIME = 5 * 60 * 1000; // 캐시 만료 시간 설정 (5분)
 
+
   static addUniqueIds(data) {
     if (data && typeof data === "object" && !Array.isArray(data)) {
       for (const key in data) {
@@ -15,6 +16,8 @@ class LocalCache {
     return data;
   }
 
+
+
   static async writeToCache(key, data, expireTime = LocalCache.EXPIRE_TIME) {
     try {
       const cache = await caches.open("sick-cache-v1");
@@ -24,12 +27,16 @@ class LocalCache {
       const response = new Response(JSON.stringify(responseData));
       cache.put(request, response);
 
+
+
       localStorage.setItem(key, JSON.stringify({ data, expired }));
     } catch (error) {}
   }
 
+
   static async readFromCache(key) {
     try {
+
       const localStorageData = localStorage.getItem(key);
       if (localStorageData) {
         const { data, expired } = JSON.parse(localStorageData);
@@ -40,6 +47,8 @@ class LocalCache {
           localStorage.removeItem(key);
         }
       }
+
+
 
       const cache = await caches.open("sick-cache-v1");
       const response = await cache.match(key);
@@ -56,6 +65,8 @@ class LocalCache {
       return null;
     }
   }
+
+
 
   static async updateCache(key, updateFunc) {
     try {
@@ -103,7 +114,7 @@ class LocalCache {
 
       // 로컬 스토리지에서 'isBusiness'만 남기고 삭제
       Object.keys(localStorage).forEach((key) => {
-        if (key !== "isBusiness") {
+        if (key !== "userMode") {
           localStorage.removeItem(key);
         }
       });

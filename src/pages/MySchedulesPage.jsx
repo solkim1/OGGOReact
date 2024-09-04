@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "../styles/MySchedulesPage.module.css";
 import ScheduleList from "../components/ScheduleList";
 import { UserContext } from "../context/UserProvider";
+import { HeaderColorContext } from "../context/HeaderColorContext"; // 헤더 컬러 컨텍스트 추가
 
 const MySchedulesPage = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -10,6 +11,8 @@ const MySchedulesPage = () => {
   const [loading, setLoading] = useState(false);
   const [counts, setCounts] = useState({ all: 0, travel: 0, business: 0, important: 0 });
   const { user } = useContext(UserContext);
+
+  const { headerColor } = useContext(HeaderColorContext); // 헤더 컬러 컨텍스트 사용
 
   useEffect(() => {
     if (user) {
@@ -54,25 +57,28 @@ const MySchedulesPage = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <div className={styles.headerBlock}>
-        <div className={styles.tabContainer}>
-          {[
-            { key: "all", label: "전체 일정" },
-            { key: "travel", label: "여행 일정" },
-            { key: "business", label: "출장 일정" },
-            { key: "important", label: "주요 일정" },
-          ].map((tab) => (
-            <div
-              key={tab.key}
-              className={`${styles.tabItem} ${activeTab === tab.key ? styles.active : ""}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              <div className={styles.tabContent}>
-                <div className={styles.tabCount}>{counts[tab.key]}</div>
-                <div className={styles.tabLabel}>{tab.label}</div>
+      {/* 헤더 영역의 배경색을 headerColor로 동적으로 설정 */}
+      <div style={{ backgroundColor: headerColor }}>
+        <div className={styles.headerBlock}>
+          <div className={styles.tabContainer}>
+            {[
+              { key: "all", label: "전체 일정" },
+              { key: "travel", label: "여행 일정" },
+              { key: "business", label: "출장 일정" },
+              { key: "important", label: "주요 일정" },
+            ].map((tab) => (
+              <div
+                key={tab.key}
+                className={`${styles.tabItem} ${activeTab === tab.key ? styles.active : ""}`}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                <div className={styles.tabContent}>
+                  <div className={styles.tabCount}>{counts[tab.key]}</div>
+                  <div className={styles.tabLabel}>{tab.label}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       <div className={styles.container}>

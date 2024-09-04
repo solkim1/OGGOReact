@@ -1,8 +1,6 @@
-
-// 메인페이지(여행자모드),메인페이지(출장자모드),마이페이지, 나의 일정 페이지에서에 푸터 통합
-
-import React from "react";
+import React, { useContext } from "react";
 import styles from "../styles/Footer.module.css";
+import { HeaderColorContext } from "../context/HeaderColorContext"; // Context 가져오기
 
 import facebookIcon from "../images/logo-facebook.png";
 import instaIcon from "../images/logo-instagram.png";
@@ -10,8 +8,10 @@ import linkedinIcon from "../images/logo-linkedin.png";
 import twitterIcon from "../images/logo-twitter.png";
 
 const Footer = () => {
+  const { footerColor } = useContext(HeaderColorContext); // 푸터 색상 가져오기
+
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} style={{ backgroundColor: footerColor }}>
       <div className={styles.footerContent}>
         <div className={styles.footerSection}>
           <h1>Plan Maker</h1>
@@ -63,4 +63,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
