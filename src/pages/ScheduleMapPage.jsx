@@ -99,7 +99,16 @@ const ScheduleMapPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const cachedData = await LocalCache.readFromCache("scheduleData");
+
+        if (cachedData) {
+          setLocationData(cachedData);
+          setLoading(false);
+          return;
+        }
+
         let fetchUrl = "";
+
         if (location.state?.themeData) {
           setLocationData(location.state.themeData);
           setIsThemeSchedule(true);
@@ -138,6 +147,7 @@ const ScheduleMapPage = () => {
             throw new Error("Invalid data format");
           }
 
+          await LocalCache.writeToCache("scheduleData", data);
           setLocationData(data);
 
           const firstDay = Object.keys(data)[0];
@@ -154,8 +164,8 @@ const ScheduleMapPage = () => {
         setLoading(false);
       }
     };
+
     fetchData();
-    console.log(locationData);
   }, [location.state, isBusinessMode]);
 
   useEffect(() => {
