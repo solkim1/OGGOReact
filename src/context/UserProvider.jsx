@@ -53,7 +53,9 @@ const UserProvider = ({ children }) => {
     // 백엔드 인증이나 사용자 정보 가져올 때 이 토큰을 사용할 수 있음
   };
 
+
   const getGoogleToken = async () => {
+
     try {
       const tokenClient = window.google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
@@ -75,22 +77,14 @@ const UserProvider = ({ children }) => {
 
       setGoogleToken(response.access_token);
       sessionStorage.setItem("googleToken", response.access_token);
-      console.log(user);
 
-      // 리프레시 토큰을 user 상태에 저장
-      const userWithToken = {
-        ...user,
-        refreshToken: response.refresh_token,
-      };
-
-      setUser(userWithToken);
-      console.log(user);
-      sessionStorage.setItem("user", JSON.stringify(userWithToken));
+      
       return response.access_token;
 
     } catch (error) {
       console.error('오류 발생:', error);
     }
+    
   };
 
   const loginWithGoogle = async (googleToken) => {
@@ -109,21 +103,19 @@ const UserProvider = ({ children }) => {
         userEmail: data.email
       });
   
-      const userWithToken = {
+      login({
         userId: response.data.userId,
         userNick: response.data.userNick,
         userEmail: response.data.userEmail,
         image: data.picture,
-        isGoogle: response.data.isGoogle,
-        refreshToken:data.refresh_token
-      };
-
-      login(userWithToken);
+        isGoogle: response.data.isGoogle
+      });
     } catch (error) {
       console.error('Google 로그인 중 오류 발생:', error);
     }
   };
   
+
   const login = (userData) => {
     setUser(userData);
     sessionStorage.setItem("user", JSON.stringify(userData));

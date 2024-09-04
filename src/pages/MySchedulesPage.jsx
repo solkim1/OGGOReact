@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import styles from '../styles/MySchedulesPage.module.css';
-import ScheduleList from '../components/ScheduleList';
-import { UserContext } from '../context/UserProvider';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import styles from "../styles/MySchedulesPage.module.css";
+import ScheduleList from "../components/ScheduleList";
+import { UserContext } from "../context/UserProvider";
 
 const MySchedulesPage = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState("all");
   const [allSchedules, setAllSchedules] = useState([]);
   const [loading, setLoading] = useState(false);
   const [counts, setCounts] = useState({ all: 0, travel: 0, business: 0, important: 0 });
@@ -29,25 +29,24 @@ const MySchedulesPage = () => {
       // 탭별 일정 개수를 계산하여 업데이트
       setCounts({
         all: schedules.length,
-        travel: schedules.filter(schedule => schedule.isBusiness === 'N').length,
-        business: schedules.filter(schedule => schedule.isBusiness === 'Y').length,
-        important: schedules.filter(schedule => schedule.isImportance === 'Y').length,
+        travel: schedules.filter((schedule) => schedule.isBusiness === "N").length,
+        business: schedules.filter((schedule) => schedule.isBusiness === "Y").length,
+        important: schedules.filter((schedule) => schedule.isImportance === "Y").length,
       });
-
     } catch (error) {
-      console.error('Error fetching schedules:', error);
+      console.error("Error fetching schedules:", error);
     }
     setLoading(false);
   };
 
   const getFilteredSchedules = () => {
     switch (activeTab) {
-      case 'travel':
-        return allSchedules.filter(schedule => schedule.isBusiness === 'N');
-      case 'business':
-        return allSchedules.filter(schedule => schedule.isBusiness === 'Y');
-      case 'important':
-        return allSchedules.filter(schedule => schedule.isImportance === 'Y');
+      case "travel":
+        return allSchedules.filter((schedule) => schedule.isBusiness === "N");
+      case "business":
+        return allSchedules.filter((schedule) => schedule.isBusiness === "Y");
+      case "important":
+        return allSchedules.filter((schedule) => schedule.isImportance === "Y");
       default:
         return allSchedules;
     }
@@ -58,14 +57,14 @@ const MySchedulesPage = () => {
       <div className={styles.headerBlock}>
         <div className={styles.tabContainer}>
           {[
-            { key: 'all', label: '전체 일정' },
-            { key: 'travel', label: '여행 일정' },
-            { key: 'business', label: '출장 일정' },
-            { key: 'important', label: '주요 일정' }
+            { key: "all", label: "전체 일정" },
+            { key: "travel", label: "여행 일정" },
+            { key: "business", label: "출장 일정" },
+            { key: "important", label: "주요 일정" },
           ].map((tab) => (
             <div
               key={tab.key}
-              className={`${styles.tabItem} ${activeTab === tab.key ? styles.active : ''}`}
+              className={`${styles.tabItem} ${activeTab === tab.key ? styles.active : ""}`}
               onClick={() => setActiveTab(tab.key)}
             >
               <div className={styles.tabContent}>

@@ -1,19 +1,40 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import RecommendationsExhibition from "../components/RecommendationsExhibition";
 import styles from "../styles/BusinessMainPage.module.css";
+import RecommendationsExhibition from "../components/RecommendationsExhibition";
 
 const BusinessMainPage = () => {
   const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [region, setRegion] = useState("서울");
+  const [includeOptions, setIncludeOptions] = useState({
+    전시회: false,
+    맛집: false,
+    카페: false,
+    여행지: false,
+    숙소: false
+  });
 
   const handleScheduleButtonClick = () => {
-    navigate("/schedulemap");
-  };
+    const selectedOptions = Object.entries(includeOptions)
+      .filter(([_, value]) => value)
+      .map(([key, _]) => key);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    navigate("/schedulemap", {
+      state: {
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+        region,
+        includeOptions: selectedOptions,
+        isBusiness: true
+      }
+    });
   };
 
   return (
@@ -22,72 +43,69 @@ const BusinessMainPage = () => {
         <div className={styles.contentWrapper}>
           <div className={styles.filterSection}>
             <div className={styles.filterItem}>
-              <button className={styles.filterLabel}>출장 일정</button>
-              <input type="date" className={styles.filterInput} placeholder="연도-월-일" />
+              <label className={styles.filterLabel}>출장 일정</label>
+              <input
+                type="date"
+                className={styles.filterInput}
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
               <span className={styles.dateSeparator}>~</span>
-              <input type="date" className={styles.filterInput} placeholder="연도-월-일" />
+              <input
+                type="date"
+                className={styles.filterInput}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
             </div>
             <div className={styles.filterItem}>
-              <button className={styles.filterLabel}>출장 시간대</button>
-              <input type="time" className={styles.filterInput} />
+              <label className={styles.filterLabel}>출장 시간대</label>
+              <input
+                type="time"
+                className={styles.filterInput}
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
               <span className={styles.dateSeparator}>~</span>
-              <input type="time" className={styles.filterInput} />
+              <input
+                type="time"
+                className={styles.filterInput}
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
             </div>
             <div className={styles.filterItem}>
-              <button className={styles.filterLabel}>지역</button>
-              <select className={styles.filterSelect}>
-                <option>서울</option>
-                <option>부산</option>
-                <option>대구</option>
-                <option>인천</option>
-                <option>광주</option>
-                <option>대전</option>
-                <option>울산</option>
-                <option>경기</option>
-                <option>강원</option>
-                <option>충북</option>
-                <option>충남</option>
-                <option>전북</option>
-                <option>전남</option>
-                <option>경북</option>
-                <option>경남</option>
-                <option>제주</option>
+              <label className={styles.filterLabel}>지역</label>
+              <select
+                className={styles.filterSelect}
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+              >
+                <option value="서울">서울</option>
+                {/* 다른 지역 옵션 추가 */}
               </select>
             </div>
             <div className={styles.filterItem}>
-              <button className={styles.filterLabel}>포함 여부</button>
-              <div className={styles.dropdownContainer}>
-                <button className={styles.filterSelect} onClick={toggleDropdown}>
-                  선택
-                </button>
-                {isDropdownOpen && (
-                  <div className={styles.dropdownContent}>
-                    <label>
-                      <input type="checkbox" value="전시회" className={styles.checkbox} />
-                      전시회
-                    </label>
-                    <label>
-                      <input type="checkbox" value="맛집" className={styles.checkbox} />
-                      맛집
-                    </label>
-                    <label>
-                      <input type="checkbox" value="카페" className={styles.checkbox} />
-                      카페
-                    </label>
-                    <label>
-                      <input type="checkbox" value="여행지" className={styles.checkbox} />
-                      여행지
-                    </label>
-                    <label>
-                      <input type="checkbox" value="숙소" className={styles.checkbox} />
-                      숙소
-                    </label>
-                  </div>
-                )}
+              <label className={styles.filterLabel}>포함 여부</label>
+              <div className={styles.checkboxGroup}>
+                {Object.entries(includeOptions).map(([option, checked]) => (
+                  <label key={option} className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      name={option}
+                      checked={checked}
+                      onChange={(e) => setIncludeOptions(prev => ({ ...prev, [option]: e.target.checked }))}
+                      className={styles.checkbox}
+                    />
+                    {option}
+                  </label>
+                ))}
               </div>
             </div>
-            <button className={styles.resetButton}>초기화</button>
-            <button className={styles.scheduleButton} onClick={handleScheduleButtonClick}>
+            <button
+              className={styles.scheduleButton}
+              onClick={handleScheduleButtonClick}
+            >
               일정 생성
             </button>
           </div>

@@ -1,12 +1,16 @@
-
-
-
 import React from "react";
-import leftArrow from "../images/left-arrow.png";
-import rightArrow from "../images/right-arrow.png";
+import leftArrow from "../images/leftArrow.png";
+import rightArrow from "../images/rightArrow.png";
 import styles from "../styles/ScheduleMapBtn.module.css";
 
-const ScheduleMapBtn = ({ handleNextPage, handlePrevPage, pageIndex, totalPages, handleRegenerate, handleSaveSchedule }) => {
+const ScheduleMapBtn = ({
+  handleNextPage,
+  handlePrevPage,
+  pageIndex,
+  totalPages,
+  handleRegenerate,
+  handleSaveSchedule,
+}) => {
   return (
     <div className={styles.btnContainer}>
       <button className={styles.arrowBtn} onClick={handlePrevPage} disabled={pageIndex === 0}>
@@ -15,8 +19,12 @@ const ScheduleMapBtn = ({ handleNextPage, handlePrevPage, pageIndex, totalPages,
       
 
       <div className={styles.actionButtons}>
-        <button className={styles.actionBtn} onClick={handleRegenerate}>다시 생성</button>
-        <button className={styles.actionBtn} onClick={handleSaveSchedule}>일정 저장</button>
+        <button className={styles.actionBtn} onClick={handleRegenerate}>
+          다시 생성
+        </button>
+        <button className={styles.actionBtn} onClick={handleSaveSchedule}>
+          일정 저장
+        </button>
       </div>
 
 
@@ -29,4 +37,3 @@ const ScheduleMapBtn = ({ handleNextPage, handlePrevPage, pageIndex, totalPages,
 
 
 export default ScheduleMapBtn;
-

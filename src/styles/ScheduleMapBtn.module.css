@@ -1,21 +1,9 @@
 .btnContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: 20px;
-}
-
-.arrowBtn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  height: 50%;
-}
-
-.arrowIcon {
-  width: 40px;
-  height: 40px;
+  position: relative;
 }
 
 .actionButtons {
@@ -26,13 +14,107 @@
 .actionBtn {
   background-color: black;
   color: white;
-  padding: 10px 20px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 20px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.actionBtn:last-of-type {
+  margin-right: 80px;
 }
 
 .actionBtn:hover {
   background-color: #333;
+}
+
+.arrowBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: none; /* 기본적으로 숨김 */
+  align-items: center;
+  justify-content: center;
+}
+
+.arrowIcon {
+  width: 30px;
+  height: 30px;
+}
+
+/* 반응형 디자인: 1024px 이하 */
+@media (max-width: 1024px) {
+  .btnContainer {
+    justify-content: space-between;
+  }
+
+  .actionButtons {
+    order: 2;
+  }
+
+  .arrowBtn {
+    display: flex;
+    order: 1;
+  }
+
+  .arrowBtn:last-child {
+    order: 3;
+  }
+
+  .actionBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* 반응형 디자인: 768px 이하 */
+@media (max-width: 768px) {
+  .actionButtons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 반응형 디자인: 320px 이하 */
+/* 반응형 디자인: 320px 이하 */
+@media (max-width: 320px) {
+  .btnContainer {
+    display: flex;
+    justify-content: space-between; /* 화살표 버튼을 양쪽 끝에 배치 */
+    align-items: center;
+    margin-top: 10px; /* 여백 조정 */
+    width: 100%; /* 전체 너비 사용 */
+    position: relative;
+  }
+
+  .actionButtons {
+    display: flex;
+    flex-direction: row; /* 버튼을 가로로 배치 */
+    justify-content: center; /* 버튼을 중앙에 정렬 */
+    align-items: center; /* 버튼 수직 중앙 정렬 */
+    gap: 5px; /* 버튼 간의 간격 */
+    position: absolute; /* 절대 위치로 설정 */
+    left: 50%; /* 부모 요소의 너비의 50%로 이동 */
+    transform: translateX(-50%); /* 중앙으로 이동 */
+  }
+
+  .actionBtn {
+    padding: 6px 8px;
+    font-size: 11px;
+    margin: 0; /* 버튼 간 마진 제거 */
+  }
+
+  .arrowBtn {
+    display: flex; /* 320px 이하에서 화살표 버튼 보이기 */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .actionBtn:last-of-type {
+    margin-right: 0px;
+  }
 }

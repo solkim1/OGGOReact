@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
 import spPinsSpotV3 from "../images/sp_pins_spot_v3.png";
 import spPinsSpotV3Over from "../images/sp_pins_spot_v3_over.png";
+import styles from "../styles/Map.module.css";
 
 const Map = ({ locations, center }) => {
   const initializeMap = useCallback(() => {
@@ -65,32 +66,45 @@ const Map = ({ locations, center }) => {
       const cacheKey = `path_${sx}_${sy}_${ex}_${ey}`;
       const cachedData = await LocalCache.readFromCache(cacheKey);
 
-      if (cachedData && cachedData.length > 0) {
+      if (cachedData && cachedData.result && cachedData.result.path && cachedData.result.path.length > 0) {
         const data = cachedData;
-        if (data.result && data.result.path && data.result.path.length > 0) {
-          const mapObj = data.result.path[0].info.mapObj;
-          callMapObjApiAJAX(mapObj, sx, sy, ex, ey, index, true);
-        } else {
+        const mapObj = data.result.path[0].info.mapObj;
+        callMapObjApiAJAX(mapObj, sx, sy, ex, ey, index, true);
+      } else {
+        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
+
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch path data: ${response.status} ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          // 응답 데이터 전체를 콘솔에 출력하여 문제를 파악
+          console.log("ODsay API response:", data);
+
+          // 응답 데이터 구조를 검사
+          if (data.error) {
+            console.error(`Error from ODsay API: ${data.error.message}`);
+            drawDirectLine(sy, sx, ey, ex, map, index);
+            return;
+          }
+
+          LocalCache.writeToCache(cacheKey, data);
+
+          if (data.result && data.result.path && data.result.path.length > 0) {
+            const mapObj = data.result.path[0].info.mapObj;
+            callMapObjApiAJAX(mapObj, sx, sy, ex, ey, index, false);
+          } else {
+            drawDirectLine(sy, sx, ey, ex, map, index);
+          }
+        } catch (error) {
+          console.error("Error fetching public transport path:", error);
           drawDirectLine(sy, sx, ey, ex, map, index);
         }
-      } else {
-
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOAA`;
-
-        fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            LocalCache.writeToCache(cacheKey, data);
-            if (data.result && data.result.path && data.result.path.length > 0) {
-              const mapObj = data.result.path[0].info.mapObj;
-              callMapObjApiAJAX(mapObj, sx, sy, ex, ey, index, false);
-            } else {
-              drawDirectLine(sy, sx, ey, ex, map, index);
-            }
-          })
-          .catch((error) => {
-            drawDirectLine(sy, sx, ey, ex, map, index);
-          });
       }
     };
 
@@ -103,13 +117,24 @@ const Map = ({ locations, center }) => {
       if (cachedData && isCached) {
         data = cachedData;
       } else {
+        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
 
-        const url = `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@${mapObj}&apiKey=2r2QB8AHuKaddIjuRbbjOAA`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch lane data: ${response.status} ${response.statusText}`);
+          }
 
-        const response = await fetch(url);
-        data = await response.json();
-        LocalCache.writeToCache(cacheKey, data);
+          data = await response.json();
+          LocalCache.writeToCache(cacheKey, data);
+        } catch (error) {
+          console.error("Error fetching lane data:", error);
+          return;
+        }
       }
+
+      // 응답 데이터를 콘솔에 출력하여 구조 확인
+      console.log("ODsay loadLane API response:", data);
 
       if (data && data.result && data.result.lane && data.result.lane.length > 0) {
         const firstSection = data.result.lane[0].section;
@@ -133,7 +158,7 @@ const Map = ({ locations, center }) => {
           console.error("Data sections are invalid:", data);
         }
       } else {
-        console.error("Invalid data structure:", data);
+        console.error("Invalid data structure from ODsay API:", data);
       }
     };
 
@@ -237,20 +262,29 @@ const Map = ({ locations, center }) => {
   useEffect(() => {
     const script = document.createElement("script");
 
-    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3A`;
-
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=h7fnyo8jb3`;
     script.async = true;
+
     script.onload = () => {
-      if (window.naver) {
-        initializeMap();
+      if (window.naver && window.naver.maps) {
+        initializeMap(); // Naver Maps 객체가 정상적으로 로드되었는지 확인
       } else {
         console.error("Naver Maps library could not be loaded.");
       }
     };
+
+    script.onerror = () => {
+      console.error("Failed to load Naver Maps script.");
+    };
+
     document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script); // 컴포넌트가 언마운트될 때 스크립트를 제거
+    };
   }, [initializeMap, center]);
 
-  return <div id="map" style={{ width: "50%", height: "100%", float: "right" }} />;
+  return <div id="map" className={styles.mapContainer} />;
 };
 
 export default Map;

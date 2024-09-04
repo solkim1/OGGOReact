@@ -2,10 +2,53 @@ import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import LocalCache from "./LocalCache";
 import style from "../styles/DaySchedule.module.css";
+import leftArrow from "../images/leftArrow.png";
+import rightArrow from "../images/rightArrow.png";
+import cafeIcon from "../images/cafe.png";
+import lodgingIcon from "../images/lodging.png";
+import restaurantIcon from "../images/restaurant.png";
+import defaultIcon from "../images/plain2.png";
+import shoppingIcon from "../images/shopping.png";
+import businessIcon from "../images/business.png";
+import tourSpotIcon2 from "../images/tourspot2.png";
 
-// DaySchedule 컴포넌트: 각 날짜별로 스케줄을 표시하고, 드래그 앤 드롭으로 스케줄 순서를 변경할 수 있는 기능을 제공
-const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, setLocationData }) => {
-  // 일정 데이터를 관리하기 위한 상태 변수
+const getIcon = (type) => {
+  switch (type) {
+    case "비즈니스":
+      return businessIcon;
+    case "카페":
+      return cafeIcon;
+    case "숙박":
+      return lodgingIcon;
+    case "숙소":
+      return lodgingIcon;
+    case "식당":
+      return restaurantIcon;
+    case "맛집":
+      return restaurantIcon;
+    case "관광지":
+      return tourSpotIcon2;
+    case "여행지":
+      return tourSpotIcon2;
+    case "관광":
+      return tourSpotIcon2;
+    case "쇼핑":
+      return shoppingIcon;
+    default:
+      return defaultIcon;
+  }
+};
+
+const DaySchedule = ({
+  selectedDay = "day1",
+  setSelectedDay,
+  locationData = {},
+  setLocationData,
+  handleNextPage,
+  handlePrevPage,
+  pageIndex,
+  totalPages,
+}) => {
   const [scheduleData, setScheduleData] = useState({});
 
   // locationData가 변경될 때마다 scheduleData를 업데이트
@@ -13,11 +56,15 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
     setScheduleData(
       // locationData를 기반으로 scheduleData를 생성
       Object.keys(locationData).reduce((acc, day) => {
-        acc[day] = locationData[day].map((item, index) => ({
-          // 기존의 locationData 아이템에 draggableId를 추가하여 드래그 기능을 지원
-          ...item,
-          draggableId: `${day}-${index}`,
-        }));
+        if (Array.isArray(locationData[day])) {
+          acc[day] = locationData[day].map((item, index) => ({
+            ...item,
+            draggableId: `${day}-${index}`,
+          }));
+        } else {
+          console.error(`Invalid data for day: ${day}`, locationData[day]);
+          acc[day] = []; // 빈 배열로 초기화하여 오류를 방지
+        }
         return acc;
       }, {})
     );
@@ -68,9 +115,7 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
     setLocationData((prev) => {
       const newLocationData = {
         ...prev,
-        [day]: prev[day].map((item, i) => 
-          i === index ? { ...item, excluded: !item.excluded } : item // 해당 아이템의 excluded 상태를 토글
-        ),
+        [day]: prev[day].map((item, i) => (i === index ? { ...item, excluded: !item.excluded } : item)),
       };
 
       LocalCache.writeToCache("travel_data_all", newLocationData); // 변경된 데이터를 로컬 캐시에 저장
@@ -88,8 +133,8 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
 
     for (let i = 0; i < daySchedule.length; i++) {
       const item = daySchedule[i];
-      const key = item.draggableId; // 드래그를 위한 고유 ID 생성
-
+      const key = item.draggableId;
+      const iconSrc = getIcon(item.type);
       result.push(
         <Draggable key={key} draggableId={key} index={i}>
           {(provided, snapshot) => (
@@ -97,22 +142,30 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
-              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ""} ${item.excluded ? style.excluded : ""}`}
+              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ""} ${
+                item.excluded ? style.excluded : ""
+              }`}
             >
-              <div className={style.scheduleItemIcon}></div>
-              <div>
+              {/* 우측 상단에 버튼 배치 */}
+              <button className={style.excludeButton} onClick={() => handleExcludeSchedule(day, i)}>
+                {item.excluded ? "+" : "-"}
+              </button>
+
+              {/* 상단에 제목을 배치 */}
+              <div className={style.scheduleItemTop}>
                 <h3 className={style.scheduleItemTitle}>{item.name}</h3>
-                <p className={style.scheduleItemDescription}>{item.description}</p>
-                <div className={style.scheduleItemTime}>
-                  {item.departTime} - {item.arriveTime}
+              </div>
+
+              {/* 아이콘과 설명 및 시간을 같은 줄에 배치 */}
+              <div className={style.scheduleItemContent}>
+                <img src={iconSrc} alt={item.type} className={style.scheduleItemIcon} />
+                <div className={style.scheduleItemDetails}>
+                  <p className={style.scheduleItemDescription}>{item.description}</p>
+                  <div className={style.scheduleItemTime}>
+                    {item.departTime} - {item.arriveTime}
+                  </div>
                 </div>
               </div>
-              <button 
-                className={style.excludeButton} 
-                onClick={() => handleExcludeSchedule(day, i)}
-              >
-                {item.excluded ? '+' : '-'} {/* 제외 상태에 따라 버튼 텍스트 변경 */}
-              </button>
             </div>
           )}
         </Draggable>
@@ -125,8 +178,12 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
   const currentDays = Object.keys(scheduleData); // 현재 스케줄 데이터에 있는 모든 날들의 리스트를 가져옴
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className={style.scheduleContainer}>
+    <div className={style.scheduleContainer}>
+      <button className={style.arrowBtn} onClick={handlePrevPage} disabled={pageIndex === 0}>
+        <img src={leftArrow} alt="Previous" className={style.arrowIcon} />
+      </button>
+
+      <DragDropContext onDragEnd={onDragEnd}>
         <div className={style.scheduleListContainer}>
           {currentDays.map((day) => (
             <div key={day} className={`${style.scheduleListBackground} ${selectedDay === day ? style.selected : ""}`}>
@@ -136,7 +193,6 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
               >
                 {day} {/* 날짜 표시 */}
               </button>
-
               <Droppable droppableId={day} key={day}>
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps} className={style.scheduleDroppable}>
@@ -148,8 +204,12 @@ const DaySchedule = ({ selectedDay = "day1", setSelectedDay, locationData = {}, 
             </div>
           ))}
         </div>
-      </div>
-    </DragDropContext>
+      </DragDropContext>
+
+      <button className={style.arrowBtn} onClick={handleNextPage} disabled={pageIndex >= totalPages - 1}>
+        <img src={rightArrow} alt="Next" className={style.arrowIcon} />
+      </button>
+    </div>
   );
 };
 

@@ -26,7 +26,6 @@ const TravelerMainPage = () => {
       }
       const days = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1;
 
-
       // 테마 이름을 URL 인코딩하여 백엔드에 전달
       const encodedTheme = encodeURIComponent(theme);
 
@@ -82,11 +81,7 @@ const TravelerMainPage = () => {
             </div>
             <div className={styles.filterItem}>
               <label className={styles.filterLabel}>연령대</label>
-              <select
-                className={styles.filterSelect}
-                value={ageGroup}
-                onChange={(e) => setAgeGroup(e.target.value)}
-              >
+              <select className={styles.filterSelect} value={ageGroup} onChange={(e) => setAgeGroup(e.target.value)}>
                 <option value="10대~20대">10대~20대</option>
                 <option value="30대">30대</option>
                 <option value="40~50대">40~50대</option>
@@ -95,33 +90,21 @@ const TravelerMainPage = () => {
             </div>
             <div className={styles.filterItem}>
               <label className={styles.filterLabel}>성별</label>
-              <select
-                className={styles.filterSelect}
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              >
+              <select className={styles.filterSelect} value={gender} onChange={(e) => setGender(e.target.value)}>
                 <option value="남성">남성</option>
                 <option value="여성">여성</option>
               </select>
             </div>
             <div className={styles.filterItem}>
               <label className={styles.filterLabel}>인원</label>
-              <select
-                className={styles.filterSelect}
-                value={groupSize}
-                onChange={(e) => setGroupSize(e.target.value)}
-              >
+              <select className={styles.filterSelect} value={groupSize} onChange={(e) => setGroupSize(e.target.value)}>
                 <option value="개인">개인</option>
                 <option value="단체">단체</option>
               </select>
             </div>
             <div className={styles.filterItem}>
               <label className={styles.filterLabel}>테마</label>
-              <select
-                className={styles.filterSelect}
-                value={theme}
-                onChange={(e) => setTheme(e.target.value)}
-              >
+              <select className={styles.filterSelect} value={theme} onChange={(e) => setTheme(e.target.value)}>
                 <option value="레포츠">레포츠</option>
                 <option value="문화 체험">문화 체험</option>
                 <option value="쇼핑">쇼핑</option>
