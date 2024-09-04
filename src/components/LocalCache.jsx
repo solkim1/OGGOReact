@@ -25,9 +25,7 @@ class LocalCache {
       cache.put(request, response);
 
       localStorage.setItem(key, JSON.stringify({ data, expired }));
-    } catch (error) {
-      console.error("데이터 캐싱 중 오류가 발생했습니다:", error);
-    }
+    } catch (error) {}
   }
 
   static async readFromCache(key) {
@@ -55,7 +53,6 @@ class LocalCache {
       }
       return LocalCache.addUniqueIds(responseData.data || {});
     } catch (error) {
-      console.error("캐싱 데이터를 읽는 도중 오류가 발생했습니다:", error);
       return null;
     }
   }
@@ -67,9 +64,7 @@ class LocalCache {
 
       const updatedData = updateFunc(data);
       await this.writeToCache(key, LocalCache.addUniqueIds(updatedData));
-    } catch (error) {
-      console.error("캐시 업데이트 중 오류가 발생했습니다:", error);
-    }
+    } catch (error) {}
   }
 }
 

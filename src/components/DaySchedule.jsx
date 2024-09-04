@@ -2,17 +2,20 @@ import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import LocalCache from "./LocalCache";
 import style from "../styles/DaySchedule.module.css";
-import leftArrow from "../images/left-arrow.png";
-import rightArrow from "../images/right-arrow.png";
+import leftArrow from "../images/leftArrow.png";
+import rightArrow from "../images/rightArrow.png";
 import cafeIcon from "../images/cafe.png";
 import lodgingIcon from "../images/lodging.png";
 import restaurantIcon from "../images/restaurant.png";
-import tourSpotIcon from "../images/tourspot.png";
 import defaultIcon from "../images/plain2.png";
 import shoppingIcon from "../images/shopping.png";
+import businessIcon from "../images/business.png";
+import tourSpotIcon2 from "../images/tourspot2.png";
 
 const getIcon = (type) => {
   switch (type) {
+    case "비즈니스":
+      return businessIcon;
     case "카페":
       return cafeIcon;
     case "숙박":
@@ -24,9 +27,11 @@ const getIcon = (type) => {
     case "맛집":
       return restaurantIcon;
     case "관광지":
-      return tourSpotIcon;
+      return tourSpotIcon2;
+    case "여행지":
+      return tourSpotIcon2;
     case "관광":
-      return tourSpotIcon;
+      return tourSpotIcon2;
     case "쇼핑":
       return shoppingIcon;
     default:

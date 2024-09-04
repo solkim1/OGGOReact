@@ -1,6 +1,6 @@
 import React from "react";
-import leftArrow from "../images/left-arrow.png";
-import rightArrow from "../images/right-arrow.png";
+import leftArrow from "../images/leftArrow.png";
+import rightArrow from "../images/rightArrow.png";
 import styles from "../styles/ScheduleMapBtn.module.css";
 
 const ScheduleMapBtn = ({

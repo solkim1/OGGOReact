@@ -39,7 +39,7 @@ const ScheduleMapPage = () => {
     const timeDiff = Math.abs(end - start);
     const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-    return daysDiff;
+    return daysDiff + 1;
   };
 
   const days = calculateDaysBetween(startDate, endDate);
@@ -145,7 +145,7 @@ const ScheduleMapPage = () => {
           if (firstLocation) {
             setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
           }
-          setScheduleTitle(data.title || (isBusinessMode ? "출장 일정" : "여행 일정"));
+          setScheduleTitle(data.title || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
         }
       } catch (error) {
         console.error("Error fetching data:", error);
