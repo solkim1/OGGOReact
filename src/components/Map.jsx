@@ -74,12 +74,24 @@ const Map = ({ locations, center }) => {
         const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${sx}&SY=${sy}&EX=${ex}&EY=${ey}&apiKey=2r2QB8AHuKaddIjuRbbjOA`;
 
         try {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
           const response = await fetch(url);
           if (!response.ok) {
             throw new Error(`Failed to fetch path data: ${response.status} ${response.statusText}`);
           }
 
           const data = await response.json();
+
+          // 응답 데이터 전체를 콘솔에 출력하여 문제를 파악
+          console.log("ODsay API response:", data);
+
+          // 응답 데이터 구조를 검사
+          if (data.error) {
+            console.error(`Error from ODsay API: ${data.error.message}`);
+            drawDirectLine(sy, sx, ey, ex, map, index);
+            return;
+          }
 
           LocalCache.writeToCache(cacheKey, data);
 
@@ -90,6 +102,7 @@ const Map = ({ locations, center }) => {
             drawDirectLine(sy, sx, ey, ex, map, index);
           }
         } catch (error) {
+          console.error("Error fetching public transport path:", error);
           drawDirectLine(sy, sx, ey, ex, map, index);
         }
       }
@@ -115,9 +128,13 @@ const Map = ({ locations, center }) => {
           data = await response.json();
           LocalCache.writeToCache(cacheKey, data);
         } catch (error) {
+          console.error("Error fetching lane data:", error);
           return;
         }
       }
+
+      // 응답 데이터를 콘솔에 출력하여 구조 확인
+      console.log("ODsay loadLane API response:", data);
 
       if (data && data.result && data.result.lane && data.result.lane.length > 0) {
         const firstSection = data.result.lane[0].section;
@@ -138,8 +155,10 @@ const Map = ({ locations, center }) => {
             map
           );
         } else {
+          console.error("Data sections are invalid:", data);
         }
       } else {
+        console.error("Invalid data structure from ODsay API:", data);
       }
     };
 
@@ -250,10 +269,13 @@ const Map = ({ locations, center }) => {
       if (window.naver && window.naver.maps) {
         initializeMap(); // Naver Maps 객체가 정상적으로 로드되었는지 확인
       } else {
+        console.error("Naver Maps library could not be loaded.");
       }
     };
 
-    script.onerror = () => {};
+    script.onerror = () => {
+      console.error("Failed to load Naver Maps script.");
+    };
 
     document.head.appendChild(script);
 

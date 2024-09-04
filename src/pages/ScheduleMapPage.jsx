@@ -99,6 +99,8 @@ const ScheduleMapPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        console.log("Current isBusinessMode:", isBusinessMode);
+
         const cachedData = await LocalCache.readFromCache("scheduleData");
 
         if (cachedData) {
@@ -166,6 +168,10 @@ const ScheduleMapPage = () => {
     };
 
     fetchData();
+
+    return () => {
+      LocalCache.clearAllCache();
+    };
   }, [location.state, isBusinessMode]);
 
   useEffect(() => {

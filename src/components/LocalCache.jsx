@@ -66,6 +66,29 @@ class LocalCache {
       await this.writeToCache(key, LocalCache.addUniqueIds(updatedData));
     } catch (error) {}
   }
+
+  static async deleteCache(key) {
+    try {
+      const cache = await caches.open("sick-cache-v1");
+      await cache.delete(key);
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error("Error deleting cache:", error);
+    }
+  }
+
+  static async clearAllCache() {
+    try {
+      const cache = await caches.open("sick-cache-v1");
+      const keys = await cache.keys();
+      for (const key of keys) {
+        await cache.delete(key);
+      }
+      localStorage.clear();
+    } catch (error) {
+      console.error("Error clearing all caches:", error);
+    }
+  }
 }
 
 export default LocalCache;
