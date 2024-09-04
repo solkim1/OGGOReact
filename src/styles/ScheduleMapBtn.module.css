@@ -22,7 +22,7 @@
   white-space: nowrap;
 }
 .actionBtn:last-of-type {
-  margin-right: 45px;
+  margin-right: 80px;
 }
 
 .actionBtn:hover {
@@ -80,13 +80,41 @@
 }
 
 /* 반응형 디자인: 320px 이하 */
+/* 반응형 디자인: 320px 이하 */
 @media (max-width: 320px) {
+  .btnContainer {
+    display: flex;
+    justify-content: space-between; /* 화살표 버튼을 양쪽 끝에 배치 */
+    align-items: center;
+    margin-top: 10px; /* 여백 조정 */
+    width: 100%; /* 전체 너비 사용 */
+    position: relative;
+  }
+
   .actionButtons {
-    gap: 5px;
+    display: flex;
+    flex-direction: row; /* 버튼을 가로로 배치 */
+    justify-content: center; /* 버튼을 중앙에 정렬 */
+    align-items: center; /* 버튼 수직 중앙 정렬 */
+    gap: 5px; /* 버튼 간의 간격 */
+    position: absolute; /* 절대 위치로 설정 */
+    left: 50%; /* 부모 요소의 너비의 50%로 이동 */
+    transform: translateX(-50%); /* 중앙으로 이동 */
   }
 
   .actionBtn {
     padding: 6px 8px;
     font-size: 11px;
+    margin: 0; /* 버튼 간 마진 제거 */
+  }
+
+  .arrowBtn {
+    display: flex; /* 320px 이하에서 화살표 버튼 보이기 */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .actionBtn:last-of-type {
+    margin-right: 0px;
   }
 }

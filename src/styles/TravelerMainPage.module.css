@@ -1,0 +1,188 @@
+.pageContainer {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .mainContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .contentWrapper {
+    width: 100%;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  
+  
+  .filterSection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  
+    margin-top: 30px;
+    margin-bottom: 50px;
+    gap: 10px;
+  
+  
+    width: 100%;
+  }
+  
+  .filterItem {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    max-width: calc(20% - 8px);
+  }
+  
+  .filterLabel {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+  
+    font-size: 14px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: 70px;
+    text-align: center;
+  }
+  
+  .filterInput, .filterSelect {
+    flex: 1;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    border-radius: 0 4px 4px 0;
+    height: 35px;
+    width: 100px;
+    box-sizing: border-box;
+    min-width: 0;
+    text-align: center;
+  }
+  
+  .dateSeparator {
+    margin: 0 5px;
+  }
+  
+  
+  
+  .resetButton, .scheduleButton {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    height: 35px;
+    white-space: nowrap;
+  }
+  
+  .resetButton {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .scheduleButton {
+    background-color: #1890ff;
+    color: white;
+  }
+  
+  .recommendationsTitle {
+    font-size: 24px;
+    color: #3c3b3b;
+    margin-bottom: 20px;
+    text-align: left;
+    width: 100%;
+  }
+  
+  @media (max-width: 767px) {
+    .filterSection {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .filterItem {
+  
+      /* margin-bottom: 10px; */
+  
+      max-width: 100%;
+    }
+  
+    .filterLabel {
+      width: 30%;
+      justify-content: center;
+    }
+  
+    .filterInput,
+    .filterSelect {
+      width: 60%;
+    }
+  
+    .buttonGroup {
+      justify-content: stretch;
+    }
+  
+    .resetButton,
+    .scheduleButton {
+      flex: 1;
+    }
+  
+    .dateInputs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  
+    .dateSeparator {
+      display: inline-block;
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .filterItem {
+      max-width: calc(33.333% - 7px);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .filterSection {
+      flex-wrap: nowrap;
+      justify-content: space-between;
+    }
+  
+    .filterItem {
+      flex: 0 1 auto;
+      max-width: none;
+    }
+  
+    .buttonGroup {
+      flex: 0 0 auto;
+    }
+  
+    .resetButton,
+    .scheduleButton {
+      flex: 0 0 auto;
+    }
+  
+    .dateInputs {
+      display: flex;
+      align-items: center;
+    }
+  }

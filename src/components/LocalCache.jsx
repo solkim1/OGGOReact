@@ -1,7 +1,5 @@
-
-
 class LocalCache {
-  static EXPIRE_TIME = 60 * 60 * 1000; // 캐시 만료 시간 설정 (60분)
+  static EXPIRE_TIME = 5 * 60 * 1000; // 캐시 만료 시간 설정 (5분)
 
 
   static addUniqueIds(data) {
@@ -32,9 +30,7 @@ class LocalCache {
 
 
       localStorage.setItem(key, JSON.stringify({ data, expired }));
-    } catch (error) {
-      console.error("데이터 캐싱 중 오류가 발생했습니다:", error);
-    }
+    } catch (error) {}
   }
 
 
@@ -66,7 +62,6 @@ class LocalCache {
       }
       return LocalCache.addUniqueIds(responseData.data || {});
     } catch (error) {
-      console.error("캐싱 데이터를 읽는 도중 오류가 발생했습니다:", error);
       return null;
     }
   }
@@ -80,8 +75,51 @@ class LocalCache {
 
       const updatedData = updateFunc(data);
       await this.writeToCache(key, LocalCache.addUniqueIds(updatedData));
+    } catch (error) {}
+  }
+
+  static async deleteCache(key) {
+    try {
+      const cache = await caches.open("sick-cache-v1");
+      await cache.delete(key);
+      localStorage.removeItem(key);
     } catch (error) {
-      console.error("캐시 업데이트 중 오류가 발생했습니다:", error);
+      console.error("Error deleting cache:", error);
+    }
+  }
+
+  static async clearAllCache() {
+    try {
+      const cache = await caches.open("sick-cache-v1");
+      const keys = await cache.keys();
+      for (const key of keys) {
+        await cache.delete(key);
+      }
+      localStorage.clear();
+    } catch (error) {
+      console.error("Error clearing all caches:", error);
+    }
+  }
+
+  static async clearAllExceptBusiness() {
+    try {
+      const cache = await caches.open("sick-cache-v1");
+      const keys = await cache.keys();
+
+      // 'isBusiness' 값을 제외한 모든 캐시 삭제
+      for (const key of keys) {
+        if (key.url.includes("isBusiness")) continue; // isBusiness 키는 삭제하지 않음
+        await cache.delete(key);
+      }
+
+      // 로컬 스토리지에서 'isBusiness'만 남기고 삭제
+      Object.keys(localStorage).forEach((key) => {
+        if (key !== "userMode") {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (error) {
+      console.error("Error clearing all caches except 'isBusiness':", error);
     }
   }
 }

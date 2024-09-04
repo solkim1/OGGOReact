@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/MySchedulesPage.module.css';
 import filledStar from '../images/filled_star.png';
 import emptyStar from '../images/empty_star.png';
@@ -7,7 +8,6 @@ import editIcon from '../images/write.png';
 import saveIcon from '../images/save.png';
 
 import travelerIcon from '../images/traveler-icon.png';
-
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
 
@@ -18,6 +18,8 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
   const [editedDesc, setEditedDesc] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scheduleToDelete, setScheduleToDelete] = useState(null);
+  
+  const nav = useNavigate();
 
   useEffect(() => {
     setLoading(false);
@@ -32,19 +34,22 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
       .catch(error => console.error('Error deleting schedule:', error));
   };
 
-  const toggleImportance = (scheduleNum) => {
+  const toggleImportance = (scheduleNum, event) => {
+    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
     axios.put(`/plan/api/schedules/toggleImportance/${scheduleNum}`)
       .then(() => fetchSchedules())
       .catch(error => console.error('Error updating importance:', error));
   };
 
-  const startEditing = (schedule) => {
+  const startEditing = (schedule, event) => {
+    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
     setEditingScheduleId(schedule.scheNum);
     setEditedTitle(schedule.scheTitle);
     setEditedDesc(schedule.scheDesc);
   };
 
-  const saveChanges = () => {
+  const saveChanges = (event) => {
+    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
     const params = new URLSearchParams();
     params.append('scheNum', editingScheduleId);
     params.append('scheTitle', editedTitle);
@@ -60,10 +65,15 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
       });
   };
 
-  const openDeleteModal = (scheduleNum) => {
+  const openDeleteModal = (scheduleNum, event) => {
+    event.stopPropagation();  // 클릭 이벤트가 부모 요소로 전달되지 않도록 방지
     setScheduleToDelete(scheduleNum);
     setIsModalOpen(true);
   };
+
+  const testCheck = (num) => {
+    nav("/schedulemap", { state: { scheNum: num } });
+  }
 
   if (loading) {
     return <div>일정을 불러오는 중...</div>;
@@ -72,14 +82,14 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
   return (
     <div className={styles.scheduleList}>
       {schedules && schedules.length > 0 ? schedules.map(schedule => (
-        <div key={`${schedule.scheNum}-${schedule.scheTitle}`} className={styles.scheduleItem}>
+        <div key={`${schedule.scheNum}-${schedule.scheTitle}`} className={styles.scheduleItem} onClick={() => testCheck(schedule.scheNum)}>
           <div className={styles.scheduleLeftIcons}>
             <div className={styles.icon}>
               <img
                 src={schedule.isImportance === 'Y' ? filledStar : emptyStar}
                 alt="Importance"
                 className={styles.star}
-                onClick={() => toggleImportance(schedule.scheNum)}
+                onClick={(event) => toggleImportance(schedule.scheNum, event)}
               />
             </div>
 
@@ -101,6 +111,7 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
                     value={editedTitle}
                     onChange={(e) => setEditedTitle(e.target.value)}
                     className={styles.editInput}
+                    onClick={(event) => event.stopPropagation()} // 입력 필드 클릭 시 이벤트 전파 방지
                   />
                 ) : (
                   schedule.scheTitle
@@ -115,6 +126,7 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
                   value={editedDesc}
                   onChange={(e) => setEditedDesc(e.target.value)}
                   className={styles.editInput}
+                  onClick={(event) => event.stopPropagation()} // 입력 필드 클릭 시 이벤트 전파 방지
                 />
               ) : (
                 schedule.scheDesc
@@ -126,13 +138,13 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
               src={editingScheduleId === schedule.scheNum ? saveIcon : editIcon}
               alt="Edit"
               className={styles.icon}
-              onClick={editingScheduleId === schedule.scheNum ? saveChanges : () => startEditing(schedule)}
+              onClick={(event) => editingScheduleId === schedule.scheNum ? saveChanges(event) : startEditing(schedule, event)}
             />
             <img
               src={deleteIcon}
               alt="Delete"
               className={styles.icon}
-              onClick={() => openDeleteModal(schedule.scheNum)}
+              onClick={(event) => openDeleteModal(schedule.scheNum, event)}
             />
           </div>
         </div>

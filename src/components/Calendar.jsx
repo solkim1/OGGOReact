@@ -178,14 +178,19 @@ const Calendar = () => {
 
   };
 
+
+
   return (
     <div className={styles.calendarContainer}>
       <h1>Plan Maker Calendar</h1>
+
       {!googleToken && ( // Google 로그인되지 않은 경우에만 연동하기 버튼 표시
+
         <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
           <img src={googleIcon} alt="Google logo" width="20" />
           <span>Google 계정 연동하기</span>
         </div>
+
 
       )}
       <FullCalendar
@@ -218,6 +223,7 @@ const Calendar = () => {
           </div>
         </div>
       )}
+
 
     </div>
   );

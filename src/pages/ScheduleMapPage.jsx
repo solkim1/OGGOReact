@@ -16,19 +16,34 @@ const ScheduleMapPage = () => {
 
   const {
     userId = user?.userId,
-    days = 3,
-    ageGroup = "10대~20대",
-    gender = "남성",
-    groupSize = "개인",
-    theme = "레포츠",
     startDate,
     endDate,
-    isBusiness = false,
-    region = "서울",
-    includeOptions = ["전시회", "식당", "카페"],
-    startTime = "09:00",
-    endTime = "18:00",
+    ageGroup,
+    gender,
+    groupSize,
+    theme,
+    isBusiness,
+    region,
+    includeOptions,
+    startTime,
+    endTime,
   } = location.state || {};
+
+  const { schedule } = location.state;
+
+  // 두 날짜 사이의 일수 계산
+  const calculateDaysBetween = (startDate, endDate) => {
+    if (!startDate || !endDate) return 0;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeDiff = Math.abs(end - start);
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    return daysDiff + 1;
+  };
+
+  const days = calculateDaysBetween(startDate, endDate);
 
   const [isBusinessMode, setIsBusinessMode] = useState(isBusiness);
   const [locationData, setLocationData] = useState({});
@@ -85,7 +100,16 @@ const ScheduleMapPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const cachedData = await LocalCache.readFromCache("scheduleData");
+
+        if (cachedData) {
+          setLocationData(cachedData);
+          setLoading(false);
+          return;
+        }
+
         let fetchUrl = "";
+
         if (location.state?.themeData) {
           setLocationData(location.state.themeData);
           setIsThemeSchedule(true);
@@ -100,13 +124,15 @@ const ScheduleMapPage = () => {
           setScheduleTitle(`${location.state.exhibitionName} 전시회 일정`);
           setLoading(false);
         } else {
-          if (isBusinessMode) {
-            fetchUrl = await generateBusinessPrompt();
+          if (!schedule) {
+            if (isBusinessMode) {
+              fetchUrl = await generateBusinessPrompt();
+            } else {
+              fetchUrl = await generateTravelPrompt();
+            }
           } else {
-            fetchUrl = await generateTravelPrompt();
+            fetchUrl = await patchschedule();
           }
-
-          console.log("Fetch URL:", fetchUrl);
 
           const response = await fetch(fetchUrl);
           if (!response.ok) {
@@ -120,6 +146,7 @@ const ScheduleMapPage = () => {
             throw new Error("Invalid data format");
           }
 
+          await LocalCache.writeToCache("scheduleData", data);
           setLocationData(data);
 
           const firstDay = Object.keys(data)[0];
@@ -127,7 +154,7 @@ const ScheduleMapPage = () => {
           if (firstLocation) {
             setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
           }
-          setScheduleTitle(data.title || (isBusinessMode ? "💼출장 일정💼" : "✈️여행 일정✈️"));
+          setScheduleTitle(schedule?.scheTitle || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -136,7 +163,12 @@ const ScheduleMapPage = () => {
         setLoading(false);
       }
     };
+
     fetchData();
+
+    return () => {
+      LocalCache.clearAllExceptBusiness();
+    };
   }, [location.state, isBusinessMode]);
 
   useEffect(() => {
@@ -154,6 +186,10 @@ const ScheduleMapPage = () => {
 
   const generateTravelPrompt = async () => {
     return `/plan/api/schedules/travel/generate?userId=${userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}`;
+  };
+
+  const patchschedule = async () => {
+    return `/plan/api/schedules/patchschedule?scheNum=${schedule.scheNum}`;
   };
 
   const handleRegenerate = async () => {
@@ -180,14 +216,18 @@ const ScheduleMapPage = () => {
         return;
       }
 
-      const response = await fetch("/plan/api/schedules/recall", {
+      const regenerateUrl = isBusinessMode
+        ? "/plan/api/schedules/business/recall"
+        : "/plan/api/schedules/travel/recall";
+
+      const response = await fetch(regenerateUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(excludedItems),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to regenerate schedule");
+        throw new Error("스케쥴 재생성에 실패했습니다.");
       }
 
       const data = await response.json();
@@ -222,17 +262,25 @@ const ScheduleMapPage = () => {
 
   const handleSaveSchedule = async () => {
     try {
-      const scheNum = uuidv4();
-      const baseDate = new Date(startDate);
+      let num;
+      let baseDate;
+      if (schedule) {
+        num = schedule.scheNum;
+        baseDate = new Date(schedule.scheStDt);
+      } else {
+        num = uuidv4();
+        baseDate = new Date(startDate);
+      }
 
       const cachedData = await LocalCache.readFromCache("scheduleData");
       const currentLocationData = cachedData || locationData;
 
       const scheduleDataArray = Object.entries(currentLocationData).flatMap(([day, locations]) => {
         const dayIndex = parseInt(day.replace("day", "")) - 1;
+
         const currentStartDate = new Date(baseDate);
         currentStartDate.setDate(currentStartDate.getDate() + dayIndex);
-        const formattedStartDate = currentStartDate.toISOString().split("T")[0];
+        const formattedStartDate = currentStartDate.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
 
         return locations.map((loc) => {
           let departTime = loc.departTime;
@@ -247,10 +295,10 @@ const ScheduleMapPage = () => {
           if (!arriveTime) arriveTime = "18:00";
 
           return {
-            scheduleDesc: "일정을 입력하세요",
+            scheduleDesc: schedule?.scheDesc || "일정을 입력하세요",
             userId: user?.userId,
             title: scheduleTitle,
-            scheNum: scheNum,
+            scheNum: num,
             startDate: formattedStartDate,
             endDate: formattedStartDate,
             isBusiness: isBusinessMode ? "Y" : "N",
@@ -287,10 +335,14 @@ const ScheduleMapPage = () => {
 
       const userMode = await LocalCache.readFromCache("userMode");
 
-      if (userMode === "business") {
-        navigate("/business");
+      if (schedule) {
+        navigate("/myschedules");
       } else {
-        navigate("/traveler");
+        if (userMode === "business") {
+          navigate("/business");
+        } else {
+          navigate("/traveler");
+        }
       }
     } catch (err) {
       alert(`일정 저장 중 오류가 발생했습니다: ${err.message}`);
@@ -359,11 +411,13 @@ const ScheduleMapPage = () => {
         <h2 className={styles.scheduleTitleContainer}>
           <span className={styles.scheduleTitle}>{scheduleTitle}</span>
           <span className={styles.scheduleDate}>
-            {isExhibitionSchedule
-              ? startDate
-              : isThemeSchedule
-              ? `${startDate} - ${calculateEndDate(startDate, Object.keys(locationData).length)}`
-              : `${startDate} - ${endDate}`}
+            {isExhibitionSchedule ? (
+              startDate
+            ) : isThemeSchedule ? (
+              `${(schedule?.scheStDt || startDate)} - ${calculateEndDate(schedule?.scheStDt || startDate, Object.keys(locationData).length)}`
+            ) : (
+              `${(schedule?.scheStDt || startDate)} - ${(schedule?.scheEdDt || endDate)}`
+            )}
           </span>
         </h2>
         <div className={styles.buttonAndScheduleContainer}>

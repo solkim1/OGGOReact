@@ -33,8 +33,6 @@ const UserProvider = ({ children }) => {
       document.body.appendChild(script);
     };
 
-
-
     loadGisScript();
   }, []);
 
@@ -62,6 +60,7 @@ const UserProvider = ({ children }) => {
       const tokenClient = window.google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/calendar.readonly profile email',
+        access_type: 'offline',
         redirect_uri: REDIRECT_URI,
       });
 
@@ -73,7 +72,7 @@ const UserProvider = ({ children }) => {
             resolve(response);
           }
         };
-        tokenClient.requestAccessToken();
+        tokenClient.requestAccessToken({ prompt : "consent" });
       });
 
       setGoogleToken(response.access_token);
@@ -117,7 +116,6 @@ const UserProvider = ({ children }) => {
   };
   
 
-
   const login = (userData) => {
     setUser(userData);
     sessionStorage.setItem("user", JSON.stringify(userData));
@@ -133,9 +131,7 @@ const UserProvider = ({ children }) => {
   };
 
   return (
-
     <UserContext.Provider value={{ user, setUser, googleToken, setGoogleToken, login, logout, getGoogleToken, loginWithGoogle, isAuthenticated, setIsAuthenticated }}>
-
       {children}
     </UserContext.Provider>
   );
