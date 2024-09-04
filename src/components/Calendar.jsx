@@ -39,11 +39,17 @@ const Calendar = () => {
     setEvents([...dbEvents, ...holidayEvents, ...googleEvents]);
   }, [dbEvents, holidayEvents, googleEvents]);
 
+  useEffect(()=>{
+    console.log('현재일정목록',events);
+  },[events])
+
   const fetchEventsFromDB = async () => {
     try {
       const response = await axios.get('http://localhost:8090/plan/api/schedules/all', {
         params: { userId: user.userId } // 쿼리 매개변수로 userId 전달
       });
+      console.log('DB데이터',response);
+
       const dbEvents = Array.isArray(response.data) ? response.data.map((event, index) => ({
         id: event.scheNum,
         title: event.scheTitle,
@@ -51,8 +57,8 @@ const Calendar = () => {
         end: event.scheEdDt + "T22:15:00+09:00",
         description: event.scheDesc || '',
         location: event.location || '',
-        backgroundColor: colorList[index % colorList.length],
-        borderColor: colorList[index % colorList.length]
+        backgroundColor: event.scheColor || colorList[index % colorList.length],
+        borderColor: event.scheColor || colorList[index % colorList.length]
       })) : [];
       setDbEvents(dbEvents);
     } catch (error) {
@@ -64,7 +70,7 @@ const Calendar = () => {
     try {
       const holidays = await fetchHolidaysFromGoogle(googleToken);
       setHolidayEvents(holidays);
-    // 공휴일 데이터 로깅
+      // 공휴일 데이터 로깅
     } catch (error) {
       console.error("공휴일 가져오기 실패 : ", error);
     }
@@ -161,26 +167,10 @@ const Calendar = () => {
     }
   };
 
-
   const handleGoogleLogin = () => {
     getGoogleToken(); // Google 로그인 함수 호출
 
   };
-
-  const handleEventClick = (eventInfo) => {
-    setSelectedEvent(eventInfo.event);
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-    setSelectedEvent(null);
-
-  };
-
-  const dataCheck = ()=>{
-    console.log([...events, ...dbEvents]);
-  }
 
   return (
     <div className={styles.calendarContainer}>
@@ -191,32 +181,30 @@ const Calendar = () => {
           <span>Google 계정 연동하기</span>
         </div>
       ) : null}
-      {googleToken ? ( // Google 로그인이 완료된 상태에서만 캘린더를 보여줍니다.
-        <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          events={events}
-          eventContent={(eventInfo) => (
-            <div>
-              <b>
-                {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false,
-                })}
-                {' - '}
-                {new Date(eventInfo.event.end).toLocaleTimeString('ko-KR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false,
-                })}
-              </b>
-              <br />
-              <i>{eventInfo.event.title}</i>
-            </div>
-          )}
-        />
-      ) : null}
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        events={events}
+        eventContent={(eventInfo) => (
+          <div>
+            <b>
+              {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })}
+              {' - '}
+              {new Date(eventInfo.event.end).toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })}
+            </b>
+            <br />
+            <i>{eventInfo.event.title}</i>
+          </div>
+        )}
+      />
     </div>
   );
 };

@@ -25,22 +25,7 @@ const TravelerMainPage = () => {
         throw new Error("시작 날짜와 종료 날짜를 설정하세요.");
       }
       const days = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1;
-
-      // 테마 이름을 URL 인코딩하여 백엔드에 전달
-      const encodedTheme = encodeURIComponent(theme);
-
-      const response = await fetch(
-        `/plan/api/schedules/travel/generate?userId=${user.userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${encodedTheme}&startDate=${startDate}&endDate=${endDate}`
-      );
-
-      if (!response.ok) {
-        throw new Error("일정 생성 중 오류 발생");
-      }
-
-      const data = await response.json();
-      localStorage.setItem("generatedSchedule", JSON.stringify(data));
-      
-      
+  
       navigate("/schedulemap", {
         state: {
           userId: user.userId,
