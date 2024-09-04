@@ -172,39 +172,64 @@ const Calendar = () => {
 
   };
 
+  const handleEventClick = (eventInfo) => {
+    setSelectedEvent(eventInfo.event);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedEvent(null);
+
+  };
+
+
+
   return (
     <div className={styles.calendarContainer}>
       <h1>Plan Maker Calendar</h1>
-      {isAuthenticated && !googleToken ? ( // 일반 로그인은 되어 있지만 Google 로그인은 안된 상태
+
+      {!googleToken && ( // Google 로그인되지 않은 경우에만 연동하기 버튼 표시
+
         <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
           <img src={googleIcon} alt="Google logo" width="20" />
           <span>Google 계정 연동하기</span>
         </div>
-      ) : null}
+
+
+      )}
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         events={events}
+        eventClick={handleEventClick}
         eventContent={(eventInfo) => (
           <div>
-            <b>
-              {new Date(eventInfo.event.start).toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              })}
-              {' - '}
-              {new Date(eventInfo.event.end).toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              })}
-            </b>
-            <br />
             <i>{eventInfo.event.title}</i>
           </div>
         )}
+        dayMaxEvents={2}
+        eventLimitClick="popover" // 'n more' 클릭 시 팝오버 형식으로 표시
       />
+
+      {modalIsOpen && selectedEvent && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>{selectedEvent.title}</h2>
+            <p><strong>시작:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
+            <p><strong>끝:</strong> {new Date(selectedEvent.end).toLocaleString()}</p>
+            {selectedEvent.description && (
+              <p><strong>설명:</strong> {selectedEvent.description}</p>
+            )}
+            {selectedEvent.location && (
+              <p><strong>위치:</strong> {selectedEvent.location}</p>
+            )}
+            <button onClick={closeModal}>닫기</button>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 };

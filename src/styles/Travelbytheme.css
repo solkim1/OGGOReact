@@ -1,0 +1,45 @@
+.travelbytheme-container {
+    text-align: center;
+    background-color: white; /* 배경색 고정 */
+    padding: 20px 0;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-button, .next-button {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.slides-container {
+    display: flex;
+    overflow: hidden;
+    max-width: 80%; /* 최대 너비를 설정하여 양옆 여백 최소화 */
+}
+
+.slide {
+    flex-shrink: 0;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.slide p {
+    margin-top: 10px;
+    font-size: 16px;
+}

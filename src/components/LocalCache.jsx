@@ -114,7 +114,7 @@ class LocalCache {
 
       // 로컬 스토리지에서 'isBusiness'만 남기고 삭제
       Object.keys(localStorage).forEach((key) => {
-        if (key !== "isBusiness") {
+        if (key !== "userMode") {
           localStorage.removeItem(key);
         }
       });
