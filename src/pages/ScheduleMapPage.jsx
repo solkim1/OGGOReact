@@ -1,21 +1,17 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios"; // REST API 요청을 처리하기 위한 axios 라이브러리
-import ScheduleMapBtn from "../components/ScheduleMapBtn"; // 일정 페이지의 버튼을 관리하는 컴포넌트
-import Map from "../components/Map"; // 지도를 표시하는 컴포넌트
-import DaySchedule from "../components/DaySchedule"; // 하루 일정을 표시하는 컴포넌트
-import logo from "../images/logo.png"; // 로고 이미지
-import styles from "../styles/ScheduleMapPage.module.css"; // 페이지의 스타일링
-import LocalCache from "../components/LocalCache"; // 로컬 캐시를 다루는 컴포넌트
-import { UserContext } from "../context/UserProvider"; // 사용자 정보를 관리하는 Context
-import { v4 as uuidv4 } from "uuid"; // 고유한 ID를 생성하기 위한 라이브러리
+import ScheduleMapBtn from "../components/ScheduleMapBtn";
+import Map from "../components/Map";
+import DaySchedule from "../components/DaySchedule";
+import logo from "../images/logo.png";
+import styles from "../styles/ScheduleMapPage.module.css";
+import LocalCache from "../components/LocalCache";
+import { UserContext } from "../context/UserProvider";
+import { v4 as uuidv4 } from "uuid";
 
 const ScheduleMapPage = () => {
-  // React Router의 훅을 사용하여 현재 위치 및 탐색 함수 가져오기
   const location = useLocation();
   const navigate = useNavigate();
-
-  // UserContext에서 사용자 정보 가져오기
   const { user } = useContext(UserContext);
 
   const {
@@ -158,14 +154,13 @@ const ScheduleMapPage = () => {
           if (firstLocation) {
             setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
           }
-          setScheduleTitle(data.title || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
+          setScheduleTitle(schedule?.scheTitle || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
         }
       } catch (error) {
-        // 오류 발생 시 에러 메시지를 출력하고 사용자에게 알림
         console.error("Error fetching data:", error);
         setError("일정을 생성하는 중 오류가 발생했습니다. 다시 시도해 주세요.");
       } finally {
-        setLoading(false); // 로딩 상태 해제
+        setLoading(false);
       }
     };
 
@@ -265,7 +260,6 @@ const ScheduleMapPage = () => {
     }
   };
 
-  // 일정을 저장하는 함수
   const handleSaveSchedule = async () => {
     try {
       let num;
@@ -321,27 +315,22 @@ const ScheduleMapPage = () => {
         });
       });
 
-      // 서버로 전송할 데이터를 콘솔에 출력 (디버깅 용도)
       console.log("Sending data:", scheduleDataArray);
 
-      // 서버에 일정 데이터를 저장하기 위한 API 요청 (POST 방식)
       const response = await fetch("/plan/api/schedules/save", {
-        method: "POST", // 데이터 전송 방식
-        body: JSON.stringify(scheduleDataArray), // 일정 데이터를 JSON 형태로 변환하여 전송
-        headers: { "Content-Type": "application/json" }, // JSON 데이터임을 명시
+        method: "POST",
+        body: JSON.stringify(scheduleDataArray),
+        headers: { "Content-Type": "application/json" },
       });
 
-      // 서버 응답이 성공적이지 않을 경우 오류 처리
       if (!response.ok) {
-        const errorData = await response.text(); // 오류 메시지 읽기
-        throw new Error(`일정 저장 실패: ${errorData}`); // 오류 메시지를 포함한 예외 발생
+        const errorData = await response.text();
+        throw new Error(`일정 저장 실패: ${errorData}`);
       }
 
-      // 서버 응답 결과를 텍스트로 받아옴
       const result = await response.text();
-      console.log("저장 결과:", result); // 저장 결과를 콘솔에 출력
+      console.log("저장 결과:", result);
 
-      // 일정 저장 성공 알림
       alert("모든 일정이 성공적으로 저장되었습니다.");
 
       const userMode = await LocalCache.readFromCache("userMode");
@@ -356,7 +345,6 @@ const ScheduleMapPage = () => {
         }
       }
     } catch (err) {
-      // 오류 발생 시 사용자에게 경고 메시지 표시 및 오류 로그 출력
       alert(`일정 저장 중 오류가 발생했습니다: ${err.message}`);
       console.error("일정 저장 중 오류 발생:", err);
     }
@@ -370,7 +358,6 @@ const ScheduleMapPage = () => {
     }
   };
 
-  // 이전 페이지로 이동하는 함수
   const handlePrevPage = () => {
     if (isResponsive) {
       setResponsivePageIndex((prev) => Math.max(prev - 1, 0));
@@ -401,17 +388,14 @@ const ScheduleMapPage = () => {
     return <p>Loading...</p>;
   }
 
-  // 오류 발생 시 표시할 내용
   if (error) {
     return <p>{error}</p>;
   }
 
-  // 데이터가 없을 때 표시할 내용
   if (Object.keys(locationData).length === 0) {
     return <p>데이터가 없습니다.</p>;
   }
 
-  // 홈 페이지로 이동하는 함수
   const goToHomePage = () => {
     if (isBusinessMode) {
       navigate("/business");
@@ -427,11 +411,13 @@ const ScheduleMapPage = () => {
         <h2 className={styles.scheduleTitleContainer}>
           <span className={styles.scheduleTitle}>{scheduleTitle}</span>
           <span className={styles.scheduleDate}>
-            {isExhibitionSchedule
-              ? startDate
-              : isThemeSchedule
-              ? `${startDate} - ${calculateEndDate(startDate, Object.keys(locationData).length)}`
-              : `${startDate} - ${endDate}`}
+            {isExhibitionSchedule ? (
+              startDate
+            ) : isThemeSchedule ? (
+              `${(schedule?.scheStDt || startDate)} - ${calculateEndDate(schedule?.scheStDt || startDate, Object.keys(locationData).length)}`
+            ) : (
+              `${(schedule?.scheStDt || startDate)} - ${(schedule?.scheEdDt || endDate)}`
+            )}
           </span>
         </h2>
         <div className={styles.buttonAndScheduleContainer}>
