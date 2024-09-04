@@ -24,6 +24,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
 
   useEffect(() => {
     setLoading(false);
+    console.log(schedules);
   }, [schedules]);
 
   const handleDelete = (scheduleNum) => {
@@ -71,16 +72,8 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   };
 
   const navigateToMap = (schedule) => {
-    if(LocalCache.readFromCache("userMode")!=null){
-      LocalCache.updateCache("userMode",schedule.isBusiness=="Y"?"business":"notBusiness");
-    }else{
-      LocalCache.writeToCache("userMode",schedule.isBusiness=="Y"?"business":"notBusiness");
-    }
-    nav("/schedulemap", { state: { 
-      scheNum: schedule.scheNum,
-      startDate: schedule.scheStDt,
-      endDate: schedule.scheEdDt
-    } });
+    LocalCache.writeToCache("userMode",schedule.isBusiness === 'Y' ? "business" : "traveler");
+    nav("/schedulemap", { state: { schedule } });
   }
 
   if (loading) {
@@ -90,7 +83,11 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   return (
     <div className={styles.scheduleList}>
       {schedules && schedules.length > 0 ? schedules.map(schedule => (
-        <div key={schedule.scheNum} className={styles.scheduleItem} onClick={() => navigateToMap(schedule)}>
+        <div key={schedule.scheNum} className={styles.scheduleItem} onClick={() => {
+          if (editingScheduleId !== schedule.scheNum) {
+            navigateToMap(schedule);
+          }
+        }}>
           <div className={styles.scheduleLeftIcons}>
             <div className={styles.icon}>
               <img
@@ -100,7 +97,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
                 onClick={(event) => toggleImportance(schedule.scheNum, event)}
               />
             </div>
-            <div className={styles.icon}>
+            <div className={styles.notClickabeIcon}>
               <img
                 src={schedule.isBusiness === 'Y' ? businessIcon : travelerIcon}
                 alt={schedule.isBusiness === 'Y' ? "Business" : "Travel"}
@@ -118,6 +115,11 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
                     onChange={(e) => setEditedTitle(e.target.value)}
                     className={styles.editInput}
                     onClick={(event) => event.stopPropagation()}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        saveChanges(event);
+                      }
+                    }}
                   />
                 ) : (
                   schedule.scheTitle
@@ -133,6 +135,11 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
                   onChange={(e) => setEditedDesc(e.target.value)}
                   className={styles.editInput}
                   onClick={(event) => event.stopPropagation()}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      saveChanges(event);
+                    }
+                  }}
                 />
               ) : (
                 schedule.scheDesc

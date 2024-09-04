@@ -84,7 +84,6 @@
   border-radius: 8px;
   margin-bottom: 10px;
   transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
-  cursor: pointer;
 }
 
 .scheduleItem:hover {
@@ -138,6 +137,13 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.notClickabeIcon{
+  width: 20px;
+  height: 20px;
   display: flex;
   justify-content: center;
   align-items: center;

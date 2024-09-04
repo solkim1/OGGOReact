@@ -1,8 +1,6 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import RecommendationsExhibition from "../components/RecommendationsExhibition";
 import styles from "../styles/BusinessMainPage.module.css";
 
