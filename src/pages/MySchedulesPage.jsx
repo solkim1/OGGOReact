@@ -6,6 +6,7 @@ import TravelSchedules from "../components/TravelSchedules";
 import BusinessSchedules from "../components/BusinessSchedules";
 import ImportantSchedules from "../components/ImportantSchedules";
 import { UserContext } from "../context/UserProvider";
+import { HeaderColorContext } from "../context/HeaderColorContext"; // 추가
 
 const MySchedulesPage = () => {
   // 활성화된 탭 상태를 저장합니다.
@@ -17,6 +18,8 @@ const MySchedulesPage = () => {
 
   // 사용자 정보를 UserContext에서 가져옵니다.
   const { user } = useContext(UserContext);
+
+  const { headerColor } = useContext(HeaderColorContext); // 헤더 컬러 컨텍스트 사용
 
   useEffect(() => {
     // 사용자가 로그인된 경우 일정 수와 일정을 가져옵니다.
@@ -101,6 +104,7 @@ const MySchedulesPage = () => {
   return (
     <div className={styles.pageContainer}>
       {/* 탭 헤더 영역 */}
+      <div style={{ backgroundColor: headerColor }}>
       <div className={styles.headerBlock}>
         <div className={styles.tabContainer}>
           {[
@@ -121,6 +125,7 @@ const MySchedulesPage = () => {
             </div>
           ))}
         </div>
+      </div>
       </div>
       {/* 일정 목록 영역 */}
       <div className={styles.container}>{renderSchedules()}</div>

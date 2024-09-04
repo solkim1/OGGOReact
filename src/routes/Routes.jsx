@@ -1,4 +1,3 @@
-
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Header from "../components/Header";
@@ -12,6 +11,7 @@ import MyPage from "../pages/MyPage";
 import MySchedulesPage from "../pages/MySchedulesPage";
 import BusinessMainPage from "../pages/BusinessMainPage";
 import { UserContext } from "../context/UserProvider";
+import { HeaderColorProvider } from "../context/HeaderColorContext"; // 추가
 import styles from "../styles/AppRoutes.module.css";
 
 const AppRoutes = () => {
@@ -50,7 +50,11 @@ const AppRoutes = () => {
     );
   };
 
-  return <Router>{isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}</Router>;
+  return (
+    <HeaderColorProvider>  {/* HeaderColorProvider로 감싸줍니다 */}
+      <Router>{isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}</Router>
+    </HeaderColorProvider>
+  );
 };
 
 export default AppRoutes;

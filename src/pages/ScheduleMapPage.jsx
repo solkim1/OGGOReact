@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useContext } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ScheduleMapBtn from "../components/ScheduleMapBtn";
 import Map from "../components/Map";
@@ -23,8 +23,6 @@ const ScheduleMapPage = () => {
     theme = "레포츠",
     startDate,
     endDate,
-    exhibitionData,
-    exhibitionName,
     isBusiness = false,
     region = "서울",
     includeOptions = ["전시회", "식당", "카페"],
@@ -39,25 +37,39 @@ const ScheduleMapPage = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 37.5666103, lng: 126.9783882 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+
+  // 인덱스 관리
+  const [responsivePageIndex, setResponsivePageIndex] = useState(0);
+  const [standardPageIndex, setStandardPageIndex] = useState(0);
+  const [isResponsive, setIsResponsive] = useState(window.innerWidth <= 1024);
+
+  const [scheduleItemsPerPage, setScheduleItemsPerPage] = useState(isResponsive ? 1 : 3);
+
   const [isThemeSchedule, setIsThemeSchedule] = useState(false);
   const [isExhibitionSchedule, setIsExhibitionSchedule] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1024) {
-        setItemsPerPage(1);
-      } else {
-        setItemsPerPage(3);
+      const isResponsiveMode = window.innerWidth <= 1024;
+
+      if (isResponsiveMode !== isResponsive) {
+        setIsResponsive(isResponsiveMode);
+
+        if (isResponsiveMode) {
+          setResponsivePageIndex(0);
+        } else {
+          setStandardPageIndex(0);
+        }
       }
+
+      setScheduleItemsPerPage(isResponsiveMode ? 1 : 3);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [isResponsive]);
 
   useEffect(() => {
     const fetchInitialMode = async () => {
@@ -115,7 +127,7 @@ const ScheduleMapPage = () => {
           if (firstLocation) {
             setMapCenter({ lat: parseFloat(firstLocation.lat), lng: parseFloat(firstLocation.lng) });
           }
-          setScheduleTitle(data.title || (isBusinessMode ? "출장 일정" : "여행 일정"));
+          setScheduleTitle(data.title || (isBusinessMode ? "💼출장 일정💼" : "✈️여행 일정✈️"));
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -147,16 +159,60 @@ const ScheduleMapPage = () => {
   const handleRegenerate = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/plan/api/schedules/regenerate", {
-        method: "POST",
-        body: JSON.stringify({ selectedDay, locationData: locationData[selectedDay] }),
-        headers: { "Content-Type": "application/json" },
+      const excludedItems = {};
+      Object.entries(locationData).forEach(([day, locations]) => {
+        const excluded = locations.filter((item) => item.excluded);
+        if (excluded.length > 0) {
+          excludedItems[day] = excluded.map((item) => ({
+            name: item.name,
+            type: item.type,
+            lat: item.lat,
+            lng: item.lng,
+            departTime: item.departTime,
+            arriveTime: item.arriveTime,
+          }));
+        }
       });
+
+      if (Object.keys(excludedItems).length === 0) {
+        alert("재생성할 일정을 체크해주세요.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/plan/api/schedules/recall", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(excludedItems),
+      });
+
       if (!response.ok) {
         throw new Error("Failed to regenerate schedule");
       }
+
       const data = await response.json();
-      setLocationData((prevData) => ({ ...prevData, [selectedDay]: data[selectedDay] }));
+      console.log("Received data from server:", data);
+
+      if (Object.keys(data).length === 0) {
+        alert("재생성된 일정 데이터가 없습니다. 다시 시도해 주세요.");
+        setLoading(false);
+        return;
+      }
+
+      setLocationData((prevData) => {
+        const updatedData = { ...prevData };
+
+        Object.entries(data).forEach(([day, newItems]) => {
+          updatedData[day] = updatedData[day].map((item) => {
+            const newItem = newItems.find((newItem) => item.excluded && newItem.departTime === item.departTime);
+            return newItem ? newItem : item;
+          });
+        });
+
+        LocalCache.writeToCache("scheduleData", updatedData);
+
+        return updatedData;
+      });
     } catch (err) {
       setError("일정 재생성에 실패했습니다: " + err.message);
     } finally {
@@ -175,7 +231,7 @@ const ScheduleMapPage = () => {
       const scheduleDataArray = Object.entries(currentLocationData).flatMap(([day, locations]) => {
         const dayIndex = parseInt(day.replace("day", "")) - 1;
         const currentStartDate = new Date(baseDate);
-        currentStartDate.setDate(baseDate.getDate() + dayIndex);
+        currentStartDate.setDate(currentStartDate.getDate() + dayIndex);
         const formattedStartDate = currentStartDate.toISOString().split("T")[0];
 
         return locations.map((loc) => {
@@ -228,6 +284,14 @@ const ScheduleMapPage = () => {
       console.log("저장 결과:", result);
 
       alert("모든 일정이 성공적으로 저장되었습니다.");
+
+      const userMode = await LocalCache.readFromCache("userMode");
+
+      if (userMode === "business") {
+        navigate("/business");
+      } else {
+        navigate("/traveler");
+      }
     } catch (err) {
       alert(`일정 저장 중 오류가 발생했습니다: ${err.message}`);
       console.error("일정 저장 중 오류 발생:", err);
@@ -235,21 +299,31 @@ const ScheduleMapPage = () => {
   };
 
   const handleNextPage = () => {
-    const nextPageIndex = pageIndex + 1;
-    setPageIndex(nextPageIndex);
+    if (isResponsive) {
+      setResponsivePageIndex((prev) => Math.min(prev + 1, totalSchedulePages - 1));
+    } else {
+      setStandardPageIndex((prev) => Math.min(prev + 1, totalSchedulePages - 1));
+    }
   };
 
   const handlePrevPage = () => {
-    setPageIndex((prev) => Math.max(prev - 1, 0));
+    if (isResponsive) {
+      setResponsivePageIndex((prev) => Math.max(prev - 1, 0));
+    } else {
+      setStandardPageIndex((prev) => Math.max(prev - 1, 0));
+    }
   };
 
-  const totalPages = useMemo(() => Math.ceil(days / itemsPerPage), [days, itemsPerPage]);
-  const displayedDays = useMemo(
+  // 페이지 수 계산
+  const totalSchedulePages = Math.ceil(Object.keys(locationData).length / scheduleItemsPerPage);
+
+  const displayedScheduleDays = useMemo(
     () =>
-      Array.from({ length: itemsPerPage }, (_, i) => `day${pageIndex * itemsPerPage + i + 1}`).filter(
-        (day) => locationData[day]
-      ),
-    [locationData, pageIndex, itemsPerPage]
+      Array.from(
+        { length: scheduleItemsPerPage },
+        (_, i) => `day${(isResponsive ? responsivePageIndex : standardPageIndex) * scheduleItemsPerPage + i + 1}`
+      ).filter((day) => locationData[day]),
+    [locationData, scheduleItemsPerPage, isResponsive, responsivePageIndex, standardPageIndex]
   );
 
   const calculateEndDate = (startDate, days) => {
@@ -299,18 +373,19 @@ const ScheduleMapPage = () => {
               handleSaveSchedule={handleSaveSchedule}
               handleNextPage={handleNextPage}
               handlePrevPage={handlePrevPage}
-              pageIndex={pageIndex}
-              totalPages={totalPages}
+              pageIndex={isResponsive ? responsivePageIndex : standardPageIndex}
+              totalPages={totalSchedulePages}
+              setSelectedDay={setSelectedDay}
             />
           </div>
           <DaySchedule
             handleNextPage={handleNextPage}
             handlePrevPage={handlePrevPage}
-            pageIndex={pageIndex}
-            totalPages={totalPages}
+            pageIndex={isResponsive ? responsivePageIndex : standardPageIndex}
+            totalPages={totalSchedulePages}
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}
-            locationData={displayedDays.reduce((acc, day) => {
+            locationData={displayedScheduleDays.reduce((acc, day) => {
               acc[day] = locationData[day] || [];
               return acc;
             }, {})}
