@@ -27,8 +27,9 @@ const ScheduleMapPage = () => {
     includeOptions,
     startTime,
     endTime,
-    scheNum,
   } = location.state || {};
+
+  const { schedule } = location.state;
 
   // 두 날짜 사이의 일수 계산
   const calculateDaysBetween = (startDate, endDate) => {
@@ -99,8 +100,6 @@ const ScheduleMapPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        console.log("Current isBusinessMode:", isBusinessMode);
-
         const cachedData = await LocalCache.readFromCache("scheduleData");
 
         if (cachedData) {
@@ -125,7 +124,7 @@ const ScheduleMapPage = () => {
           setScheduleTitle(`${location.state.exhibitionName} 전시회 일정`);
           setLoading(false);
         } else {
-          if (!scheNum) {
+          if (!schedule) {
             if (isBusinessMode) {
               fetchUrl = await generateBusinessPrompt();
             } else {
@@ -134,8 +133,6 @@ const ScheduleMapPage = () => {
           } else {
             fetchUrl = await patchschedule();
           }
-
-          console.log("Fetch URL:", fetchUrl);
 
           const response = await fetch(fetchUrl);
           if (!response.ok) {
@@ -170,7 +167,7 @@ const ScheduleMapPage = () => {
     fetchData();
 
     return () => {
-      LocalCache.clearAllCache();
+      LocalCache.clearAllExceptBusiness();
     };
   }, [location.state, isBusinessMode]);
 
@@ -192,7 +189,7 @@ const ScheduleMapPage = () => {
   };
 
   const patchschedule = async () => {
-    return `/plan/api/schedules/patchschedule?scheNum=${scheNum}`;
+    return `/plan/api/schedules/patchschedule?scheNum=${schedule.scheNum}`;
   };
 
   const handleRegenerate = async () => {
@@ -266,21 +263,24 @@ const ScheduleMapPage = () => {
   const handleSaveSchedule = async () => {
     try {
       let num;
-      if (scheNum) {
-        num = scheNum;
+      let baseDate;
+      if (schedule) {
+        num = schedule.scheNum;
+        baseDate = new Date(schedule.scheStDt);
       } else {
         num = uuidv4();
+        baseDate = new Date(startDate);
       }
-      const baseDate = new Date(startDate);
 
       const cachedData = await LocalCache.readFromCache("scheduleData");
       const currentLocationData = cachedData || locationData;
 
       const scheduleDataArray = Object.entries(currentLocationData).flatMap(([day, locations]) => {
         const dayIndex = parseInt(day.replace("day", "")) - 1;
+
         const currentStartDate = new Date(baseDate);
         currentStartDate.setDate(currentStartDate.getDate() + dayIndex);
-        const formattedStartDate = currentStartDate.toISOString().split("T")[0];
+        const formattedStartDate = currentStartDate.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
 
         return locations.map((loc) => {
           let departTime = loc.departTime;
@@ -295,7 +295,7 @@ const ScheduleMapPage = () => {
           if (!arriveTime) arriveTime = "18:00";
 
           return {
-            scheduleDesc: "일정을 입력하세요",
+            scheduleDesc: schedule?.scheDesc || "일정을 입력하세요",
             userId: user?.userId,
             title: scheduleTitle,
             scheNum: num,
@@ -335,10 +335,14 @@ const ScheduleMapPage = () => {
 
       const userMode = await LocalCache.readFromCache("userMode");
 
-      if (userMode === "business") {
-        navigate("/business");
+      if (schedule) {
+        navigate("/myschedules");
       } else {
-        navigate("/traveler");
+        if (userMode === "business") {
+          navigate("/business");
+        } else {
+          navigate("/traveler");
+        }
       }
     } catch (err) {
       alert(`일정 저장 중 오류가 발생했습니다: ${err.message}`);

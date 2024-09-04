@@ -89,6 +89,28 @@ class LocalCache {
       console.error("Error clearing all caches:", error);
     }
   }
+
+  static async clearAllExceptBusiness() {
+    try {
+      const cache = await caches.open("sick-cache-v1");
+      const keys = await cache.keys();
+
+      // 'isBusiness' 값을 제외한 모든 캐시 삭제
+      for (const key of keys) {
+        if (key.url.includes("isBusiness")) continue; // isBusiness 키는 삭제하지 않음
+        await cache.delete(key);
+      }
+
+      // 로컬 스토리지에서 'isBusiness'만 남기고 삭제
+      Object.keys(localStorage).forEach((key) => {
+        if (key !== "isBusiness") {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (error) {
+      console.error("Error clearing all caches except 'isBusiness':", error);
+    }
+  }
 }
 
 export default LocalCache;
