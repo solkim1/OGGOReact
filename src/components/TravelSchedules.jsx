@@ -93,13 +93,7 @@ const TravelSchedules = ({ schedules, fetchSchedules }) => {
               />
             </div>
 
-            <div className={styles.icon}>
-              <img
-                src={travelerIcon}
-                alt="Travel"
-                className={styles.scheduleIcon}
-              />
-            </div>
+        
 
           </div>
           <div className={styles.scheduleContent}>

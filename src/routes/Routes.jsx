@@ -6,7 +6,6 @@ import JoinPage from "../pages/JoinPage";
 import TravelerMainPage from "../pages/TravelerMainPage";
 import ScheduleMapPage from "../pages/ScheduleMapPage";
 import LoginPage from "../pages/LoginPage";
-import LandingPage from "../pages/LandingPage";
 import MyPage from "../pages/MyPage";
 import MySchedulesPage from "../pages/MySchedulesPage";
 import BusinessMainPage from "../pages/BusinessMainPage";
@@ -21,10 +20,10 @@ const AppRoutes = () => {
     <div className={styles.pageContainer}>
       <div className={styles.contentWrap}>
         <Routes>
-          <Route path="/join" element={<JoinPage />} />
+          <Route path="/" element={<LoginPage />} /> {/* 로그인 페이지가 시작 화면 */}
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/join" element={<JoinPage />} />
+          <Route path="*" element={<Navigate to="/login" />} /> {/* 로그인 페이지로 리다이렉트 */}
         </Routes>
       </div>
     </div>

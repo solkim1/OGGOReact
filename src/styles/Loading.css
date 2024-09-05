@@ -1,0 +1,15 @@
+/* Loading.css */
+.loading-container {
+  display: flex;
+  flex-direction: column; /* 수직 방향으로 정렬 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
+  position: fixed; /* 페이지 전체를 덮도록 고정 위치 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* 뷰포트의 전체 너비 */
+  height: 100vh; /* 뷰포트의 전체 높이 */
+  background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+  z-index: 9999; /* 다른 요소들 위에 표시되도록 z-index 설정 */
+  text-align: center;
+}
