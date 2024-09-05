@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import LocalCache from "../components/LocalCache";
-import spPinsSpotV3 from "../images/sp_pins_spot_v3.png";
-import spPinsSpotV3Over from "../images/sp_pins_spot_v3_over.png";
+import spPinsSpotV3 from "../images/icons/sp_pins_spot_v3.png";
+import spPinsSpotV3Over from "../images/icons/sp_pins_spot_v3_over.png";
 import styles from "../styles/Map.module.css";
 
 const Map = ({ locations, center }) => {

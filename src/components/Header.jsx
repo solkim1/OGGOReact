@@ -1,18 +1,14 @@
-import React, { useState,useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserProvider";
-import WeatherWidget from "./WeatherWidget";
-import Calendar from "./Calendar";
-import logoImage from "../images/logo.png";
-import calendarIcon from "../images/calendar.png";
-import scheduleIcon from "../images/schedule.png";
-import mypageIcon from "../images/mypage.png";
-import logoutIcon from "../images/logout.png";
-import travelerIcon from "../images/traveler-icon.png";
-import businessIcon from "../images/business-icon.png";
-import { HeaderColorContext } from "../context/HeaderColorContext"; // 추가
-import styles from "../styles/Header.module.css";
-import LocalCache from "../components/LocalCache";
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserProvider';
+import WeatherWidget from './WeatherWidget';
+import Calendar from './Calendar';
+import logoImage from "../images/icons/logo.png";
+import travelerIcon from '../images/icons/traveler-icon.png';
+import businessIcon from '../images/icons/business-icon.png';
+import { HeaderColorContext } from '../context/HeaderColorContext'; // 추가
+import styles from '../styles/Header.module.css';
+import LocalCache from '../components/LocalCache';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -23,9 +19,9 @@ const Header = () => {
 
   useEffect(() => {
     const fetchInitialMode = async () => {
-      const cachedMode = await LocalCache.readFromCache("userMode");
+      const cachedMode = await LocalCache.readFromCache('userMode');
       if (cachedMode) {
-        setIsBusinessMode(cachedMode === "business");
+        setIsBusinessMode(cachedMode === 'business');
       }
     };
     fetchInitialMode();
@@ -35,10 +31,10 @@ const Header = () => {
     const newMode = !isBusinessMode;
     setIsBusinessMode(newMode);
 
-    const modeToSave = newMode ? "business" : "traveler";
-    await LocalCache.writeToCache("userMode", modeToSave);
+    const modeToSave = newMode ? 'business' : 'traveler';
+    await LocalCache.writeToCache('userMode', modeToSave);
 
-    navigate(newMode ? "/business" : "/traveler");
+    navigate(newMode ? '/business' : '/traveler');
   };
 
   const toggleCalendar = () => {
@@ -57,14 +53,14 @@ const Header = () => {
 
   const logoutBtn = () => {
     logout();
-    alert("로그아웃 되었습니다");
+    alert('로그아웃 되었습니다');
   };
 
   const goToHomePage = () => {
     if (isBusinessMode) {
-      navigate("/business");
+      navigate('/business');
     } else {
-      navigate("/traveler");
+      navigate('/traveler');
     }
   };
 
@@ -78,27 +74,27 @@ const Header = () => {
           <div className={styles.rightContent}>
             <WeatherWidget />
             <div className={styles.headerButtons}>
-              <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`} onClick={toggleMode}>
+              <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ''}`} onClick={toggleMode}>
                 <div className={styles.toggleCircle}>
                   <img
                     src={isBusinessMode ? businessIcon : travelerIcon}
-                    alt={isBusinessMode ? "출장자 모드 아이콘" : "여행자 모드 아이콘"}
+                    alt={isBusinessMode ? '출장자 모드 아이콘' : '여행자 모드 아이콘'}
                     className={styles.modeIcon}
                   />
                 </div>
                 <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
-                  {isBusinessMode ? "출장자 모드" : "여행자 모드"}
+                  {isBusinessMode ? '출장자 모드' : '여행자 모드'}
                 </span>
               </div>
               <button className={styles.navButton} onClick={toggleCalendar}>
                 {/* <img src={calendarIcon} alt="Calendar" className={styles.buttonIcon} /> */}
                 여행캘린더
               </button>
-              <button className={styles.navButton} onClick={() => navigate("/myschedules")}>
+              <button className={styles.navButton} onClick={() => navigate('/myschedules')}>
                 {/* <img src={scheduleIcon} alt="Schedule" className={styles.buttonIcon} /> */}
                 나의일정
               </button>
-              <button className={styles.navButton} onClick={() => navigate("/mypage")}>
+              <button className={styles.navButton} onClick={() => navigate('/mypage')}>
                 {/* <img src={mypageIcon} alt="My Page" className={styles.buttonIcon} /> */}
                 마이페이지
               </button>

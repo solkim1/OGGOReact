@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "../styles/MySchedulesPage.module.css";
-import filledStar from "../images/filled_star.png";
-import emptyStar from "../images/empty_star.png";
-import deleteIcon from "../images/delete.png";
-import editIcon from "../images/write.png";
-import saveIcon from "../images/save.png";
-import businessIcon from "../images/business-icon.png";
-import travelerIcon from "../images/traveler-icon.png";
-import axios from "axios";
-import DeleteModal from "../pages/DeleteModal";
-import LocalCache from "./LocalCache";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from '../styles/MySchedulesPage.module.css';
+import filledStar from '../images/icons/filled_star.png';
+import emptyStar from '../images/icons/empty_star.png';
+import deleteIcon from '../images/icons/delete.png';
+import editIcon from '../images/icons/write.png';
+import saveIcon from '../images/icons/save.png';
+import axios from 'axios';
+import DeleteModal from '../pages/DeleteModal';
+import LocalCache from './LocalCache';
 
 const ScheduleList = ({ schedules, fetchSchedules }) => {
   const [loading, setLoading] = useState(true);
   const [editingScheduleId, setEditingScheduleId] = useState(null);
-  const [editedTitle, setEditedTitle] = useState("");
-  const [editedDesc, setEditedDesc] = useState("");
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedDesc, setEditedDesc] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scheduleToDelete, setScheduleToDelete] = useState(null);
 
@@ -28,12 +26,13 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   }, [schedules]);
 
   const handleDelete = (scheduleNum) => {
-    axios.delete(`/plan/api/schedules/delete/${scheduleNum}`)
+    axios
+      .delete(`/plan/api/schedules/delete/${scheduleNum}`)
       .then(() => {
         fetchSchedules();
         setIsModalOpen(false);
       })
-      .catch((error) => console.error("Error deleting schedule:", error));
+      .catch((error) => console.error('Error deleting schedule:', error));
   };
 
   const toggleImportance = (scheduleNum, event) => {
@@ -41,7 +40,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
     axios
       .put(`/plan/api/schedules/toggleImportance/${scheduleNum}`)
       .then(() => fetchSchedules())
-      .catch((error) => console.error("Error updating importance:", error));
+      .catch((error) => console.error('Error updating importance:', error));
   };
 
   const startEditing = (schedule, event) => {
@@ -54,9 +53,9 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   const saveChanges = (event) => {
     event.stopPropagation();
     const params = new URLSearchParams();
-    params.append("scheNum", editingScheduleId);
-    params.append("scheTitle", editedTitle);
-    params.append("scheDesc", editedDesc);
+    params.append('scheNum', editingScheduleId);
+    params.append('scheTitle', editedTitle);
+    params.append('scheDesc', editedDesc);
 
     axios
       .put(`/plan/api/schedules/update`, params)
@@ -64,7 +63,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
         setEditingScheduleId(null);
         fetchSchedules();
       })
-      .catch((error) => console.error("Error updating schedule:", error));
+      .catch((error) => console.error('Error updating schedule:', error));
   };
 
   const openDeleteModal = (scheduleNum, event) => {
@@ -74,8 +73,8 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   };
 
   const navigateToMap = (schedule) => {
-    LocalCache.writeToCache("userMode", schedule.isBusiness === "Y" ? "business" : "traveler");
-    nav("/schedulemap", { state: { schedule } });
+    LocalCache.writeToCache('userMode', schedule.isBusiness === 'Y' ? 'business' : 'traveler');
+    nav('/schedulemap', { state: { schedule } });
   };
 
   if (loading) {
@@ -98,17 +97,10 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
             <div className={styles.scheduleLeftIcons}>
               <div className={styles.icon}>
                 <img
-                  src={schedule.isImportance === "Y" ? filledStar : emptyStar}
+                  src={schedule.isImportance === 'Y' ? filledStar : emptyStar}
                   alt="Importance"
                   className={styles.star}
                   onClick={(event) => toggleImportance(schedule.scheNum, event)}
-                />
-              </div>
-              <div className={styles.notClickabeIcon}>
-                <img
-                  src={schedule.isBusiness === "Y" ? businessIcon : travelerIcon}
-                  alt={schedule.isBusiness === "Y" ? "Business" : "Travel"}
-                  className={styles.scheduleIcon}
                 />
               </div>
             </div>
@@ -123,7 +115,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
                       className={styles.editInput}
                       onClick={(event) => event.stopPropagation()}
                       onKeyDown={(event) => {
-                        if (event.key === "Enter") {
+                        if (event.key === 'Enter') {
                           saveChanges(event);
                         }
                       }}
@@ -145,7 +137,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
                     className={styles.editInput}
                     onClick={(event) => event.stopPropagation()}
                     onKeyDown={(event) => {
-                      if (event.key === "Enter") {
+                      if (event.key === 'Enter') {
                         saveChanges(event);
                       }
                     }}
