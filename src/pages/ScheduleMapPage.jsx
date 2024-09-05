@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ScheduleMapBtn from "../components/ScheduleMapBtn";
 import Map from "../components/Map";
 import DaySchedule from "../components/DaySchedule";
-import logo from "../images/logo.png";
+import logo from "../images/icons/logo.png";
 import styles from "../styles/ScheduleMapPage.module.css";
 import LocalCache from "../components/LocalCache";
 import { UserContext } from "../context/UserProvider";
