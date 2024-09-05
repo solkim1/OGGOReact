@@ -657,31 +657,164 @@ div {
     background-position: 0 -16px;
 }
 
-@media screen and (min-width: 1023px) and (max-width: 1700px) {
-    .main_showcase .swiper-slide {
-        width: 100%;
-    }
+/* ai 필터섹션이랑 반응형 */
+.filterContainer {
+    max-width: 1200px;
+    margin: 0 auto 20px auto;
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .filterSection {
+    display: flex;
+    flex-grow: 1;
+    gap: 15px;
+  }
+  
+  .filterItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .filterItem:nth-child(1) {
+    flex: 2;
+    min-width: 240px;
+  }
+  
+  .filterItem:not(:nth-child(1)) {
+    flex: 1;
+    min-width: 100px;
+  }
+  
+  .filterLabel {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+    text-align: left;
+    margin-left: 13.5px;
+  }
+  
+  .filterInput,
+  .filterSelect {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+  }
+  
 
-    .main_showcase .tit_wrap .tit {
-        width: 65%;
-        margin: 4.7vw 0 0;
-    }
+  
+  .dateInputContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .dateInput {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .scheduleButton {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 70px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 15px;
+  }
+  
+  .scheduleButton:hover {
+    background-color: #c0392b;
+  }
+  
+  .titleSection {
+    text-align: left;
+    margin-bottom: 20px;
 
-    .main_showcase .tit_wrap em {
-        height: 1.8vw;
-        line-height: 1.7vw;
-        font-size: 1.2vw;
+    padding-left: 119px;
+  }
+  
+  .titleImage {
+    max-width: 500px;
+    height: auto;
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .filterSection {
+      flex-wrap: wrap;
     }
+  
+    .filterItem {
+      flex-basis: calc(33.333% - 10px);
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .filterContainer {
+      flex-direction: column;
+      border-radius: 20px;
+      padding: 20px;
+    }
+  
+    .filterSection {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .filterItem {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  
+    .scheduleButton {
+      margin-top: 15px;
+      width: 100%;
+      border-radius: 25px;
+    }
+  
+    .titleSection {
+      padding-left: 20px;
+    }
+  
+    .titleImage {
+      max-width: 100%;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .filterContainer {
+      padding: 15px;
+    }
+  
+    .filterLabel {
+      font-size: 13px;
+    }
+  
+    .filterInput,
+    .filterSelect,
+    .scheduleButton {
+      font-size: 14px;
+    }
+  
+    .dateInputContainer {
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
 
-    .main_showcase .tit_wrap strong {
-        margin: 2.6vw 0 1.2vw;
-        font-size: 2.3vw;
-        line-height: 2.7vw;
-        letter-spacing: -0.2vw;
-    }
-
-    .main_showcase .tit_wrap a {
-        font-size: 1.2vw;
-        letter-spacing: 0;
-    }
-}
+  

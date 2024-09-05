@@ -4,6 +4,7 @@ import { UserContext } from '../context/UserProvider';
 import { useNavigate, Link } from 'react-router-dom';
 import debounce from 'lodash/debounce';
 import styles from '../styles/LoginJoin.module.css';
+import happy from '../images/happy.gif';
 
 // 이미지 파일 불러오기
 import planeImage from '../images/plain2.png';
@@ -14,7 +15,7 @@ import googleIcon from '../images/googleIcon.png';
 
 const JoinPage = () => {
   const nav = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
-  const { loginWithGoogle, getGoogleToken} = useContext(UserContext); // Google 로그인 함수 가져오기
+  const { loginWithGoogle, getGoogleToken } = useContext(UserContext); // Google 로그인 함수 가져오기
 
   // 백으로 보낼 회원가입 데이터 상태 관리
   const [formData, setFormData] = useState({
@@ -170,138 +171,132 @@ const JoinPage = () => {
 
   return (
     <div className={styles.container}>
+          <div className={styles.formContainer}>
+            <h1 className={styles.title}>
+              <Link to="/"><img src={logoImage} alt="Logo" /></Link>
+            </h1>
 
-      <div className={styles.imageContainer}>
-        <img src={planeImage} alt="Airplane" />
-      </div>
+            {/* 폼 요소를 <form>으로 감싸기 */}
+            <form onSubmit={join}>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>아이디</label>
+                <input
+                  type="text"
+                  placeholder="아이디를 입력하세요"
+                  className={`${styles.inputField} ${!userIdValid ? styles.error : ''}`}
+                  name='userId'
+                  value={formData.userId}
+                  onChange={handleChange}
+                />
+                {formData.userId !== '' ? (
+                  <span className={!userIdValid ? styles.errorMessage : styles.successMessage}>
+                    {!userIdValid ? '이미 사용중인 아이디입니다' : '사용 가능한 아이디입니다'}
+                  </span>
+                ) : (
+                  <span></span>
+                )}
+              </div>
 
-      <div className={styles.formContainer}>
-        <h1 className={styles.title}>
-          <Link to="/"><img src={logoImage} alt="Logo" /></Link>
-        </h1>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>이메일</label>
+                <input
+                  type="text"
+                  placeholder="이메일을 입력하세요"
+                  className={`${styles.inputField} ${!emailValid ? styles.error : ''}`}
+                  name='userEmail'
+                  value={formData.userEmail}
+                  onChange={handleChange}
+                  autoComplete="new-email"
+                />
+                {formData.userEmail !== '' ? (
+                  !emailValid ? (
+                    <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
+                  ) : !emailDuplicate ? (
+                    <span className={styles.errorMessage}>이미 사용중인 이메일입니다</span>
+                  ) : (
+                    <span className={styles.successMessage}>사용 가능한 이메일입니다</span>
+                  )
+                ) : (
+                  <span></span>
+                )}
+              </div>
 
-        {/* 폼 요소를 <form>으로 감싸기 */}
-        <form onSubmit={join}>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>아이디</label>
-            <input
-              type="text"
-              placeholder="아이디를 입력하세요"
-              className={`${styles.inputField} ${!userIdValid ? styles.error : ''}`}
-              name='userId'
-              value={formData.userId}
-              onChange={handleChange}
-            />
-            {formData.userId !== '' ? (
-              <span className={!userIdValid ? styles.errorMessage : styles.successMessage}>
-                {!userIdValid ? '이미 사용중인 아이디입니다' : '사용 가능한 아이디입니다'}
-              </span>
-            ) : (
-              <span></span>
-            )}
-          </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>닉네임</label>
+                <input
+                  type="text"
+                  placeholder="닉네임을 입력하세요"
+                  className={styles.inputField}
+                  name='userNick'
+                  value={formData.userNick}
+                  onChange={handleChange}
+                  autoComplete="new-nickname"
+                />
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>이메일</label>
-            <input
-              type="text"
-              placeholder="이메일을 입력하세요"
-              className={`${styles.inputField} ${!emailValid ? styles.error : ''}`}
-              name='userEmail'
-              value={formData.userEmail}
-              onChange={handleChange}
-              autoComplete="new-email" 
-            />
-            {formData.userEmail !== '' ? (
-              !emailValid ? (
-                <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
-              ) : !emailDuplicate ? (
-                <span className={styles.errorMessage}>이미 사용중인 이메일입니다</span>
-              ) : (
-                <span className={styles.successMessage}>사용 가능한 이메일입니다</span>
-              )
-            ) : (
-              <span></span>
-            )}
-          </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>패스워드</label>
+                <div className={styles.passwordContainer}>
+                  <input
+                    type={pwVisible ? "text" : "password"}
+                    placeholder="비밀번호를 입력하세요"
+                    className={styles.inputField}
+                    name='userPw'
+                    value={formData.userPw}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className={styles.eyeButton}
+                    onClick={togglePwVisibility}
+                  >
+                    <img className={styles.eyeImg}
+                      src={pwVisible ? closeEyeIcon : eyeIcon}
+                      alt="Toggle visibility" />
+                  </button>
+                </div>
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>닉네임</label>
-            <input
-              type="text"
-              placeholder="닉네임을 입력하세요"
-              className={styles.inputField}
-              name='userNick'
-              value={formData.userNick}
-              onChange={handleChange}
-              autoComplete="new-nickname" 
-            />
-          </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>패스워드 재입력</label>
+                <div className={styles.passwordContainer}>
+                  <input
+                    type={pwVisible ? "text" : "password"}
+                    placeholder="비밀번호를 다시 입력하세요"
+                    className={`${styles.inputField} ${!pwMatch ? styles.error : ''}`}
+                    name='pwCheck'
+                    value={formData.pwCheck}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className={styles.eyeButton}
+                    onClick={togglePwVisibility}
+                  >
+                    <img className={styles.eyeImg}
+                      src={pwVisible ? closeEyeIcon : eyeIcon}
+                      alt="Toggle visibility" />
+                  </button>
+                </div>
+                {!pwMatch && (
+                  <span className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</span>
+                )}
+              </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>패스워드</label>
-            <div className={styles.passwordContainer}>
-              <input
-                type={pwVisible ? "text" : "password"}
-                placeholder="비밀번호를 입력하세요"
-                className={styles.inputField}
-                name='userPw'
-                value={formData.userPw}
-                onChange={handleChange}
-                autoComplete="new-password" 
-              />
-              <button
-                type="button"
-                className={styles.eyeButton}
-                onClick={togglePwVisibility}
-              >
-                <img className={styles.eyeImg}
-                  src={pwVisible ? closeEyeIcon : eyeIcon}
-                  alt="Toggle visibility" />
-              </button>
+              <div className={styles.buttonGroup}>
+                <button type="submit" className={styles.button}>회원가입</button>
+                <p>이미 계정이 있다면?<Link to="/login">로그인</Link></p>
+              </div>
+            </form>
+
+            <div className={styles.googleSignIn} onClick={googleLoginBtn}>
+              <img src={googleIcon} alt="Google logo" width="20" />
+              <span>Google 계정으로 로그인</span>
             </div>
           </div>
-
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>패스워드 재입력</label>
-            <div className={styles.passwordContainer}>
-              <input
-                type={pwVisible ? "text" : "password"}
-                placeholder="비밀번호를 다시 입력하세요"
-                className={`${styles.inputField} ${!pwMatch ? styles.error : ''}`}
-                name='pwCheck'
-                value={formData.pwCheck}
-                onChange={handleChange}
-                autoComplete="new-password" 
-              />
-              <button
-                type="button"
-                className={styles.eyeButton}
-                onClick={togglePwVisibility}
-              >
-                <img className={styles.eyeImg}
-                  src={pwVisible ? closeEyeIcon : eyeIcon}
-                  alt="Toggle visibility" />
-              </button>
-            </div>
-            {!pwMatch && (
-              <span className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</span>
-            )}
-          </div>
-
-          <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.button}>회원가입</button>
-            <p>이미 계정이 있다면?<Link to="/login">로그인</Link></p>
-          </div>
-        </form>
-
-        <div className={styles.googleSignIn} onClick={googleLoginBtn}>
-          <img src={googleIcon} alt="Google logo" width="20" />
-          <span>Google 계정으로 로그인</span>
         </div>
-
-      </div>
-    </div>
   );
 };
 

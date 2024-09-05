@@ -11,12 +11,13 @@ import closeEyeIcon from '../images/icon-close-eye.png';
 import eyeIcon from '../images/icon-eye.png';
 import googleIcon from '../images/googleIcon.png';
 import userImg from '../images/dummyUserImg.png';
+import happy from '../images/happy.gif';
 
 const LoginPage = () => {
   const nav = useNavigate();
 
 
-  const { login, getGoogleToken ,loginWithGoogle } = useContext(UserContext);
+  const { login, getGoogleToken, loginWithGoogle } = useContext(UserContext);
 
 
   const [formData, setFormData] = useState({
@@ -90,76 +91,72 @@ const LoginPage = () => {
     }
   };
 
-  
+
 
 
   return (
     <div className={styles.container}>
-      <div className={styles.imageContainer}>
-        <img src={planeImage} alt="Airplane" />
-      </div>
+        <div className={styles.formContainer}>
+          <h1 className={styles.title}>
+            <Link to="/">
+              <img src={logoImage} alt="Plan Maker Logo" />
+            </Link>
+          </h1>
 
-      <div className={styles.formContainer}>
-        <h1 className={styles.title}>
-          <Link to="/">
-            <img src={logoImage} alt="Plan Maker Logo" />
-          </Link>
-        </h1>
-
-        <form onSubmit={loginBtn} className={styles.form}>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>아이디</label>
-            <input
-              type="text"
-              placeholder="아이디를 입력하세요"
-              className={styles.inputField}
-              name="userId"
-              value={formData.userId}
-              onChange={handleChange}
-              required
-              autoComplete="username" // 사용자 이름 자동 완성
-            />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>패스워드</label>
-            <div className={styles.passwordContainer}>
+          <form onSubmit={loginBtn} className={styles.form}>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>아이디</label>
               <input
-                type={pwVisible ? "text" : "password"}
-                placeholder="비밀번호를 입력하세요"
+                type="text"
+                placeholder="아이디를 입력하세요"
                 className={styles.inputField}
-                name="userPw"
-                value={formData.userPw}
+                name="userId"
+                value={formData.userId}
                 onChange={handleChange}
                 required
-                autoComplete="current-password" // 현재 비밀번호 자동 완성
+                autoComplete="username" // 사용자 이름 자동 완성
               />
-              <button
-                type="button"
-                className={styles.eyeButton}
-                onClick={togglePwVisibility}
-              >
-                <img
-                  className={styles.eyeImg}
-                  src={pwVisible ? closeEyeIcon : eyeIcon}
-                  alt="Toggle visibility"
-                />
-              </button>
             </div>
-          </div>
 
-          <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.button}>로그인</button>
-            <p>계정이 없다면? <Link to="/join">회원가입</Link></p>
-          </div>
-        </form>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>패스워드</label>
+              <div className={styles.passwordContainer}>
+                <input
+                  type={pwVisible ? "text" : "password"}
+                  placeholder="비밀번호를 입력하세요"
+                  className={styles.inputField}
+                  name="userPw"
+                  value={formData.userPw}
+                  onChange={handleChange}
+                  required
+                  autoComplete="current-password" // 현재 비밀번호 자동 완성
+                />
+                <button
+                  type="button"
+                  className={styles.eyeButton}
+                  onClick={togglePwVisibility}
+                >
+                  <img
+                    className={styles.eyeImg}
+                    src={pwVisible ? closeEyeIcon : eyeIcon}
+                    alt="Toggle visibility"
+                  />
+                </button>
+              </div>
+            </div>
 
-        <div className={styles.googleSignIn} onClick={googleLoginBtn}>
-          <img src={googleIcon} alt="Google logo" width="20" />
-          <span>Google 계정으로 로그인</span>
+            <div className={styles.buttonGroup}>
+              <button type="submit" className={styles.button}>로그인</button>
+              <p>계정이 없다면? <Link to="/join"> 회원가입</Link></p>
+            </div>
+          </form>
+
+          <div className={styles.googleSignIn} onClick={googleLoginBtn}>
+            <img src={googleIcon} alt="Google logo" width="20" />
+            <span>Google 계정으로 로그인</span>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
