@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import LocalCache from "./LocalCache";
-import style from "../styles/DaySchedule.module.css";
-import leftArrow from "../images/leftArrow.png";
-import rightArrow from "../images/rightArrow.png";
-import cafeIcon from "../images/cafe.png";
-import lodgingIcon from "../images/lodging.png";
-import restaurantIcon from "../images/restaurant.png";
-import defaultIcon from "../images/plain2.png";
-import shoppingIcon from "../images/shopping.png";
-import businessIcon from "../images/business.png";
-import tourSpotIcon2 from "../images/tourspot2.png";
+import React, { useState, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import LocalCache from './LocalCache';
+import style from '../styles/DaySchedule.module.css';
+import leftArrow from '../images/icons/leftArrow.png';
+import rightArrow from '../images/icons/rightArrow.png';
+import cafeIcon from '../images/icons/cafe.png';
+import lodgingIcon from '../images/icons/lodging.png';
+import restaurantIcon from '../images/icons/restaurant.png';
+import defaultIcon from '../images/plain2.png';
+import shoppingIcon from '../images/icons/shopping.png';
+import businessIcon from '../images/icons/business.png';
+import tourSpotIcon2 from '../images/icons/tourspot2.png';
 
 const getIcon = (type) => {
   switch (type) {
-    case "비즈니스":
+    case '비즈니스':
       return businessIcon;
-    case "카페":
+    case '카페':
       return cafeIcon;
-    case "숙박":
+    case '숙박':
       return lodgingIcon;
-    case "숙소":
+    case '숙소':
       return lodgingIcon;
-    case "식당":
+    case '식당':
       return restaurantIcon;
-    case "맛집":
+    case '맛집':
       return restaurantIcon;
-    case "관광지":
+    case '관광지':
       return tourSpotIcon2;
-    case "여행지":
+    case '여행지':
       return tourSpotIcon2;
-    case "관광":
+    case '관광':
       return tourSpotIcon2;
-    case "쇼핑":
+    case '쇼핑':
       return shoppingIcon;
     default:
       return defaultIcon;
@@ -40,7 +40,7 @@ const getIcon = (type) => {
 };
 
 const DaySchedule = ({
-  selectedDay = "day1",
+  selectedDay = 'day1',
   setSelectedDay,
   locationData = {},
   setLocationData,
@@ -103,7 +103,7 @@ const DaySchedule = ({
           [source.droppableId]: updatedItems,
         };
 
-        LocalCache.writeToCache("travel_data_all", newLocationData); // 로컬 캐시에 데이터 저장
+        LocalCache.writeToCache('travel_data_all', newLocationData); // 로컬 캐시에 데이터 저장
 
         return newLocationData;
       });
@@ -118,7 +118,7 @@ const DaySchedule = ({
         [day]: prev[day].map((item, i) => (i === index ? { ...item, excluded: !item.excluded } : item)),
       };
 
-      LocalCache.writeToCache("travel_data_all", newLocationData); // 변경된 데이터를 로컬 캐시에 저장
+      LocalCache.writeToCache('travel_data_all', newLocationData); // 변경된 데이터를 로컬 캐시에 저장
 
       return newLocationData;
     });
@@ -142,13 +142,13 @@ const DaySchedule = ({
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
-              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ""} ${
-                item.excluded ? style.excluded : ""
+              className={`${style.scheduleItem} ${snapshot.isDragging ? style.dragging : ''} ${
+                item.excluded ? style.excluded : ''
               }`}
             >
               {/* 우측 상단에 버튼 배치 */}
               <button className={style.excludeButton} onClick={() => handleExcludeSchedule(day, i)}>
-                {item.excluded ? "+" : "-"}
+                {item.excluded ? '+' : '-'}
               </button>
 
               {/* 상단에 제목을 배치 */}
@@ -186,9 +186,9 @@ const DaySchedule = ({
       <DragDropContext onDragEnd={onDragEnd}>
         <div className={style.scheduleListContainer}>
           {currentDays.map((day) => (
-            <div key={day} className={`${style.scheduleListBackground} ${selectedDay === day ? style.selected : ""}`}>
+            <div key={day} className={`${style.scheduleListBackground} ${selectedDay === day ? style.selected : ''}`}>
               <button
-                className={`${style.scheduleDaySelectButton} ${selectedDay === day ? style.selected : ""}`}
+                className={`${style.scheduleDaySelectButton} ${selectedDay === day ? style.selected : ''}`}
                 onClick={() => setSelectedDay(day)} // 버튼 클릭 시 해당 날짜로 스케줄을 변경
               >
                 {day} {/* 날짜 표시 */}
