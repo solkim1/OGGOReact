@@ -105,13 +105,6 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
                   onClick={(event) => toggleImportance(schedule.scheNum, event)}
                 />
               </div>
-              <div className={styles.notClickabeIcon}>
-                <img
-                  src={schedule.isBusiness === 'Y' ? businessIcon : travelerIcon}
-                  alt={schedule.isBusiness === 'Y' ? 'Business' : 'Travel'}
-                  className={styles.scheduleIcon}
-                />
-              </div>
             </div>
             <div className={styles.scheduleContent}>
               <div className={styles.scheduleHeader}>
