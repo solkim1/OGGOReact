@@ -8,6 +8,7 @@ import styles from "../styles/ScheduleMapPage.module.css";
 import LocalCache from "../components/LocalCache";
 import { UserContext } from "../context/UserProvider";
 import { v4 as uuidv4 } from "uuid";
+import Loading from "../pages/Loading"; // 로딩 컴포넌트 추가
 
 const ScheduleMapPage = () => {
   const location = useLocation();
@@ -385,7 +386,7 @@ const ScheduleMapPage = () => {
   };
 
   if (loading && Object.keys(locationData).length === 0) {
-    return <p>Loading...</p>;
+    return  <Loading />;
   }
 
   if (error) {

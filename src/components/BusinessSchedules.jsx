@@ -86,13 +86,6 @@ const BusinessSchedules = ({ schedules, fetchSchedules }) => {
               />
             </div>
 
-            <div className={styles.icon}>
-              <img
-                src={businessIcon}
-                alt="Business"
-                className={styles.scheduleIcon}
-              />
-            </div>
 
           </div>
           <div className={styles.scheduleContent}>
