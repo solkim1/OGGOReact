@@ -1,7 +1,7 @@
-import React from "react";
-import leftArrow from "../images/leftArrow.png";
-import rightArrow from "../images/rightArrow.png";
-import styles from "../styles/ScheduleMapBtn.module.css";
+import React from 'react';
+import leftArrow from '../images/icons/leftArrow.png';
+import rightArrow from '../images/icons/rightArrow.png';
+import styles from '../styles/ScheduleMapBtn.module.css';
 
 const ScheduleMapBtn = ({
   handleNextPage,
@@ -16,7 +16,6 @@ const ScheduleMapBtn = ({
       <button className={styles.arrowBtn} onClick={handlePrevPage} disabled={pageIndex === 0}>
         <img src={leftArrow} alt="Previous" className={styles.arrowIcon} />
       </button>
-      
 
       <div className={styles.actionButtons}>
         <button className={styles.actionBtn} onClick={handleRegenerate}>
@@ -27,13 +26,11 @@ const ScheduleMapBtn = ({
         </button>
       </div>
 
-
       <button className={styles.arrowBtn} onClick={handleNextPage} disabled={pageIndex >= totalPages - 1}>
         <img src={rightArrow} alt="Next" className={styles.arrowIcon} />
       </button>
     </div>
   );
 };
-
 
 export default ScheduleMapBtn;

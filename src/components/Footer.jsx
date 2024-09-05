@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import styles from "../styles/Footer.module.css";
-import { HeaderColorContext } from "../context/HeaderColorContext"; // Context 가져오기
+import React, { useContext } from 'react';
+import styles from '../styles/Footer.module.css';
+import { HeaderColorContext } from '../context/HeaderColorContext'; // Context 가져오기
 
-import facebookIcon from "../images/logo-facebook.png";
-import instaIcon from "../images/logo-instagram.png";
-import linkedinIcon from "../images/logo-linkedin.png";
-import twitterIcon from "../images/logo-twitter.png";
+import facebookIcon from '../images/icons/logo-facebook.png';
+import instaIcon from '../images/icons/logo-instagram.png';
+import linkedinIcon from '../images/icons/logo-linkedin.png';
+import twitterIcon from '../images/icons/logo-twitter.png';
 
 const Footer = () => {
   const { footerColor } = useContext(HeaderColorContext); // 푸터 색상 가져오기

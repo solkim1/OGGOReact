@@ -5,11 +5,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import { UserContext } from '../context/UserProvider';
 import '../styles/Calendar.css';
-import googleIcon from '../images/googleIcon.png';
+import logo from '../images/logo.png';
+import googleIcon from '../images/icons/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
 const Calendar = () => {
-
   const { isAuthenticated, googleToken, getGoogleToken, user } = useContext(UserContext);
 
   const [events, setEvents] = useState([]);
@@ -39,24 +39,32 @@ const Calendar = () => {
     setEvents([...dbEvents, ...holidayEvents, ...googleEvents]);
   }, [dbEvents, holidayEvents, googleEvents]);
 
+  useEffect(() => {
+    console.log('현재일정목록', events);
+  }, [events]);
+
   const fetchEventsFromDB = async () => {
     try {
       const response = await axios.get('http://localhost:8090/plan/api/schedules/all', {
-        params: { userId: user.userId } // 쿼리 매개변수로 userId 전달
+        params: { userId: user.userId }, // 쿼리 매개변수로 userId 전달
       });
-      const dbEvents = Array.isArray(response.data) ? response.data.map((event, index) => ({
-        id: event.scheNum,
-        title: event.scheTitle,
-        start: event.scheStDt + "T09:00:00+09:00",
-        end: event.scheEdDt + "T22:15:00+09:00",
-        description: event.scheDesc || '',
-        location: event.location || '',
-        backgroundColor: colorList[index % colorList.length],
-        borderColor: colorList[index % colorList.length]
-      })) : [];
+      console.log('DB데이터', response);
+
+      const dbEvents = Array.isArray(response.data)
+        ? response.data.map((event, index) => ({
+            id: event.scheNum,
+            title: event.scheTitle,
+            start: event.scheStDt + 'T09:00:00+09:00',
+            end: event.scheEdDt + 'T22:15:00+09:00',
+            description: event.scheDesc || '',
+            location: event.location || '',
+            backgroundColor: event.scheColor || colorList[index % colorList.length],
+            borderColor: event.scheColor || colorList[index % colorList.length],
+          }))
+        : [];
       setDbEvents(dbEvents);
     } catch (error) {
-      console.error("DB 일정 가져오기 실패 : ", error);
+      console.error('DB 일정 가져오기 실패 : ', error);
     }
   };
 
@@ -64,19 +72,18 @@ const Calendar = () => {
     try {
       const holidays = await fetchHolidaysFromGoogle(googleToken);
       setHolidayEvents(holidays);
-    // 공휴일 데이터 로깅
+      // 공휴일 데이터 로깅
     } catch (error) {
-      console.error("공휴일 가져오기 실패 : ", error);
+      console.error('공휴일 가져오기 실패 : ', error);
     }
   };
 
   const fetchEventsFromGoogle = async (token) => {
-
     try {
       const userEvents = await fetchUserEventsFromGoogle(token);
       setGoogleEvents(userEvents); // 구글 이벤트만 따로 저장
     } catch (error) {
-      console.error("구글 일정 가져오기 실패 : ", error);
+      console.error('구글 일정 가져오기 실패 : ', error);
     }
   };
 
@@ -97,34 +104,37 @@ const Calendar = () => {
   const fetchHolidaysFromGoogle = async (token) => {
     const { start, end } = getSixMonthsRange();
     try {
-      const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/ko.south_korea%23holiday@group.v.calendar.google.com/events', {
-        headers: {
-          Authorization: `Bearer ${token}`  // 인증 토큰 추가
-        },
-        params: {
-          timeMin: start,
-          timeMax: end,
-          singleEvents: true,
-          orderBy: 'startTime'
+      const response = await axios.get(
+        'https://www.googleapis.com/calendar/v3/calendars/ko.south_korea%23holiday@group.v.calendar.google.com/events',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 인증 토큰 추가
+          },
+          params: {
+            timeMin: start,
+            timeMax: end,
+            singleEvents: true,
+            orderBy: 'startTime',
+          },
         }
-      });
+      );
 
-      const holidays = Array.isArray(response.data.items) ? response.data.items.map(event => ({
-        id: event.id,
-        title: event.summary,
-        start: event.start.date,
-        end: event.end.date,
-        description: '공휴일',
-        backgroundColor: '#FF8080',
-        borderColor: '#FF8080',
-        className: ['holiday-event'],
-      })) : [];
-
-
+      const holidays = Array.isArray(response.data.items)
+        ? response.data.items.map((event) => ({
+            id: event.id,
+            title: event.summary,
+            start: event.start.date,
+            end: event.end.date,
+            description: '공휴일',
+            backgroundColor: '#FF8080',
+            borderColor: '#FF8080',
+            className: ['holiday-event'],
+          }))
+        : [];
 
       return holidays;
     } catch (error) {
-      console.error("공휴일 가져오기 실패 : ", error);
+      console.error('공휴일 가져오기 실패 : ', error);
       return [];
     }
   };
@@ -134,37 +144,36 @@ const Calendar = () => {
     try {
       const response = await axios.get('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         params: {
           timeMin: start,
           timeMax: end,
           singleEvents: true,
-          orderBy: 'startTime'
-        }
+          orderBy: 'startTime',
+        },
       });
 
-      return Array.isArray(response.data.items) ? response.data.items.map(event => ({
-        id: event.id,
-        title: event.summary,
-        start: event.start.dateTime || event.start.date,
-        end: event.end.dateTime || event.end.date,
-        description: event.description || '',
-        location: event.location || '',
-        backgroundColor: '#FF5733',
-        borderColor: '#FF5733'
-      })) : [];
+      return Array.isArray(response.data.items)
+        ? response.data.items.map((event) => ({
+            id: event.id,
+            title: event.summary,
+            start: event.start.dateTime || event.start.date,
+            end: event.end.dateTime || event.end.date,
+            description: event.description || '',
+            location: event.location || '',
+            backgroundColor: '#FF5733',
+            borderColor: '#FF5733',
+          }))
+        : [];
     } catch (error) {
-      console.error("사용자 일정 가져오기 실패 : ", error);
+      console.error('사용자 일정 가져오기 실패 : ', error);
       return [];
-
     }
   };
 
-
   const handleGoogleLogin = () => {
     getGoogleToken(); // Google 로그인 함수 호출
-
   };
 
   const handleEventClick = (eventInfo) => {
@@ -175,24 +184,19 @@ const Calendar = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedEvent(null);
-
   };
-
-
 
   return (
     <div className={styles.calendarContainer}>
-      <h1>Plan Maker Calendar</h1>
-
-      {!googleToken && ( // Google 로그인되지 않은 경우에만 연동하기 버튼 표시
-
-        <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
-          <img src={googleIcon} alt="Google logo" width="20" />
-          <span>Google 계정 연동하기</span>
-        </div>
-
-
-      )}
+      <h1>
+        <img src={logo} alt="plan maker logo" style={{ width: '200px', height: '40px' }} />
+        {!googleToken && ( // Google 로그인되지 않은 경우에만 연동하기 버튼 표시
+          <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
+            <img src={googleIcon} alt="Google logo" width="20" />
+            <span>Google 계정 연동하기</span>
+          </div>
+        )}
+      </h1>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -211,24 +215,28 @@ const Calendar = () => {
         <div className="modal">
           <div className="modal-content">
             <h2>{selectedEvent.title}</h2>
-            <p><strong>시작:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
-            <p><strong>끝:</strong> {new Date(selectedEvent.end).toLocaleString()}</p>
+            <p>
+              <strong>시작:</strong> {new Date(selectedEvent.start).toLocaleString()}
+            </p>
+            <p>
+              <strong>끝:</strong> {new Date(selectedEvent.end).toLocaleString()}
+            </p>
             {selectedEvent.description && (
-              <p><strong>설명:</strong> {selectedEvent.description}</p>
+              <p>
+                <strong>설명:</strong> {selectedEvent.description}
+              </p>
             )}
             {selectedEvent.location && (
-              <p><strong>위치:</strong> {selectedEvent.location}</p>
+              <p>
+                <strong>위치:</strong> {selectedEvent.location}
+              </p>
             )}
             <button onClick={closeModal}>닫기</button>
           </div>
         </div>
       )}
-
-
     </div>
   );
 };
 
-
 export default Calendar;
-
