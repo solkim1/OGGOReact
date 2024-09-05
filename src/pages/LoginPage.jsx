@@ -5,13 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/LoginJoin.module.css';
 
 // 이미지 파일 불러오기
-import planeImage from '../images/plain2.png';
 import logoImage from '../images/logo.png';
 import closeEyeIcon from '../images/icons/icon-close-eye.png';
 import eyeIcon from '../images/icons/icon-eye.png';
 import googleIcon from '../images/icons/googleIcon.png';
 import userImg from '../images/user/dummyUserImg.png';
-import happy from '../images/happy.gif';
 
 const LoginPage = () => {
   const nav = useNavigate();

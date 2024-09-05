@@ -10,6 +10,7 @@ import restaurantIcon from '../images/icons/restaurant.png';
 import defaultIcon from '../images/plain2.png';
 import shoppingIcon from '../images/icons/shopping.png';
 import businessIcon from '../images/icons/business.png';
+import reportsIcon from '../images/icons/reports.png';
 import tourSpotIcon2 from '../images/icons/tourspot2.png';
 
 const getIcon = (type) => {
@@ -34,6 +35,8 @@ const getIcon = (type) => {
       return tourSpotIcon2;
     case '쇼핑':
       return shoppingIcon;
+    case '레포츠':
+      return reportsIcon;
     default:
       return defaultIcon;
   }

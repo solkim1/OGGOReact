@@ -6,8 +6,6 @@ import emptyStar from '../images/icons/empty_star.png';
 import deleteIcon from '../images/icons/delete.png';
 import editIcon from '../images/icons/write.png';
 import saveIcon from '../images/icons/save.png';
-import businessIcon from '../images/icons/business-icon.png';
-import travelerIcon from '../images/icons/traveler-icon.png';
 import axios from 'axios';
 import DeleteModal from '../pages/DeleteModal';
 import LocalCache from './LocalCache';
