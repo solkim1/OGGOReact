@@ -23,7 +23,9 @@ const RecommendationsExhibition = () => {
       }
       const exhibitionData = await response.json();
       // endDate를 startDate와 동일하게 설정
-      navigate('/schedulemap', { state: { exhibitionData, exhibitionName: selectedExhibition, startDate, endDate: startDate } });
+      navigate('/schedulemap', {
+        state: { exhibitionData, exhibitionName: selectedExhibition, startDate, endDate: startDate },
+      });
     } catch (error) {
       console.error('Error loading exhibition data:', error);
       alert('전시회 데이터 로딩 실패: ' + error.message);
@@ -63,11 +65,7 @@ const RecommendationsExhibition = () => {
         <div className={styles.dateSelector}>
           <h3>출발일을 선택하세요</h3>
           <input type="date" value={startDate} onChange={handleStartDateChange} />
-          <button
-            className={styles.startJourneyButton}
-            onClick={handleStartJourney}
-            disabled={!startDate}
-          >
+          <button className={styles.startJourneyButton} onClick={handleStartJourney} disabled={!startDate}>
             일정 생성
           </button>
         </div>

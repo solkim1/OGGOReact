@@ -5,6 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import { UserContext } from '../context/UserProvider';
 import '../styles/Calendar.css';
+import logo from '../images/logo.png';
 import googleIcon from '../images/icons/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
@@ -18,7 +19,7 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const colorList = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8333', '#33FFEC', '#8333FF'];
+  const colorList = ['#E07A5F', '#A3D9A5', '#8FAAD7', '#F4A3C6', '#F4A261', '#B3D9DA', '#A586D7'];
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -187,7 +188,9 @@ const Calendar = () => {
 
   return (
     <div className={styles.calendarContainer}>
-      <h1>Plan Maker Calendar</h1>
+      <h1>
+        <img src={logo} alt="plan maker logo" style={{ width: '200px', height: '40px' }} />
+      </h1>
 
       {!googleToken && ( // Google 로그인되지 않은 경우에만 연동하기 버튼 표시
         <div className={styles.googleSignIn} onClick={handleGoogleLogin}>

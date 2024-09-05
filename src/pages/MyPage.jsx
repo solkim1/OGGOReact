@@ -106,7 +106,7 @@ const MyPage = () => {
         <div className={styles.grayContainer}>{/* <h2>{user.userNick}님 환영합니다</h2> */}</div>
       </div>
       <div className={styles.profile}>
-        <img src={user.image} alt="User Profile" />
+        <img src={user.image || '../images/user/dummyUserImg.png'} alt="프로필이미지" />
         <span>{user.userNick}</span>
         <p className={styles.label}>{user.userEmail}</p>
       </div>
