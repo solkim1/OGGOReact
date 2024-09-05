@@ -19,7 +19,7 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const colorList = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8333', '#33FFEC', '#8333FF'];
+  const colorList = ['#E07A5F', '#A3D9A5', '#8FAAD7', '#F4A3C6', '#F4A261', '#B3D9DA', '#A586D7'];
 
   useEffect(() => {
     if (isAuthenticated) {
