@@ -1,0 +1,39 @@
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  padding: 6px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 30px;
+  border: 2px white solid;
+}
+
+.dropdown-button:hover {
+  background-color: hsl(0, 0%, 92%);
+  border-color: black;
+}
+
+.dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.dropdown-checkbox {
+  display: block;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.dropdown-checkbox input {
+  margin-right: 8px;
+}
