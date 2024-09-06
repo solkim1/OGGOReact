@@ -94,6 +94,22 @@ const BusinessMainPage = () => {
     });
   };
 
+  const handleExhibitionClick = async (exhibitionName) => {
+    try {
+      const response = await fetch(`http://localhost:8090/plan/api/schedules/exhibitions/${exhibitionName}`);
+      if (!response.ok) {
+        throw new Error("전시회 데이터를 불러오는 데 실패했습니다.");
+      }
+      const exhibitionData = await response.json();
+      navigate("/schedulemap", {
+        state: { exhibitionData, exhibitionName },
+      });
+    } catch (error) {
+      console.error("Error loading exhibition data:", error);
+      alert("전시회 데이터 로딩 실패: " + error.message);
+    }
+  };
+
   return (
     <div style={{ backgroundColor: backgroundColor }}>
       <div id="mainContainerPC" style={{ visibility: "visible", position: "static", left: "-9999px" }}>
@@ -123,7 +139,7 @@ const BusinessMainPage = () => {
                     <br />
                     서울 3024
                   </strong>
-                  <a href="#" tabIndex={-1}>
+                  <a href="#" onClick={() => handleExhibitionClick("DANIELARSHAM")} tabIndex={-1}>
                     자세히 보기
                   </a>
                 </div>
@@ -136,7 +152,7 @@ const BusinessMainPage = () => {
                     <br />
                     Nowhere, Now Here
                   </strong>
-                  <a href="#" tabIndex={-1}>
+                  <a href="#" onClick={() => handleExhibitionClick("utopia")} tabIndex={-1}>
                     자세히 보기
                   </a>
                 </div>
@@ -149,7 +165,7 @@ const BusinessMainPage = () => {
                     <br />
                     Universe
                   </strong>
-                  <a href="#" tabIndex={-1}>
+                  <a href="#" onClick={() => handleExhibitionClick("james")} tabIndex={-1}>
                     자세히 보기
                   </a>
                 </div>
@@ -162,7 +178,7 @@ const BusinessMainPage = () => {
                     <br />
                     Layered Life
                   </strong>
-                  <a href="#" tabIndex={-1}>
+                  <a href="#" onClick={() => handleExhibitionClick("Layered Life")} tabIndex={-1}>
                     자세히 보기
                   </a>
                 </div>
