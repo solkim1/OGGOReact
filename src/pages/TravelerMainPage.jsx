@@ -1,38 +1,38 @@
 // 프론트 수정한거
-import React, { useState, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/autoplay';
+import React, { useState, useContext, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
 
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
-import styles from '../styles/TravelerMainPage.css';
-import { UserContext } from '../context/UserProvider';
-import { HeaderColorContext } from '../context/HeaderColorContext';
+import styles from "../styles/TravelerMainPage.css";
+import { UserContext } from "../context/UserProvider";
+import { HeaderColorContext } from "../context/HeaderColorContext";
 
-import Travelbytheme from '../components/Travelbytheme';
+import Travelbytheme from "../components/Travelbytheme";
 
 const TravelerMainPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const { setHeaderColor } = useContext(HeaderColorContext);
 
-  const [backgroundColor, setBackgroundColor] = useState('#c1e6da');
+  const [backgroundColor, setBackgroundColor] = useState("#c1e6da");
   const [isPlaying, setIsPlaying] = useState(true);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [ageGroup, setAgeGroup] = useState('10대~20대');
-  const [gender, setGender] = useState('남성');
-  const [groupSize, setGroupSize] = useState('개인');
-  const [theme, setTheme] = useState('레포츠');
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [ageGroup, setAgeGroup] = useState("10대~20대");
+  const [gender, setGender] = useState("남성");
+  const [groupSize, setGroupSize] = useState("개인");
+  const [theme, setTheme] = useState("레포츠");
 
   const swiperRefLeft = useRef(null);
   const swiperRefRight = useRef(null);
 
-  const slideColors = ['#FFF3BC', '#AADBFF', '#ffede0', '#EFE4B0'];
+  const slideColors = ["#FFF3BC", "#AADBFF", "#ffede0", "#EFE4B0"];
 
   const handleSlideChange = (swiper) => {
     const activeIndex = swiper.realIndex % slideColors.length;
@@ -55,15 +55,15 @@ const TravelerMainPage = () => {
   const handleScheduleButtonClick = async () => {
     try {
       if (!user) {
-        throw new Error('로그인 정보 에러. 다시 로그인해주세요');
+        throw new Error("로그인 정보 에러. 다시 로그인해주세요");
       }
 
       if (!startDate || !endDate) {
-        throw new Error('시작 날짜와 종료 날짜를 설정하세요.');
+        throw new Error("시작 날짜와 종료 날짜를 설정하세요.");
       }
       const days = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1;
 
-      navigate('/schedulemap', {
+      navigate("/schedulemap", {
         state: {
           userId: user.userId,
           days: days,
@@ -76,14 +76,14 @@ const TravelerMainPage = () => {
         },
       });
     } catch (error) {
-      console.error('일정 생성 중 오류 발생:', error);
+      console.error("일정 생성 중 오류 발생:", error);
     }
   };
 
   return (
     <div>
       <div style={{ backgroundColor: backgroundColor }}>
-        <div id="mainContainerPC" style={{ visibility: 'visible', position: 'static', left: '-9999px' }}>
+        <div id="mainContainerPC" style={{ visibility: "visible", position: "static", left: "-9999px" }}>
           <div className="main_showcase active" id="mainTab">
             <div className="cont">
               <Swiper
@@ -93,17 +93,17 @@ const TravelerMainPage = () => {
                 loop={true}
                 onSlideChange={handleSlideChange}
                 navigation={{
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev',
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
                 }}
-                pagination={{ type: 'fraction', el: '.swiper-pagination' }}
+                pagination={{ type: "fraction", el: ".swiper-pagination" }}
                 autoplay={{ delay: 5000 }}
                 className="swiper-container gallery-thumbs"
               >
                 <SwiperSlide className="slide1" data-color="#c1e6da">
-                  <div className="tit_wrap" style={{ marginTop: '60px' }}>
+                  <div className="tit_wrap" style={{ marginTop: "60px" }}>
                     <em>모든게 다 거꾸로🙃</em>
-                    <strong style={{ color: '#3d3d3d', marginTop: '30px', marginBottom: '20px' }}>
+                    <strong style={{ color: "#3d3d3d", marginTop: "30px", marginBottom: "20px" }}>
                       성수동
                       <br />
                       거꾸로 하우스
@@ -114,9 +114,9 @@ const TravelerMainPage = () => {
                   </div>
                 </SwiperSlide>
                 <SwiperSlide className="slide2" data-color="#e6ffd9">
-                  <div className="tit_wrap" style={{ marginTop: '60px' }}>
+                  <div className="tit_wrap" style={{ marginTop: "60px" }}>
                     <em>여름하면 바다🌊</em>
-                    <strong style={{ color: '#3d3d3d', marginTop: '10px', marginBottom: '20px' }}>
+                    <strong style={{ color: "#3d3d3d", marginTop: "10px", marginBottom: "20px" }}>
                       경포대~속초
                       <br />
                       파도와 함께 하는 바다
@@ -127,9 +127,9 @@ const TravelerMainPage = () => {
                   </div>
                 </SwiperSlide>
                 <SwiperSlide className="slide3" data-color="#ffede0">
-                  <div className="tit_wrap" style={{ marginTop: '60px' }}>
+                  <div className="tit_wrap" style={{ marginTop: "60px" }}>
                     <em>문화 속으로🎎</em>
-                    <strong style={{ color: '#3d3d3d', marginTop: '30px', marginBottom: '20px' }}>
+                    <strong style={{ color: "#3d3d3d", marginTop: "30px", marginBottom: "20px" }}>
                       경주
                       <br />
                       역사 체험하기
@@ -140,9 +140,9 @@ const TravelerMainPage = () => {
                   </div>
                 </SwiperSlide>
                 <SwiperSlide className="slide4" data-color="#ffe3f8">
-                  <div className="tit_wrap" style={{ marginTop: '60px' }}>
+                  <div className="tit_wrap" style={{ marginTop: "60px" }}>
                     <em>시골 감성 가득💕</em>
-                    <strong style={{ color: '#3d3d3d', marginTop: '30px', marginBottom: '20px' }}>
+                    <strong style={{ color: "#3d3d3d", marginTop: "30px", marginBottom: "20px" }}>
                       구례
                       <br />
                       촌캉스 여행
@@ -163,30 +163,31 @@ const TravelerMainPage = () => {
                 loop={true}
                 onSlideChange={handleSlideChange}
                 navigation={{
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev',
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
                 }}
-                pagination={{ type: 'fraction', el: '.swiper-pagination' }}
+                pagination={{ type: "fraction", el: ".swiper-pagination" }}
                 autoplay={{ delay: 5000 }}
                 className="swiper-container gallery-top"
+                allowTouchMove={false}
               >
                 {/* 여기에 이미지들 추가 */}
-                <SwiperSlide className="slide1" data-swiper-slide-index={0} style={{ marginRight: '30px' }}>
+                <SwiperSlide className="slide1" data-swiper-slide-index={0} style={{ marginRight: "30px" }}>
                   <a href="#">
                     <img src="./sungsoo.png" alt="sungsoo" />
                   </a>
                 </SwiperSlide>
-                <SwiperSlide className="slide2" data-swiper-slide-index={1} style={{ marginRight: '30px' }}>
+                <SwiperSlide className="slide2" data-swiper-slide-index={1} style={{ marginRight: "30px" }}>
                   <a href="#">
                     <img src="./beach.png" alt="beach" />
                   </a>
                 </SwiperSlide>
-                <SwiperSlide className="slide3" data-swiper-slide-index={2} style={{ marginRight: '30px' }}>
+                <SwiperSlide className="slide3" data-swiper-slide-index={2} style={{ marginRight: "30px" }}>
                   <a href="#">
                     <img src="./ae3aebd0-36ae-4cb6-9865-aaafee317090.raw.png" alt="history" />
                   </a>
                 </SwiperSlide>
-                <SwiperSlide className="slide4" data-swiper-slide-index={3} style={{ marginRight: '30px' }}>
+                <SwiperSlide className="slide4" data-swiper-slide-index={3} style={{ marginRight: "30px" }}>
                   <a href="#">
                     <img src="./country.png" alt="스틸아트 천국, 포항 1박 2일 여행" />
                   </a>
@@ -202,7 +203,7 @@ const TravelerMainPage = () => {
                   </span>
                 </div>
                 <div className="swiper-pagination swiper-pagination-fraction">
-                  <span className="swiper-pagination-current">04</span> /{' '}
+                  <span className="swiper-pagination-current">04</span> /{" "}
                   <span className="swiper-pagination-total">04</span>
                 </div>
                 <div className="btn">
@@ -213,7 +214,7 @@ const TravelerMainPage = () => {
                     다음
                   </div>
                   <div className="btn_auto">
-                    <button className={`btn_autoStop ${isPlaying ? '' : 'playing'}`} onClick={toggleAutoplay}></button>
+                    <button className={`btn_autoStop ${isPlaying ? "" : "playing"}`} onClick={toggleAutoplay}></button>
                   </div>
                 </div>
               </div>
@@ -221,9 +222,9 @@ const TravelerMainPage = () => {
           </div>
 
           {/* AI 필터 섹션 */}
-          <div style={{ backgroundColor: 'white', padding: '20px 5px' }}>
+          <div style={{ backgroundColor: "white", padding: "20px 5px" }}>
             <div className="titleSection">
-              <img src={require('../images/aiai.png')} alt="aiai title" className="titleImage" />
+              <img src={require("../images/aiai.png")} alt="aiai title" className="titleImage" />
             </div>
 
             <div className="filterContainer">
@@ -287,7 +288,7 @@ const TravelerMainPage = () => {
         </div>
       </div>
 
-      <div style={{ backgroundColor: 'white' }}>
+      <div style={{ backgroundColor: "white" }}>
         <Travelbytheme />
       </div>
     </div>
