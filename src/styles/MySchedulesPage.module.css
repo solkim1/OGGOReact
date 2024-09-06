@@ -89,7 +89,7 @@
 .scheduleItem:hover {
   transform: translateY(-5px); /* 살짝 들어올리기 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-  background-color: #F3F3F3; /* 호버 시 배경색 변경 */
+  background-color: #f3f3f3; /* 호버 시 배경색 변경 */
 }
 
 .scheduleLeftIcons {
@@ -148,7 +148,7 @@
   background-color: rgba(0, 0, 0, 0.1); /* 배경색을 약간 어둡게 */
 }
 
-.notClickabeIcon{
+.notClickabeIcon {
   width: 20px;
   height: 20px;
   display: flex;
@@ -156,10 +156,12 @@
   align-items: center;
 }
 
-.star, .scheduleIcon {
+.star,
+.scheduleIcon {
   width: 20px;
   height: 20px;
   object-fit: contain;
+  margin-top: 5px;
 }
 
 .editInput {
@@ -175,7 +177,8 @@
     flex-direction: column;
   }
 
-  .scheduleLeftIcons, .scheduleRightIcons {
+  .scheduleLeftIcons,
+  .scheduleRightIcons {
     flex-direction: row;
     justify-content: flex-start;
     margin: 10px 0;
@@ -202,7 +205,4 @@
     justify-content: center;
     z-index: 1000;
   }
-  
- 
-  
 }

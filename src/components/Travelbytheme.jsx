@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DateModal from "./DateModal";
 
 const customSlides1 = [
   {
@@ -95,58 +96,7 @@ const customSlides2 = [
   },
 ];
 
-const Modal = ({ isOpen, onClose, onConfirm, startDate, endDate, onStartDateChange }) => {
-  if (!isOpen) return null; // 모달이 열리지 않았을 경우 아무것도 렌더링하지 않음
-
-  return (
-    <div className="modal-overlay" style={modalOverlayStyle}>
-      <div className="modal" style={modalStyle}>
-        <h3>출발일을 선택하세요</h3>
-        <input type="date" value={startDate} onChange={onStartDateChange} style={{ margin: "10px 0" }} />
-        <h3>도착일을 선택하세요</h3>
-        <input type="date" value={startDate} onChange={onStartDateChange} style={{ margin: "10px 0" }} />
-        <div>
-          <button onClick={onConfirm} disabled={!startDate} style={buttonStyle}>
-            여행 시작
-          </button>
-          <button onClick={onClose} style={buttonStyle}>
-            취소
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// 스타일링 추가
-const modalOverlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 1000,
-};
-
-const modalStyle = {
-  backgroundColor: "#fff",
-  padding: "20px",
-  borderRadius: "10px",
-  width: "300px",
-  boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
-  textAlign: "center",
-};
-
-const buttonStyle = {
-  margin: "5px",
-  padding: "8px 12px",
-};
-
-const SlideRow = ({ slides, title, onExhibitionClick }) => {
+const SlideRow = ({ slides, title, onThemeClick }) => {
   const [startIndex, setStartIndex] = useState(0);
 
   const handleNext = () => {
@@ -191,7 +141,7 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
                   padding: "10px 5px",
                   transition: "transform 0.3s ease-in-out",
                 }}
-                onClick={() => onExhibitionClick(slide.apiName)}
+                onClick={() => onThemeClick(slide.apiName)}
               >
                 <a
                   style={{
@@ -246,7 +196,20 @@ const Travelbytheme = () => {
   const navigate = useNavigate();
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const themeNameMap = {
+    ickson: "익선동 데이트 코스",
+    yeongwol: "영월 1박 2일 코스",
+    pohang: "포항 해안 도로 드라이브 코스",
+    chungju: "정크아트의 도시 충주 여행",
+    sungsoo: "성수동 거꾸로 하우스",
+    beach: "경포대~속초 바다",
+    history: "경주 역사 체험",
+    country: "구례 촌캉스 여행",
+    // 필요에 따라 추가적인 테마 이름 매핑
+  };
 
   const handleThemeClick = (themeName) => {
     setSelectedTheme(themeName);
@@ -255,6 +218,10 @@ const Travelbytheme = () => {
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
   };
 
   const handleCloseModal = () => {
@@ -270,7 +237,7 @@ const Travelbytheme = () => {
       }
       const themeData = await response.json();
       navigate("/schedulemap", {
-        state: { themeData, themeName: selectedTheme, startDate },
+        state: { themeData, themeName: themeNameMap[selectedTheme] || selectedTheme, startDate, endDate },
       });
       handleCloseModal();
     } catch (error) {
@@ -285,18 +252,21 @@ const Travelbytheme = () => {
         <h3 className="tit_atc" style={{ textAlign: "left", marginBottom: "20px", marginLeft: "20px" }}>
           ❤️ 함께 떠나는 데이트 코스 여행 ❤️
         </h3>
-        <SlideRow slides={customSlides1} onExhibitionClick={handleThemeClick} />
+        <SlideRow slides={customSlides1} onThemeClick={handleThemeClick} />
         <h3 className="tit_atc" style={{ textAlign: "left", marginBottom: "20px", marginLeft: "20px" }}>
           👍 추천 여행지 👍
         </h3>
-        <SlideRow slides={customSlides2} onExhibitionClick={handleThemeClick} />
+        <SlideRow slides={customSlides2} onThemeClick={handleThemeClick} />
       </div>
-      <Modal
+
+      <DateModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleStartJourney}
         startDate={startDate}
+        endDate={endDate}
         onStartDateChange={handleStartDateChange}
+        onEndDateChange={handleEndDateChange}
       />
     </div>
   );

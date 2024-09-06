@@ -172,6 +172,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={() => handleDelete(scheduleToDelete)}
+        header="삭제 확인"
         message="정말로 이 일정을 삭제하시겠습니까?"
       />
     </div>

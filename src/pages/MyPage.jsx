@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserProvider';
+import DeleteModal from '../pages/DeleteModal';
 import styles from '../styles/MyPage.module.css';
 
 import closeEyeIcon from '../images/icons/icon-close-eye.png';
@@ -11,12 +12,9 @@ import { HeaderColorContext } from '../context/HeaderColorContext'; // 추가
 
 const MyPage = () => {
   const nav = useNavigate();
-  const { user, googleToken, isAuthenticated, login } = useContext(UserContext);
+  const { user, googleToken, isAuthenticated, login, logout } = useContext(UserContext);
 
-  // 활성화된 탭을 관리하는 상태 (info: 정보보기, edit: 정보수정)
-
-  // const [activeTab, setActiveTab] = useState('info');
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     userId: user.userId,
     userNick: '',
@@ -47,8 +45,20 @@ const MyPage = () => {
     setPwVisible(!pwVisible);
   };
 
-  const deleteId = () => {
-    // 회원 탈퇴 로직 구현
+  const openDeleteModal = (event) => {
+    event.stopPropagation();
+    setIsModalOpen(true);
+  };
+
+  const deleteId = (userId) => {
+    axios
+      .delete(`/plan/user/delete/${userId}`)
+      .then(() => {
+        console.log('성공');
+        setIsModalOpen(false);
+        logout();
+      })
+      .catch((error) => console.error('Error deleting schedule:', error));
   };
 
   const editProfile = async (e) => {
@@ -167,7 +177,7 @@ const MyPage = () => {
               </div>
 
               <div className={styles.buttons}>
-                <button className={styles.deleteButton} onClick={deleteId}>
+                <button className={styles.deleteButton} onClick={(event) => openDeleteModal(event)}>
                   회원 탈퇴
                 </button>
                 <button className={styles.saveButton} onClick={editProfile}>
@@ -175,6 +185,13 @@ const MyPage = () => {
                 </button>
               </div>
             </div>
+            <DeleteModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onConfirm={() => deleteId(user.userId)}
+              header="탈퇴 확인"
+              message="정말로 탈퇴 하시겠습니까?"
+            />
           </div>
         </div>
       ) : (
