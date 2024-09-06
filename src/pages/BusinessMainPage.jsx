@@ -1,11 +1,15 @@
 import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
+
 import '../styles/DropdownCheckbox.css';
+
+import downArrow from '../images/icons/downArrow.png';
 
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import TravelbyExhibition from '../components/TravelbyExhibition';
@@ -309,9 +313,10 @@ const BusinessMainPage = () => {
             </div>
             <div className="filterItem">
               <label className="filterLabel">포함 여부</label>
-              <div className="dropdown-container">
+              <div className="dropdown-container ">
                 <button className="dropdown-button" onClick={toggleDropdown}>
-                  필터 옵션 선택 ∨
+                  필터 옵션 선택
+                  <img src={downArrow} style={{ width: '18px', marginBottom: '3px' }} />
                 </button>
                 {isOpen && (
                   <div className="dropdown-content">

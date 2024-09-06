@@ -541,10 +541,6 @@ div {
   outline: 2px solid #000;
 }
 
-.main_showcase .gallery-top .swiper-slide.swiper-slide-active {
-  box-shadow: 11px 10px 29px 0px rgba(0, 0, 0, 0.15);
-}
-
 .main_showcase .swiper-slide {
   width: auto;
 }
@@ -779,6 +775,15 @@ div {
     flex-direction: column;
     border-radius: 20px;
     padding: 20px;
+  }
+  .dateInputContainer {
+    padding-left: 10px;
+  }
+  .main_showcase {
+    display: none;
+  }
+  .scheduleButton {
+    margin-left: 0px;
   }
 
   .filterSection {
