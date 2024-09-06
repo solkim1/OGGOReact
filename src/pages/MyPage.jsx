@@ -50,10 +50,11 @@ const MyPage = () => {
     setIsModalOpen(true);
   };
 
-  const deleteId = () => {
+  const deleteId = (userId) => {
     axios
-      .delete(`/plan/api/user/delete/${user.userId}`)
+      .delete(`/plan/user/delete/${userId}`)
       .then(() => {
+        console.log('성공');
         setIsModalOpen(false);
         logout();
       })
@@ -187,7 +188,7 @@ const MyPage = () => {
             <DeleteModal
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
-              onConfirm={() => deleteId}
+              onConfirm={() => deleteId(user.userId)}
               header="탈퇴 확인"
               message="정말로 탈퇴 하시겠습니까?"
             />
