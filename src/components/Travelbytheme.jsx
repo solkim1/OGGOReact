@@ -95,6 +95,57 @@ const customSlides2 = [
   },
 ];
 
+const Modal = ({ isOpen, onClose, onConfirm, startDate, endDate, onStartDateChange }) => {
+  if (!isOpen) return null; // 모달이 열리지 않았을 경우 아무것도 렌더링하지 않음
+
+  return (
+    <div className="modal-overlay" style={modalOverlayStyle}>
+      <div className="modal" style={modalStyle}>
+        <h3>출발일을 선택하세요</h3>
+        <input type="date" value={startDate} onChange={onStartDateChange} style={{ margin: "10px 0" }} />
+        <h3>도착일을 선택하세요</h3>
+        <input type="date" value={startDate} onChange={onStartDateChange} style={{ margin: "10px 0" }} />
+        <div>
+          <button onClick={onConfirm} disabled={!startDate} style={buttonStyle}>
+            여행 시작
+          </button>
+          <button onClick={onClose} style={buttonStyle}>
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 스타일링 추가
+const modalOverlayStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 1000,
+};
+
+const modalStyle = {
+  backgroundColor: "#fff",
+  padding: "20px",
+  borderRadius: "10px",
+  width: "300px",
+  boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+  textAlign: "center",
+};
+
+const buttonStyle = {
+  margin: "5px",
+  padding: "8px 12px",
+};
+
 const SlideRow = ({ slides, title, onExhibitionClick }) => {
   const [startIndex, setStartIndex] = useState(0);
 
@@ -193,20 +244,38 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
 
 const Travelbytheme = () => {
   const navigate = useNavigate();
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [startDate, setStartDate] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleExhibitionClick = async (exhibitionName) => {
+  const handleThemeClick = (themeName) => {
+    setSelectedTheme(themeName);
+    setIsModalOpen(true);
+  };
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedTheme(null);
+  };
+
+  const handleStartJourney = async () => {
     try {
-      const response = await fetch(`http://localhost:8090/plan/api/schedules/exhibitions/${exhibitionName}`);
+      const response = await fetch(`http://localhost:8090/plan/api/schedules/themes/${selectedTheme}`);
       if (!response.ok) {
-        throw new Error("전시회 데이터를 불러오는 데 실패했습니다.");
+        throw new Error("테마 데이터를 불러오는 데 실패했습니다.");
       }
-      const exhibitionData = await response.json();
+      const themeData = await response.json();
       navigate("/schedulemap", {
-        state: { exhibitionData, exhibitionName },
+        state: { themeData, themeName: selectedTheme, startDate },
       });
+      handleCloseModal();
     } catch (error) {
-      console.error("Error loading exhibition data:", error);
-      alert("전시회 데이터 로딩 실패: " + error.message);
+      console.error("Error loading theme data:", error);
+      alert("테마 데이터 로딩 실패: " + error.message);
     }
   };
 
@@ -216,12 +285,19 @@ const Travelbytheme = () => {
         <h3 className="tit_atc" style={{ textAlign: "left", marginBottom: "20px", marginLeft: "20px" }}>
           ❤️ 함께 떠나는 데이트 코스 여행 ❤️
         </h3>
-        <SlideRow slides={customSlides1} onExhibitionClick={handleExhibitionClick} />
+        <SlideRow slides={customSlides1} onExhibitionClick={handleThemeClick} />
         <h3 className="tit_atc" style={{ textAlign: "left", marginBottom: "20px", marginLeft: "20px" }}>
           👍 추천 여행지 👍
         </h3>
-        <SlideRow slides={customSlides2} onExhibitionClick={handleExhibitionClick} />
+        <SlideRow slides={customSlides2} onExhibitionClick={handleThemeClick} />
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleStartJourney}
+        startDate={startDate}
+        onStartDateChange={handleStartDateChange}
+      />
     </div>
   );
 };
