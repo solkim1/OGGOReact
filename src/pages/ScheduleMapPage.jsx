@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ScheduleMapBtn from "../components/ScheduleMapBtn";
 import Map from "../components/Map";
 import DaySchedule from "../components/DaySchedule";
-import logo from "../images/logo.png";
+import logo from "../images/icons/logo.png";
 import styles from "../styles/ScheduleMapPage.module.css";
 import LocalCache from "../components/LocalCache";
 import { UserContext } from "../context/UserProvider";
@@ -386,7 +386,7 @@ const ScheduleMapPage = () => {
   };
 
   if (loading && Object.keys(locationData).length === 0) {
-    return  <Loading />;
+    return <Loading />;
   }
 
   if (error) {
@@ -398,10 +398,13 @@ const ScheduleMapPage = () => {
   }
 
   const goToHomePage = () => {
-    if (isBusinessMode) {
-      navigate("/business");
-    } else {
-      navigate("/traveler");
+    const isConfirmed = window.confirm("메인페이지로 이동하시겠습니까?");
+    if (isConfirmed) {
+      if (isBusinessMode) {
+        navigate("/business");
+      } else {
+        navigate("/traveler");
+      }
     }
   };
 
@@ -412,13 +415,14 @@ const ScheduleMapPage = () => {
         <h2 className={styles.scheduleTitleContainer}>
           <span className={styles.scheduleTitle}>{scheduleTitle}</span>
           <span className={styles.scheduleDate}>
-            {isExhibitionSchedule ? (
-              startDate
-            ) : isThemeSchedule ? (
-              `${(schedule?.scheStDt || startDate)} - ${calculateEndDate(schedule?.scheStDt || startDate, Object.keys(locationData).length)}`
-            ) : (
-              `${(schedule?.scheStDt || startDate)} - ${(schedule?.scheEdDt || endDate)}`
-            )}
+            {isExhibitionSchedule
+              ? startDate
+              : isThemeSchedule
+              ? `${schedule?.scheStDt || startDate} - ${calculateEndDate(
+                  schedule?.scheStDt || startDate,
+                  Object.keys(locationData).length
+                )}`
+              : `${schedule?.scheStDt || startDate} - ${schedule?.scheEdDt || endDate}`}
           </span>
         </h2>
         <div className={styles.buttonAndScheduleContainer}>

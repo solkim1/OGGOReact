@@ -5,7 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import { UserContext } from '../context/UserProvider';
 import '../styles/Calendar.css';
-import logo from '../images/logo.png';
+import logo from "../images/icons/logo.png";
 import googleIcon from '../images/icons/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 

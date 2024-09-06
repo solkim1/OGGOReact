@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserProvider';
 import WeatherWidget from './WeatherWidget';
 import Calendar from './Calendar';
-import logoImage from '../images/logo.png';
+import logoImage from "../images/icons/logo.png";
 import travelerIcon from '../images/icons/traveler-icon.png';
 import businessIcon from '../images/icons/business-icon.png';
 import { HeaderColorContext } from '../context/HeaderColorContext'; // 추가

@@ -8,7 +8,7 @@ import happy from '../images/happy.gif';
 
 // 이미지 파일 불러오기
 // import planeImage from '../images/plain2.png';
-import logoImage from '../images/logo.png';
+import logoImage from "../images/icons/logo.png";
 import closeEyeIcon from '../images/icons/icon-close-eye.png';
 import eyeIcon from '../images/icons/icon-eye.png';
 import googleIcon from '../images/icons/googleIcon.png';

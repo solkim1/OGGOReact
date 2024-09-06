@@ -80,6 +80,22 @@ const TravelerMainPage = () => {
     }
   };
 
+  const handleExhibitionClick = async (exhibitionName) => {
+    try {
+      const response = await fetch(`http://localhost:8090/plan/api/schedules/exhibitions/${exhibitionName}`);
+      if (!response.ok) {
+        throw new Error('전시회 데이터를 불러오는 데 실패했습니다.');
+      }
+      const exhibitionData = await response.json();
+      navigate('/schedulemap', {
+        state: { exhibitionData, exhibitionName },
+      });
+    } catch (error) {
+      console.error('Error loading exhibition data:', error);
+      alert('전시회 데이터 로딩 실패: ' + error.message);
+    }
+  };
+
   return (
     <div>
       <div style={{ backgroundColor: backgroundColor }}>
@@ -109,7 +125,7 @@ const TravelerMainPage = () => {
                       <br />
                       거꾸로 하우스
                     </strong>
-                    <a href="#" tabIndex={-1}>
+                    <a href="#" onClick={() => handleExhibitionClick('sungsoo')} tabIndex={-1}>
                       자세히 보기
                     </a>
                   </div>
@@ -122,20 +138,20 @@ const TravelerMainPage = () => {
                       <br />
                       파도와 함께 하는 바다
                     </strong>
-                    <a href="#" tabIndex={-1}>
+                    <a href="#" onClick={() => handleExhibitionClick('beach')} tabIndex={-1}>
                       자세히 보기
                     </a>
                   </div>
                 </SwiperSlide>
                 <SwiperSlide className="slide3" data-color="#ffede0">
                   <div className="tit_wrap" style={{ marginTop: '60px' }}>
-                    <em>문화 속으로🪭</em>
+                    <em>문화 속으로🎎</em>
                     <strong style={{ color: '#3d3d3d', marginTop: '30px', marginBottom: '20px' }}>
                       경주
                       <br />
                       역사 체험하기
                     </strong>
-                    <a href="#" tabIndex={-1}>
+                    <a href="#" onClick={() => handleExhibitionClick('history')} tabIndex={-1}>
                       자세히 보기
                     </a>
                   </div>
@@ -148,7 +164,7 @@ const TravelerMainPage = () => {
                       <br />
                       촌캉스 여행
                     </strong>
-                    <a href="#" tabIndex={-1}>
+                    <a href="#" onClick={() => handleExhibitionClick('country')} tabIndex={-1}>
                       자세히 보기
                     </a>
                   </div>
