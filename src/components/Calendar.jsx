@@ -19,6 +19,7 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  // 보기에 편안한 과하지 않은 색으로 변경
   const colorList = ['#E07A5F', '#A3D9A5', '#8FAAD7', '#F4A3C6', '#F4A261', '#B3D9DA', '#A586D7'];
 
   useEffect(() => {
