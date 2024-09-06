@@ -1,11 +1,93 @@
 /* reset */
-a,abbr,acronym,address,applet,article,aside,audio,b,blockquote,big,body,
-center,canvas,caption,cite,code,command,datalist,dd,del,details,dfn,dl,
-div,dt,em,embed,fieldset,figcaption,figure,font,footer,form,h1,h2,h3,h4,h5,h6,
-header,hgroup,html,i,iframe,img,ins,input,select,textarea,button,kbd,keygen,label,
-legend,li,meter,nav,menu,object,ol,output,p,pre,progress,q,s,samp,section,small,
-span,source,strike,strong,sub,sup,table,tbody,tfoot,thead,th,tr,colgroup,col,
-tdvideo,tt,u,ul,var {  
+a,
+abbr,
+acronym,
+address,
+applet,
+article,
+aside,
+audio,
+b,
+blockquote,
+big,
+body,
+center,
+canvas,
+caption,
+cite,
+code,
+command,
+datalist,
+dd,
+del,
+details,
+dfn,
+dl,
+div,
+dt,
+em,
+embed,
+fieldset,
+figcaption,
+figure,
+font,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+html,
+i,
+iframe,
+img,
+ins,
+input,
+select,
+textarea,
+button,
+kbd,
+keygen,
+label,
+legend,
+li,
+meter,
+nav,
+menu,
+object,
+ol,
+output,
+p,
+pre,
+progress,
+q,
+s,
+samp,
+section,
+small,
+span,
+source,
+strike,
+strong,
+sub,
+sup,
+table,
+tbody,
+tfoot,
+thead,
+th,
+tr,
+colgroup,
+col,
+tdvideo,
+tt,
+u,
+ul,
+var {
   margin: 0;
   padding: 0;
 }
@@ -37,7 +119,7 @@ button {
 
 /* 헤더 홈 테마 지역 지우면 줄생김 */
 a {
-  font-family: NotoSansKR, NotoSansJP, "돋움", Dotum, AppleGothic, Tahoma, Sans-serif;
+  font-family: NotoSansKR, NotoSansJP, '돋움', Dotum, AppleGothic, Tahoma, Sans-serif;
   color: #333;
   text-decoration: none;
 }
@@ -71,14 +153,14 @@ div {
   justify-content: center;
 }
 
-#gnbCommon .depth1 ul>li {
+#gnbCommon .depth1 ul > li {
   width: auto;
   margin: 0 35px;
   height: 90px;
   line-height: 90px;
 }
 
-#gnbCommon .depth1 ul li.swiper-slide>a {
+#gnbCommon .depth1 ul li.swiper-slide > a {
   display: block;
   font-size: 20px;
   letter-spacing: -1px;
@@ -87,14 +169,14 @@ div {
   text-align: center;
 }
 
-#gnbCommon .depth1 ul li.swiper-slide.on>a,
-#gnbCommon .depth1 ul li.swiper-slide:hover>a {
+#gnbCommon .depth1 ul li.swiper-slide.on > a,
+#gnbCommon .depth1 ul li.swiper-slide:hover > a {
   font-weight: 700;
   color: #000;
 }
 
-#gnbCommon .depth1 ul li.swiper-slide.on>a:after,
-#gnbCommon .depth1 ul li.swiper-slide:hover>a:after {
+#gnbCommon .depth1 ul li.swiper-slide.on > a:after,
+#gnbCommon .depth1 ul li.swiper-slide:hover > a:after {
   content: '';
   display: inline-block;
   width: 5px;
@@ -148,7 +230,7 @@ div {
   float: left;
 }
 
-.swiper-container-vertical>.swiper-wrapper {
+.swiper-container-vertical > .swiper-wrapper {
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -180,13 +262,13 @@ div {
   transform: translate3d(0, 0, 0);
 }
 
-.swiper-container-multirow>.swiper-wrapper {
+.swiper-container-multirow > .swiper-wrapper {
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
 }
 
-.swiper-container-free-mode>.swiper-wrapper {
+.swiper-container-free-mode > .swiper-wrapper {
   -webkit-transition-timing-function: ease-out;
   -o-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
@@ -258,31 +340,31 @@ div {
 }
 
 .swiper-container-3d .swiper-slide-shadow-left {
-  background-image: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, .5)), to(rgba(0, 0, 0, 0)));
-  background-image: -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: -o-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: linear-gradient(to left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+  background-image: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0)));
+  background-image: -webkit-linear-gradient(right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: -o-linear-gradient(right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
 .swiper-container-3d .swiper-slide-shadow-right {
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, .5)), to(rgba(0, 0, 0, 0)));
-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: linear-gradient(to right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0)));
+  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
 .swiper-container-3d .swiper-slide-shadow-top {
-  background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, .5)), to(rgba(0, 0, 0, 0)));
-  background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: -o-linear-gradient(bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: linear-gradient(to top, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+  background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0)));
+  background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
 .swiper-container-3d .swiper-slide-shadow-bottom {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, .5)), to(rgba(0, 0, 0, 0)));
-  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: -o-linear-gradient(top, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0)));
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
 /* 04 / 04 버튼 */
@@ -302,7 +384,7 @@ div {
 
 .swiper-button-next.swiper-button-disabled,
 .swiper-button-prev.swiper-button-disabled {
-  opacity: .35;
+  opacity: 0.35;
   cursor: auto;
   pointer-events: none;
 }
@@ -525,7 +607,7 @@ div {
   background: #000;
   height: 100%;
   width: 0;
-  content: "";
+  content: '';
 }
 
 .main_showcase .swiper-progress-bar.active .slide_progress-bar {
@@ -627,8 +709,6 @@ div {
   border: none;
   border-radius: 20px;
 }
-
-
 
 .dateInputContainer {
   display: flex;

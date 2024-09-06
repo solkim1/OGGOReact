@@ -10,15 +10,9 @@
   padding: 20px;
 }
 
-
-
 .grayContainer {
   height: 150px;
-
-
   /* background-color: #f3f3f3; */
-
-
 }
 
 .content {
@@ -155,4 +149,21 @@
   color: red;
   font-size: 12px;
   margin-top: 5px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .grayContainer {
+    margin-top: -1px;
+    height: 51px;
+    /* background-color: #f3f3f3; */
+  }
+}
+
+@media (max-width: 480px) {
+  .grayContainer {
+    margin-top: -1px;
+    height: 51px;
+    /* background-color: #f3f3f3; */
+  }
 }

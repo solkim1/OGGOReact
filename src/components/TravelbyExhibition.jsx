@@ -120,6 +120,9 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
                     color: "#333",
                     display: "block",
                     transition: "all 0.3s ease-in-out",
+                    whiteSpace: "nowrap" /* 텍스트를 한 줄로 표시 */,
+                    overflow: "hidden" /* 넘치는 텍스트를 숨김 */,
+                    textOverflow: "ellipsis" /* 넘치는 텍스트에 '...'을 표시 */,
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-10px)";

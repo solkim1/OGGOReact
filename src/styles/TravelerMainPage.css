@@ -541,10 +541,6 @@ div {
   outline: 2px solid #000;
 }
 
-.main_showcase .gallery-top .swiper-slide.swiper-slide-active {
-  box-shadow: 11px 10px 29px 0px rgba(0, 0, 0, 0.15);
-}
-
 .main_showcase .swiper-slide {
   width: auto;
 }
@@ -633,6 +629,14 @@ div {
 
 .main_showcase .swiper-pagination .swiper-pagination-current {
   font-weight: 800;
+}
+
+#date {
+  max-width: 300px;
+}
+
+#time {
+  min-width: 300px;
 }
 
 .main_showcase .page_box .btn {
@@ -780,6 +784,15 @@ div {
     border-radius: 20px;
     padding: 20px;
   }
+  .dateInputContainer {
+    padding-left: 10px;
+  }
+  .main_showcase {
+    display: none;
+  }
+  .scheduleButton {
+    margin-left: 0px;
+  }
 
   .filterSection {
     flex-direction: column;
@@ -809,6 +822,11 @@ div {
 @media screen and (max-width: 480px) {
   .filterContainer {
     padding: 15px;
+  }
+
+  #date {
+    width: 100%;
+    max-width: none;
   }
 
   .filterLabel {

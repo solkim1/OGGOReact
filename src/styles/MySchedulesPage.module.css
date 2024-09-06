@@ -176,6 +176,10 @@
   .scheduleItem {
     flex-direction: column;
   }
+  .headerBlock {
+    margin-top: -1px;
+    height: 71px;
+  }
 
   .scheduleLeftIcons,
   .scheduleRightIcons {
