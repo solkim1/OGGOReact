@@ -108,7 +108,7 @@ const Calendar = () => {
         "https://www.googleapis.com/calendar/v3/calendars/ko.south_korea%23holiday@group.v.calendar.google.com/events",
         {
           headers: {
-            Authorization: `Bearer ${token}`, // 인증 토큰 추가
+            Authorization: `Bearer ${token}`,
           },
           params: {
             timeMin: start,

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DateModal from "../components/DateModal";
 
 const customSlides1 = [
   {
@@ -54,6 +55,17 @@ const customSlides2 = [
     apiName: "ANGEL",
   },
 ];
+
+const exhibitionNameMap = {
+  DANIELARSHAM: "다니엘 아샴 : 서울 3024",
+  james: "제임스 로젠퀴스트 : Universe",
+  kimjihee: "김지희 개인전 - DIVINITY",
+  "Layered Life": "정직성 : Layered Life",
+  utopia: "유토피아: Nowhere, Now Here",
+  YOUNME: "너와 나 그리고 그곳에",
+  DAWN: "새벽부터 황혼까지",
+  ANGEL: "투명하고 향기나는 천사의 날개 빛깔처럼",
+};
 
 const SlideRow = ({ slides, title, onExhibitionClick }) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -158,17 +170,45 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
 
 const TravelbyExhibition = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedExhibition, setSelectedExhibition] = useState(null);
 
-  const handleExhibitionClick = async (exhibitionName) => {
+  const handleExhibitionClick = (exhibitionName) => {
+    setSelectedExhibition(exhibitionName);
+    setIsModalOpen(true); // 전시회 클릭 시 모달 열기
+  };
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedExhibition(null);
+  };
+
+  const handleStartJourney = async () => {
     try {
-      const response = await fetch(`http://localhost:8090/plan/api/schedules/exhibitions/${exhibitionName}`);
+      const response = await fetch(`http://localhost:8090/plan/api/schedules/exhibitions/${selectedExhibition}`);
       if (!response.ok) {
         throw new Error("전시회 데이터를 불러오는 데 실패했습니다.");
       }
       const exhibitionData = await response.json();
       navigate("/schedulemap", {
-        state: { exhibitionData, exhibitionName },
+        state: {
+          exhibitionData,
+          exhibitionName: exhibitionNameMap[selectedExhibition] || selectedExhibition, // 매핑된 전시회 이름 사용
+          startDate,
+          endDate,
+        },
       });
+      handleCloseModal();
     } catch (error) {
       console.error("Error loading exhibition data:", error);
       alert("전시회 데이터 로딩 실패: " + error.message);
@@ -187,6 +227,17 @@ const TravelbyExhibition = () => {
         </h3>
         <SlideRow slides={customSlides2} onExhibitionClick={handleExhibitionClick} />
       </div>
+
+      {/* 모달 컴포넌트 렌더링 */}
+      <DateModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleStartJourney}
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={handleStartDateChange}
+        onEndDateChange={handleEndDateChange}
+      />
     </div>
   );
 };
