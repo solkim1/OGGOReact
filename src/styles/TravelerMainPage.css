@@ -631,6 +631,14 @@ div {
   font-weight: 800;
 }
 
+#date {
+  max-width: 300px;
+}
+
+#time {
+  min-width: 300px;
+}
+
 .main_showcase .page_box .btn {
   position: absolute;
   right: 0;
@@ -814,6 +822,11 @@ div {
 @media screen and (max-width: 480px) {
   .filterContainer {
     padding: 15px;
+  }
+
+  #date {
+    width: 100%;
+    max-width: none;
   }
 
   .filterLabel {

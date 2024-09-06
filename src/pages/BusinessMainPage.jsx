@@ -36,7 +36,9 @@ const BusinessMainPage = () => {
     여행지: false,
     숙소: false,
   });
+
   const [isOpen, setIsOpen] = useState(false);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -47,6 +49,13 @@ const BusinessMainPage = () => {
       [option]: !prevOptions[option],
     }));
   };
+
+  // 필터 옵션에 따라 표시할 텍스트 생성
+  const selectedOptionsText =
+    Object.entries(includeOptions)
+      .filter(([_, value]) => value)
+      .map(([key, _]) => key)
+      .join(', ') || '필터 옵션 선택';
 
   // 두 개의 Swiper에 대한 ref
   const swiperRefLeft = useRef(null);
@@ -267,7 +276,7 @@ const BusinessMainPage = () => {
         </div>
         <div className="filterContainer">
           <div className="filterSection">
-            <div className="filterItem">
+            <div className="filterItem" id="date">
               <label className="filterLabel">일정 선택</label>
               <div className="dateInputContainer">
                 <input
@@ -286,7 +295,7 @@ const BusinessMainPage = () => {
               </div>
             </div>
 
-            <div className="filterItem">
+            <div className="filterItem" id="time">
               <label className="filterLabel">출장 시간대</label>
               <div className="dateInputContainer">
                 <input
@@ -313,13 +322,27 @@ const BusinessMainPage = () => {
             </div>
             <div className="filterItem">
               <label className="filterLabel">포함 여부</label>
-              <div className="dropdown-container ">
-                <button className="dropdown-button" onClick={toggleDropdown}>
-                  필터 옵션 선택
-                  <img src={downArrow} style={{ width: '18px', marginBottom: '3px' }} />
-                </button>
+              <div
+                className="filterSelect"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+                onClick={toggleDropdown}
+              >
+                {/* 필터 옵션 텍스트 */}
+                <p
+                  className="dropdown-button"
+                  style={{
+                    whiteSpace: 'nowrap' /* 텍스트를 한 줄로 표시 */,
+                    overflow: 'hidden' /* 넘치는 텍스트를 숨김 */,
+                    textOverflow: 'ellipsis' /* 넘치는 텍스트에 '...'을 표시 */,
+                  }}
+                >
+                  {selectedOptionsText}
+                </p>
                 {isOpen && (
-                  <div className="dropdown-content">
+                  <div className="dropdown-content" onClick={(e) => e.stopPropagation()}>
                     {Object.entries(includeOptions).map(([option, checked]) => (
                       <label key={option} className="dropdown-checkbox">
                         <input
@@ -333,8 +356,18 @@ const BusinessMainPage = () => {
                     ))}
                   </div>
                 )}
+                <img
+                  src={downArrow}
+                  style={{
+                    width: '16px',
+                    height: '17px',
+                    marginTop: '3px',
+                    marginRight: '-10px',
+                  }}
+                />
               </div>
             </div>
+
             <button className="scheduleButton" onClick={handleScheduleButtonClick}>
               일정 생성
             </button>
