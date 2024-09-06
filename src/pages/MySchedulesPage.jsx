@@ -85,10 +85,7 @@ const MySchedulesPage = () => {
         {loading ? (
           <div>로딩 중...</div>
         ) : (
-          <ScheduleList
-            schedules={getFilteredSchedules()} // 필터링된 데이터를 ScheduleList에 전달
-            fetchSchedules={fetchSchedules}
-          />
+          <ScheduleList schedules={getFilteredSchedules()} fetchSchedules={fetchSchedules} />
         )}
       </div>
     </div>
