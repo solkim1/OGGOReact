@@ -779,11 +779,28 @@ div {
 }
 
 @media screen and (max-width: 768px) {
+  .main_showcase {
+    padding-top: 20px;
+    position: relative;
+  }
+
+  .main_showcase .img_wrap {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin-top: -20px;
+  }
+
+  .main_showcase .swiper-container.gallery-top {
+    padding: 5px 5px 5px 5px;
+  }
+
   .filterContainer {
     flex-direction: column;
     border-radius: 20px;
     padding: 20px;
   }
+
   .dateInputContainer {
     padding-left: 10px;
   }

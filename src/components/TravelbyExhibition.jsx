@@ -132,7 +132,6 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
                   </div>
                   <strong
                     style={{
-                      display: 'block',
                       marginTop: '10px',
                       fontSize: '14px',
                       textAlign: 'center',

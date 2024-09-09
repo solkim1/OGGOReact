@@ -2,41 +2,47 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import LocalCache from './LocalCache';
 import style from '../styles/DaySchedule.module.css';
+
 import leftArrow from '../images/icons/leftArrow.png';
 import rightArrow from '../images/icons/rightArrow.png';
 import cafeIcon from '../images/icons/cafe.png';
 import lodgingIcon from '../images/icons/lodging.png';
 import restaurantIcon from '../images/icons/restaurant.png';
-import defaultIcon from '../images/plain2.png';
+import defaultIcon from '../images/icons/default.png';
+import exhibitionIcon from '../images/icons/exhibition.png';
 import shoppingIcon from '../images/icons/shopping.png';
 import businessIcon from '../images/icons/business.png';
-import reportsIcon from '../images/icons/reports.png';
+import leportsIcon from '../images/icons/leports.png';
 import tourSpotIcon2 from '../images/icons/tourspot2.png';
 
 const getIcon = (type) => {
   switch (type) {
-    case '비즈니스':
-      return businessIcon;
+    case '관광지':
+      return tourSpotIcon2;
+    case '식당':
+      return restaurantIcon;
     case '카페':
       return cafeIcon;
     case '숙박':
       return lodgingIcon;
-    case '숙소':
-      return lodgingIcon;
-    case '식당':
-      return restaurantIcon;
+    case '전시회':
+      return exhibitionIcon;
     case '맛집':
       return restaurantIcon;
-    case '관광지':
-      return tourSpotIcon2;
     case '여행지':
       return tourSpotIcon2;
+    case '레포츠':
+      return leportsIcon;
+    case '체험':
+      return defaultIcon;
     case '관광':
       return tourSpotIcon2;
+    case '숙소':
+      return lodgingIcon;
     case '쇼핑':
       return shoppingIcon;
-    case '레포츠':
-      return reportsIcon;
+    case '비즈니스':
+      return businessIcon;
     default:
       return defaultIcon;
   }
