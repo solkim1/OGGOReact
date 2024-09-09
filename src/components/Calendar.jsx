@@ -5,7 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import { UserContext } from '../context/UserProvider';
 import '../styles/Calendar.css';
-import logo from "../images/icons/logo.png";
+import logo from '../images/icons/logo.png';
 import googleIcon from '../images/icons/googleIcon.png';
 import styles from '../styles/LoginJoin.module.css';
 
@@ -189,15 +189,15 @@ const Calendar = () => {
 
   return (
     <div className={styles.calendarContainer}>
-      <h1>
+      <div className="titleContainer">
         <img src={logo} alt="plan maker logo" style={{ width: '200px', height: '40px' }} />
         {!googleToken && ( // Google 로그인되지 않은 경우에만 연동하기 버튼 표시
-          <div className={styles.googleSignIn} onClick={handleGoogleLogin}>
+          <div className="googleSignIn" onClick={handleGoogleLogin}>
             <img src={googleIcon} alt="Google logo" width="20" />
             <span>Google 계정 연동하기</span>
           </div>
         )}
-      </h1>
+      </div>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"

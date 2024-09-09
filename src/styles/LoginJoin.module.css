@@ -78,6 +78,14 @@
   /* 부모 요소와 같은 너비 설정 */
 }
 
+.inputContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  /* 부모 요소와 같은 너비 설정 */
+}
+
 .passwordContainer .inputField {
   padding-right: 20px;
   /* 눈 버튼을 위한 여백 추가 */

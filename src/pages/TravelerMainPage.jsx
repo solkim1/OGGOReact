@@ -190,24 +190,16 @@ const TravelerMainPage = () => {
               >
                 {/* 여기에 이미지들 추가 */}
                 <SwiperSlide className="slide1" data-swiper-slide-index={0} style={{ marginRight: '30px' }}>
-                  <a href="#">
-                    <img src="./sungsoo.png" alt="sungsoo" />
-                  </a>
+                  <img src="./sungsoo.png" alt="sungsoo" />
                 </SwiperSlide>
                 <SwiperSlide className="slide2" data-swiper-slide-index={1} style={{ marginRight: '30px' }}>
-                  <a href="#">
-                    <img src="./beach.png" alt="beach" />
-                  </a>
+                  <img src="./beach.png" alt="beach" />
                 </SwiperSlide>
                 <SwiperSlide className="slide3" data-swiper-slide-index={2} style={{ marginRight: '30px' }}>
-                  <a href="#">
-                    <img src="./ae3aebd0-36ae-4cb6-9865-aaafee317090.raw.png" alt="history" />
-                  </a>
+                  <img src="./ae3aebd0-36ae-4cb6-9865-aaafee317090.raw.png" alt="history" />
                 </SwiperSlide>
                 <SwiperSlide className="slide4" data-swiper-slide-index={3} style={{ marginRight: '30px' }}>
-                  <a href="#">
-                    <img src="./country.png" alt="스틸아트 천국, 포항 1박 2일 여행" />
-                  </a>
+                  <img src="./country.png" alt="스틸아트 천국, 포항 1박 2일 여행" />
                 </SwiperSlide>
               </Swiper>
             </div>

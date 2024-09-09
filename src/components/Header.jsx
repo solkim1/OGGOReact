@@ -1,40 +1,44 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // useLocation 추가
 import { UserContext } from '../context/UserProvider';
 import WeatherWidget from './WeatherWidget';
 import Calendar from './Calendar';
-import logoImage from "../images/icons/logo.png";
+import logoImage from '../images/icons/logo.png';
 import travelerIcon from '../images/icons/traveler-icon.png';
 import businessIcon from '../images/icons/business-icon.png';
-import { HeaderColorContext } from '../context/HeaderColorContext'; // 추가
+import { HeaderColorContext } from '../context/HeaderColorContext';
 import styles from '../styles/Header.module.css';
 import LocalCache from '../components/LocalCache';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // location 추가
   const [isBusinessMode, setIsBusinessMode] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const { logout } = useContext(UserContext);
-  const { headerColor } = useContext(HeaderColorContext); // 헤더 컬러 컨텍스트 사용
+  const { headerColor } = useContext(HeaderColorContext);
 
+  // 컴포넌트가 마운트될 때, 캐시된 모드를 불러오거나 히스토리 상태에서 복원
   useEffect(() => {
     const fetchInitialMode = async () => {
       const cachedMode = await LocalCache.readFromCache('userMode');
-      if (cachedMode) {
+      if (location.state?.mode) {
+        setIsBusinessMode(location.state.mode === 'business');
+      } else if (cachedMode) {
         setIsBusinessMode(cachedMode === 'business');
       }
     };
     fetchInitialMode();
-  }, []);
+  }, [location.state?.mode]);
 
   const toggleMode = async () => {
     const newMode = !isBusinessMode;
     setIsBusinessMode(newMode);
-
     const modeToSave = newMode ? 'business' : 'traveler';
     await LocalCache.writeToCache('userMode', modeToSave);
 
-    navigate(newMode ? '/business' : '/traveler');
+    // navigate 할 때 state로 모드 정보를 함께 전달
+    navigate(newMode ? '/business' : '/traveler', { state: { mode: newMode ? 'business' : 'traveler' } });
   };
 
   const toggleCalendar = () => {
@@ -58,9 +62,9 @@ const Header = () => {
 
   const goToHomePage = () => {
     if (isBusinessMode) {
-      navigate('/business');
+      navigate('/business', { state: { mode: 'business' } });
     } else {
-      navigate('/traveler');
+      navigate('/traveler', { state: { mode: 'traveler' } });
     }
   };
 
@@ -87,19 +91,15 @@ const Header = () => {
                 </span>
               </div>
               <button className={styles.navButton} onClick={toggleCalendar}>
-                {/* <img src={calendarIcon} alt="Calendar" className={styles.buttonIcon} /> */}
                 여행캘린더
               </button>
               <button className={styles.navButton} onClick={() => navigate('/myschedules')}>
-                {/* <img src={scheduleIcon} alt="Schedule" className={styles.buttonIcon} /> */}
                 나의일정
               </button>
               <button className={styles.navButton} onClick={() => navigate('/mypage')}>
-                {/* <img src={mypageIcon} alt="My Page" className={styles.buttonIcon} /> */}
                 마이페이지
               </button>
               <button className={styles.navButton} onClick={logoutBtn}>
-                {/* <img src={logoutIcon} alt="Logout" className={styles.buttonIcon} /> */}
                 로그아웃
               </button>
             </div>

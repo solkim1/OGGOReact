@@ -218,27 +218,20 @@ const BusinessMainPage = () => {
               pagination={{ type: 'fraction', el: '.swiper-pagination' }}
               autoplay={{ delay: 5000 }}
               className="swiper-container gallery-top"
+              allowTouchMove={false}
             >
               {/* 이미지 슬라이드 */}
               <SwiperSlide className="slide1" data-swiper-slide-index={0} style={{ marginRight: '30px' }}>
-                <a href="#">
-                  <img src="./DANIELARSHAM.png" alt="sungsoo" />
-                </a>
+                <img src="./DANIELARSHAM.png" alt="sungsoo" />
               </SwiperSlide>
               <SwiperSlide className="slide2" data-swiper-slide-index={1} style={{ marginRight: '30px' }}>
-                <a href="#">
-                  <img src="./utopia.png" alt="beach" />
-                </a>
+                <img src="./utopia.png" alt="beach" />
               </SwiperSlide>
               <SwiperSlide className="slide3" data-swiper-slide-index={2} style={{ marginRight: '30px' }}>
-                <a href="#">
-                  <img src="./universe.png" alt="history" />
-                </a>
+                <img src="./universe.png" alt="history" />
               </SwiperSlide>
               <SwiperSlide className="slide4" data-swiper-slide-index={3} style={{ marginRight: '30px' }}>
-                <a href="#">
-                  <img src="./LayeredLife.png" alt="스틸아트 천국,<br> 포항 1박 2일 여행" />
-                </a>
+                <img src="./LayeredLife.png" alt="스틸아트 천국,<br> 포항 1박 2일 여행" />
               </SwiperSlide>
             </Swiper>
           </div>

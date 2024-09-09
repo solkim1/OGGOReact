@@ -787,9 +787,20 @@ div {
   .dateInputContainer {
     padding-left: 10px;
   }
-  .main_showcase {
+
+  .cont *,
+  .page_box *,
+  .main_showcase .gallery-top.swiper-container:after {
     display: none;
   }
+
+  .page {
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+    padding: 0px;
+  }
+
   .scheduleButton {
     margin-left: 0px;
   }

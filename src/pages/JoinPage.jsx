@@ -8,7 +8,7 @@ import happy from '../images/happy.gif';
 
 // 이미지 파일 불러오기
 // import planeImage from '../images/plain2.png';
-import logoImage from "../images/icons/logo.png";
+import logoImage from '../images/icons/logo.png';
 import closeEyeIcon from '../images/icons/icon-close-eye.png';
 import eyeIcon from '../images/icons/icon-eye.png';
 import googleIcon from '../images/icons/googleIcon.png';
@@ -192,11 +192,11 @@ const JoinPage = () => {
               onChange={handleChange}
             />
             {formData.userId !== '' ? (
-              <span className={!userIdValid ? styles.errorMessage : styles.successMessage}>
+              <div className={!userIdValid ? styles.errorMessage : styles.successMessage}>
                 {!userIdValid ? '이미 사용중인 아이디입니다' : '사용 가능한 아이디입니다'}
-              </span>
+              </div>
             ) : (
-              <span></span>
+              ''
             )}
           </div>
 
@@ -213,14 +213,14 @@ const JoinPage = () => {
             />
             {formData.userEmail !== '' ? (
               !emailValid ? (
-                <span className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</span>
+                <div className={styles.errorMessage}>유효한 이메일 주소를 입력하세요.</div>
               ) : !emailDuplicate ? (
-                <span className={styles.errorMessage}>이미 사용중인 이메일입니다</span>
+                <div className={styles.errorMessage}>이미 사용중인 이메일입니다</div>
               ) : (
-                <span className={styles.successMessage}>사용 가능한 이메일입니다</span>
+                <div className={styles.successMessage}>사용 가능한 이메일입니다</div>
               )
             ) : (
-              <span></span>
+              ''
             )}
           </div>
 
@@ -271,7 +271,7 @@ const JoinPage = () => {
                 <img className={styles.eyeImg} src={pwVisible ? closeEyeIcon : eyeIcon} alt="Toggle visibility" />
               </button>
             </div>
-            {!pwMatch && <span className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</span>}
+            {!pwMatch && <div className={styles.errorMessage}>비밀번호가 일치하지 않습니다.</div>}
           </div>
 
           <div className={styles.buttonGroup}>

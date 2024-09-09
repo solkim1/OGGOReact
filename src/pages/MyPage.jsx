@@ -54,9 +54,9 @@ const MyPage = () => {
     axios
       .delete(`/plan/user/delete/${userId}`)
       .then(() => {
-        console.log('성공');
         setIsModalOpen(false);
         logout();
+        alert('회원탈퇴가 완료되었습니다.');
       })
       .catch((error) => console.error('Error deleting schedule:', error));
   };

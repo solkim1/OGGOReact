@@ -99,6 +99,7 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
                   flex: '0 0 25%',
                   padding: '10px 5px',
                   transition: 'transform 0.3s ease-in-out',
+                  borderRadius: '50px',
                 }}
                 onClick={() => onExhibitionClick(slide.apiName)}
               >
@@ -106,11 +107,12 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
                   style={{
                     textDecoration: 'none',
                     color: '#333',
-                    display: 'block',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2, // 두 줄로 제한
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                     transition: 'all 0.3s ease-in-out',
-                    whiteSpace: 'nowrap' /* 텍스트를 한 줄로 표시 */,
-                    overflow: 'hidden' /* 넘치는 텍스트를 숨김 */,
-                    textOverflow: 'ellipsis' /* 넘치는 텍스트에 '...'을 표시 */,
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-10px)';
@@ -128,13 +130,20 @@ const SlideRow = ({ slides, title, onExhibitionClick }) => {
                       style={{ width: '100%', height: 'auto', borderRadius: '10px' }}
                     />
                   </div>
-                  <strong style={{ display: 'block', marginTop: '10px', fontSize: '14px', textAlign: 'center' }}>
-                    {slide.title.split('\n').map((line, i) => (
-                      <React.Fragment key={i}>
-                        {line}
-                        <br />
-                      </React.Fragment>
-                    ))}
+                  <strong
+                    style={{
+                      display: 'block',
+                      marginTop: '10px',
+                      fontSize: '14px',
+                      textAlign: 'center',
+                      display: '-webkit-box', // 2줄로 표시
+                      WebkitLineClamp: 2, // 2줄까지 제한
+                      WebkitBoxOrient: 'vertical', // 수직 박스 모드 설정
+                      overflow: 'hidden', // 넘치는 텍스트 숨김
+                      textOverflow: 'ellipsis', // 말줄임표 처리
+                    }}
+                  >
+                    {slide.title}
                   </strong>
                 </a>
               </div>

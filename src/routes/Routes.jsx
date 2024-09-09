@@ -1,17 +1,17 @@
-import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import JoinPage from "../pages/JoinPage";
-import TravelerMainPage from "../pages/TravelerMainPage";
-import ScheduleMapPage from "../pages/ScheduleMapPage";
-import LoginPage from "../pages/LoginPage";
-import MyPage from "../pages/MyPage";
-import MySchedulesPage from "../pages/MySchedulesPage";
-import BusinessMainPage from "../pages/BusinessMainPage";
-import { UserContext } from "../context/UserProvider";
-import { HeaderColorProvider } from "../context/HeaderColorContext"; // 추가
-import styles from "../styles/AppRoutes.module.css";
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import JoinPage from '../pages/JoinPage';
+import TravelerMainPage from '../pages/TravelerMainPage';
+import ScheduleMapPage from '../pages/ScheduleMapPage';
+import LoginPage from '../pages/LoginPage';
+import MyPage from '../pages/MyPage';
+import MySchedulesPage from '../pages/MySchedulesPage';
+import BusinessMainPage from '../pages/BusinessMainPage';
+import { UserContext } from '../context/UserProvider';
+import { HeaderColorProvider } from '../context/HeaderColorContext'; // 추가
+import styles from '../styles/AppRoutes.module.css';
 
 const AppRoutes = () => {
   const { isAuthenticated } = useContext(UserContext);
@@ -33,7 +33,7 @@ const AppRoutes = () => {
     const location = useLocation();
     return (
       <div className={styles.pageContainer}>
-        {location.pathname !== "/schedulemap" && <Header />}
+        {location.pathname !== '/schedulemap' && <Header />}
         <div className={styles.contentWrap}>
           <Routes>
             <Route path="/mypage" element={<MyPage />} />
@@ -44,15 +44,18 @@ const AppRoutes = () => {
             <Route path="*" element={<Navigate to="/traveler" />} />
           </Routes>
         </div>
-        {location.pathname !== "/schedulemap" && <Footer />}
+        {location.pathname !== '/schedulemap' && <Footer />}
       </div>
     );
   };
 
   return (
-    <HeaderColorProvider>  {/* HeaderColorProvider로 감싸줍니다 */}
-      <Router>{isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}</Router>
-    </HeaderColorProvider>
+    <Router>
+      <HeaderColorProvider>
+        {/* HeaderColorProvider로 감싸줍니다 */}
+        {isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}
+      </HeaderColorProvider>
+    </Router>
   );
 };
 
