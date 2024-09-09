@@ -1,0 +1,169 @@
+/* Container and Layout */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.grayContainer {
+  height: 150px;
+  /* background-color: #f3f3f3; */
+}
+
+.content {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+/* Profile Section */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -50px;
+}
+
+.profile img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.profile span {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+}
+
+.label {
+  color: #6c757d;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+/* Form Section */
+.formContainer {
+  width: 100%;
+}
+
+.inputGroup {
+  position: relative;
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: inline-block;
+  font-size: 14px;
+  color: #333;
+}
+
+.inputField {
+  width: 100%;
+  padding: 10px 40px 10px 10px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+  background-color: #f7f7f7;
+  transition: border-color 0.3s ease;
+}
+
+.inputField:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Password Input Section */
+.passwordContainer {
+  position: relative;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.eyeImg {
+  padding-top: 5px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Buttons Section */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.deleteButton {
+  border: 1px solid #ff4b4b;
+  color: #ff4b4b;
+  background-color: transparent;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #ffcccc;
+}
+
+.saveButton {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background-color: #0056b3;
+}
+
+/* Error Handling */
+.error {
+  border-color: red;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .grayContainer {
+    margin-top: -1px;
+    height: 51px;
+    /* background-color: #f3f3f3; */
+  }
+}
+
+@media (max-width: 480px) {
+  .grayContainer {
+    margin-top: -1px;
+    height: 51px;
+    /* background-color: #f3f3f3; */
+  }
+}

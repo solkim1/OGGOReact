@@ -1,0 +1,48 @@
+.weatherWidget {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 수평 중앙 정렬 */
+  gap: 12px;
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 5px;
+}
+
+.weatherItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  color: #333;
+}
+
+.weatherItem img {
+  width: 20px;
+  height: 20px;
+}
+
+.weatherItem span {
+  font-size: 12px;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .weatherWidget {
+    gap: 8px;
+    padding: 5px 0;
+  }
+
+  .weatherItem {
+    font-size: 10px;
+    flex-direction: row;
+  }
+
+  .weatherItem img {
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+  }
+
+  .weatherItem span {
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,55 @@
+.exhibitionsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  gap: 60px;
+
+  width: 100%;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.exhibitionItem {
+
+  flex: 1 1 calc(33.333% - 60px);
+  max-width: calc(33.333% - 60px);
+
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.exhibitionItem img {
+  width: 35vh;
+  height: 40vh; /* 고정된 높이 설정 */
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.exhibitionTitle {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+  .exhibitionsContainer {
+    gap: 20px;
+  }
+
+  .exhibitionItem {
+    flex: 1 1 calc(33.333% - 20px);
+  max-width: calc(33.333% - 20px);
+  }
+
+  .exhibitionItem img {
+    width: 13vh;
+    height: 15vh; /* 고정된 높이 설정 */
+  }
+
+  .exhibitionTitle {
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
