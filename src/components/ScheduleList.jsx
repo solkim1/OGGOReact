@@ -17,19 +17,22 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
   const [editedDesc, setEditedDesc] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scheduleToDelete, setScheduleToDelete] = useState(null);
+  const [localSchedules, setLocalSchedules] = useState(schedules || []);
 
   const nav = useNavigate();
 
   useEffect(() => {
-    setLoading(false);
-    console.log(schedules);
+    if (schedules) {
+      setLocalSchedules(schedules);
+      setLoading(false);
+    }
   }, [schedules]);
 
   const handleDelete = (scheduleNum) => {
     axios
       .delete(`/plan/api/schedules/delete/${scheduleNum}`)
       .then(() => {
-        fetchSchedules();
+        fetchSchedules(); // 삭제 후 전체 목록 다시 가져오기
         setIsModalOpen(false);
       })
       .catch((error) => console.error('Error deleting schedule:', error));
@@ -37,10 +40,26 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
 
   const toggleImportance = (scheduleNum, event) => {
     event.stopPropagation();
+
+    // 낙관적 업데이트: UI를 먼저 변경
+    const updatedSchedules = localSchedules.map((schedule) =>
+      schedule.scheNum === scheduleNum
+        ? { ...schedule, isImportance: schedule.isImportance === 'Y' ? 'N' : 'Y' }
+        : schedule
+    );
+    setLocalSchedules(updatedSchedules); // UI 갱신
+
+    // 실제 서버 요청
     axios
       .put(`/plan/api/schedules/toggleImportance/${scheduleNum}`)
-      .then(() => fetchSchedules())
-      .catch((error) => console.error('Error updating importance:', error));
+      .then(() => {
+        fetchSchedules();
+      }) // 서버와 다시 동기화
+      .catch((error) => {
+        console.error('Error updating importance:', error);
+        // 에러 발생 시, 원래 상태로 복원
+        fetchSchedules();
+      });
   };
 
   const startEditing = (schedule, event) => {
@@ -61,7 +80,7 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
       .put(`/plan/api/schedules/update`, params)
       .then(() => {
         setEditingScheduleId(null);
-        fetchSchedules();
+        fetchSchedules(); // 수정 후 전체 목록 다시 가져오기
       })
       .catch((error) => console.error('Error updating schedule:', error));
   };
@@ -83,8 +102,8 @@ const ScheduleList = ({ schedules, fetchSchedules }) => {
 
   return (
     <div className={styles.scheduleList}>
-      {schedules && schedules.length > 0 ? (
-        schedules.map((schedule) => (
+      {localSchedules && localSchedules.length > 0 ? (
+        localSchedules.map((schedule) => (
           <div
             key={schedule.scheNum}
             className={styles.scheduleItem}

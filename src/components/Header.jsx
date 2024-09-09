@@ -77,19 +77,19 @@ const Header = () => {
           </div>
           <div className={styles.rightContent}>
             <WeatherWidget />
-            <div className={styles.headerButtons}>
-              <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ''}`} onClick={toggleMode}>
-                <div className={styles.toggleCircle}>
-                  <img
-                    src={isBusinessMode ? businessIcon : travelerIcon}
-                    alt={isBusinessMode ? '출장자 모드 아이콘' : '여행자 모드 아이콘'}
-                    className={styles.modeIcon}
-                  />
-                </div>
-                <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
-                  {isBusinessMode ? '출장자 모드' : '여행자 모드'}
-                </span>
+            <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ''}`} onClick={toggleMode}>
+              <div className={styles.toggleCircle}>
+                <img
+                  src={isBusinessMode ? businessIcon : travelerIcon}
+                  alt={isBusinessMode ? '출장자 모드 아이콘' : '여행자 모드 아이콘'}
+                  className={styles.modeIcon}
+                />
               </div>
+              <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
+                {isBusinessMode ? '출장자 모드' : '여행자 모드'}
+              </span>
+            </div>
+            <div className={styles.headerButtons}>
               <button className={styles.navButton} onClick={toggleCalendar}>
                 여행캘린더
               </button>
