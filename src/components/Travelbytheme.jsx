@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateModal from "./DateModal";
 
+/**
+ * 첫 번째 슬라이드 데이터 목록.
+ */
 const customSlides1 = [
   {
     id: 1,
@@ -49,6 +52,9 @@ const customSlides1 = [
   },
 ];
 
+/**
+ * 두 번째 슬라이드 데이터 목록.
+ */
 const customSlides2 = [
   {
     id: 1,
@@ -96,13 +102,28 @@ const customSlides2 = [
   },
 ];
 
+/**
+ * 슬라이드 행을 표시하는 컴포넌트.
+ *
+ * @param {Object} props - 컴포넌트의 props.
+ * @param {Array} props.slides - 표시할 슬라이드 데이터.
+ * @param {string} props.title - 슬라이드 행의 제목.
+ * @param {Function} props.onThemeClick - 테마 클릭 시 호출되는 함수.
+ * @return {JSX.Element} SlideRow 컴포넌트를 반환합니다.
+ */
 const SlideRow = ({ slides, title, onThemeClick }) => {
-  const [startIndex, setStartIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(0); // 현재 슬라이드 시작 인덱스
 
+  /**
+   * 다음 슬라이드를 표시하는 함수.
+   */
   const handleNext = () => {
     setStartIndex((prevIndex) => (prevIndex + 1) % slides.length);
   };
 
+  /**
+   * 이전 슬라이드를 표시하는 함수.
+   */
   const handlePrev = () => {
     setStartIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
   };
@@ -149,6 +170,10 @@ const SlideRow = ({ slides, title, onThemeClick }) => {
                     color: "#333",
                     display: "block",
                     transition: "all 0.3s ease-in-out",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    borderRadius: "10px",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-10px)";
@@ -192,43 +217,63 @@ const SlideRow = ({ slides, title, onThemeClick }) => {
   );
 };
 
+/**
+ * Travelbytheme 컴포넌트.
+ * 사용자에게 다양한 테마 여행을 제안하고, 선택된 테마에 따라 일정을 생성할 수 있도록 합니다.
+ *
+ * @return {JSX.Element} Travelbytheme 컴포넌트를 반환합니다.
+ */
 const Travelbytheme = () => {
   const navigate = useNavigate();
-  const [selectedTheme, setSelectedTheme] = useState(null);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState(null); // 선택된 테마
+  const [startDate, setStartDate] = useState(""); // 여행 시작 날짜
+  const [isModalOpen, setIsModalOpen] = useState(false); // 날짜 선택 모달 상태
 
+  /**
+   * 테마 이름과 테마 설명을 매핑하는 객체.
+   */
   const themeNameMap = {
     ickson: "익선동 데이트 코스",
     yeongwol: "영월 1박 2일 코스",
     pohang: "포항 해안 도로 드라이브 코스",
-    chungju: "정크아트의 도시 충주 여행",
+    chungju: "정크아트의 도시 충주",
     sungsoo: "성수동 거꾸로 하우스",
     beach: "경포대~속초 바다",
     history: "경주 역사 체험",
-    country: "구례 촌캉스 여행",
-    // 필요에 따라 추가적인 테마 이름 매핑
+    country: "구례 촌캉스",
   };
 
+  /**
+   * 테마 클릭 시 호출되는 함수.
+   * 모달을 열고 선택된 테마를 저장합니다.
+   *
+   * @param {string} themeName - 선택된 테마의 API 이름.
+   */
   const handleThemeClick = (themeName) => {
     setSelectedTheme(themeName);
     setIsModalOpen(true);
   };
 
+  /**
+   * 여행 시작 날짜를 변경하는 함수.
+   * @param {Object} e - 이벤트 객체.
+   */
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
   };
 
-  const handleEndDateChange = (e) => {
-    setEndDate(e.target.value);
-  };
-
+  /**
+   * 모달을 닫는 함수.
+   */
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedTheme(null);
   };
 
+  /**
+   * 여정을 시작하는 함수.
+   * 선택된 테마의 데이터를 서버에서 가져와 일정 생성 페이지로 이동합니다.
+   */
   const handleStartJourney = async () => {
     try {
       const response = await fetch(`http://localhost:8090/plan/api/schedules/themes/${selectedTheme}`);
@@ -237,7 +282,7 @@ const Travelbytheme = () => {
       }
       const themeData = await response.json();
       navigate("/schedulemap", {
-        state: { themeData, themeName: themeNameMap[selectedTheme] || selectedTheme, startDate, endDate },
+        state: { themeData, themeName: themeNameMap[selectedTheme] || selectedTheme, startDate },
       });
       handleCloseModal();
     } catch (error) {
@@ -259,14 +304,13 @@ const Travelbytheme = () => {
         <SlideRow slides={customSlides2} onThemeClick={handleThemeClick} />
       </div>
 
+      {/* 날짜 선택 모달 */}
       <DateModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleStartJourney}
         startDate={startDate}
-        endDate={endDate}
         onStartDateChange={handleStartDateChange}
-        onEndDateChange={handleEndDateChange}
       />
     </div>
   );

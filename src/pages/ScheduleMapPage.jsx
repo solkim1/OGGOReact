@@ -15,6 +15,7 @@ const ScheduleMapPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
+  // location.state로부터 필요한 값을 가져옵니다.
   const {
     userId = user?.userId,
     startDate,
@@ -32,7 +33,12 @@ const ScheduleMapPage = () => {
 
   const { schedule } = location.state;
 
-  // 두 날짜 사이의 일수 계산
+  /**
+   * 두 날짜 사이의 일수를 계산하는 함수입니다.
+   * @param {string} startDate - 시작 날짜
+   * @param {string} endDate - 종료 날짜
+   * @returns {number} - 두 날짜 사이의 일수
+   */
   const calculateDaysBetween = (startDate, endDate) => {
     if (!startDate || !endDate) return 0;
 
@@ -54,7 +60,7 @@ const ScheduleMapPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 인덱스 관리
+  // 화면 크기에 따른 인덱스 관리
   const [responsivePageIndex, setResponsivePageIndex] = useState(0);
   const [standardPageIndex, setStandardPageIndex] = useState(0);
   const [isResponsive, setIsResponsive] = useState(window.innerWidth <= 1024);
@@ -64,6 +70,7 @@ const ScheduleMapPage = () => {
   const [isThemeSchedule, setIsThemeSchedule] = useState(false);
   const [isExhibitionSchedule, setIsExhibitionSchedule] = useState(false);
 
+  // 화면 크기 변화에 따라 상태를 업데이트합니다.
   useEffect(() => {
     const handleResize = () => {
       const isResponsiveMode = window.innerWidth <= 1024;
@@ -87,6 +94,7 @@ const ScheduleMapPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [isResponsive]);
 
+  // 초기 사용자 모드를 캐시에서 가져옵니다.
   useEffect(() => {
     const fetchInitialMode = async () => {
       const cachedMode = await LocalCache.readFromCache("userMode");
@@ -97,6 +105,7 @@ const ScheduleMapPage = () => {
     fetchInitialMode();
   }, []);
 
+  // 일정 데이터를 가져오는 함수입니다.
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -141,7 +150,6 @@ const ScheduleMapPage = () => {
           }
 
           const data = await response.json();
-          console.log("Fetched data:", data);
 
           if (!data || typeof data !== "object") {
             throw new Error("Invalid data format");
@@ -158,7 +166,6 @@ const ScheduleMapPage = () => {
           setScheduleTitle(schedule?.scheTitle || (isBusinessMode ? "💼출장 일정💼" : "✈여행 일정✈"));
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         setError("일정을 생성하는 중 오류가 발생했습니다. 다시 시도해 주세요.");
       } finally {
         setLoading(false);
@@ -172,6 +179,7 @@ const ScheduleMapPage = () => {
     };
   }, [location.state, isBusinessMode]);
 
+  // 선택된 일정에 따라 지도 중심을 업데이트합니다.
   useEffect(() => {
     if (locationData[selectedDay] && locationData[selectedDay].length > 0) {
       const firstLocation = locationData[selectedDay][0];
@@ -179,20 +187,26 @@ const ScheduleMapPage = () => {
     }
   }, [selectedDay, locationData]);
 
+  // 비즈니스 일정을 생성하는 URL을 반환합니다.
   const generateBusinessPrompt = async () => {
     return `/plan/api/schedules/business/generate?userId=${userId}&days=${days}&region=${region}&includeOptions=${includeOptions.join(
       ","
     )}&startTime=${startTime}&endTime=${endTime}&startDate=${startDate}&endDate=${endDate}`;
   };
 
+  // 여행 일정을 생성하는 URL을 반환합니다.
   const generateTravelPrompt = async () => {
     return `/plan/api/schedules/travel/generate?userId=${userId}&days=${days}&ageGroup=${ageGroup}&gender=${gender}&groupSize=${groupSize}&theme=${theme}&startDate=${startDate}&endDate=${endDate}`;
   };
 
+  // 기존 일정을 수정하는 URL을 반환합니다.
   const patchschedule = async () => {
     return `/plan/api/schedules/patchschedule?scheNum=${schedule.scheNum}`;
   };
 
+  /**
+   * 일정을 재생성하는 함수입니다.
+   */
   const handleRegenerate = async () => {
     setLoading(true);
     try {
@@ -232,7 +246,6 @@ const ScheduleMapPage = () => {
       }
 
       const data = await response.json();
-      console.log("Received data from server:", data);
 
       if (Object.keys(data).length === 0) {
         alert("재생성된 일정 데이터가 없습니다. 다시 시도해 주세요.");
@@ -261,6 +274,9 @@ const ScheduleMapPage = () => {
     }
   };
 
+  /**
+   * 일정을 저장하는 함수입니다.
+   */
   const handleSaveSchedule = async () => {
     try {
       let num;
@@ -316,8 +332,6 @@ const ScheduleMapPage = () => {
         });
       });
 
-      console.log("Sending data:", scheduleDataArray);
-
       const response = await fetch("/plan/api/schedules/save", {
         method: "POST",
         body: JSON.stringify(scheduleDataArray),
@@ -330,8 +344,6 @@ const ScheduleMapPage = () => {
       }
 
       const result = await response.text();
-      console.log("저장 결과:", result);
-
       alert("모든 일정이 성공적으로 저장되었습니다.");
 
       const userMode = await LocalCache.readFromCache("userMode");
@@ -347,10 +359,10 @@ const ScheduleMapPage = () => {
       }
     } catch (err) {
       alert(`일정 저장 중 오류가 발생했습니다: ${err.message}`);
-      console.error("일정 저장 중 오류 발생:", err);
     }
   };
 
+  // 다음 페이지로 이동합니다.
   const handleNextPage = () => {
     if (isResponsive) {
       setResponsivePageIndex((prev) => Math.min(prev + 1, totalSchedulePages - 1));
@@ -359,6 +371,7 @@ const ScheduleMapPage = () => {
     }
   };
 
+  // 이전 페이지로 이동합니다.
   const handlePrevPage = () => {
     if (isResponsive) {
       setResponsivePageIndex((prev) => Math.max(prev - 1, 0));
@@ -367,9 +380,10 @@ const ScheduleMapPage = () => {
     }
   };
 
-  // 페이지 수 계산
+  // 총 페이지 수를 계산합니다.
   const totalSchedulePages = Math.ceil(Object.keys(locationData).length / scheduleItemsPerPage);
 
+  // 현재 페이지에 표시할 일정을 계산합니다.
   const displayedScheduleDays = useMemo(
     () =>
       Array.from(
@@ -379,24 +393,34 @@ const ScheduleMapPage = () => {
     [locationData, scheduleItemsPerPage, isResponsive, responsivePageIndex, standardPageIndex]
   );
 
+  /**
+   * 시작 날짜와 일수로 종료 날짜를 계산합니다.
+   * @param {string} startDate - 시작 날짜
+   * @param {number} days - 일수
+   * @returns {string} - 종료 날짜 (YYYY-MM-DD 형식)
+   */
   const calculateEndDate = (startDate, days) => {
     const date = new Date(startDate);
     date.setDate(date.getDate() + days - 1);
     return date.toISOString().split("T")[0];
   };
 
+  // 로딩 중일 때 로딩 컴포넌트를 표시합니다.
   if (loading && Object.keys(locationData).length === 0) {
     return <Loading />;
   }
 
+  // 오류가 발생했을 때 오류 메시지를 표시합니다.
   if (error) {
     return <p>{error}</p>;
   }
 
+  // 데이터가 없을 때 메시지를 표시합니다.
   if (Object.keys(locationData).length === 0) {
     return <p>데이터가 없습니다.</p>;
   }
 
+  // 메인 페이지로 이동합니다.
   const goToHomePage = () => {
     const isConfirmed = window.confirm("메인페이지로 이동하시겠습니까?");
     if (isConfirmed) {

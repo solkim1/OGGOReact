@@ -32,7 +32,7 @@
 
 /* 전체 캘린더 스타일 */
 .fc {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 16px;
   color: #333;
   width: 100%;
@@ -54,7 +54,6 @@
   justify-content: space-between; /* 버튼과 타이틀이 양쪽으로 정렬되도록 */
   align-items: center;
   flex-wrap: wrap; /* 작은 화면에서 버튼이 줄바꿈되도록 */
-
 }
 
 .fc-toolbar-title {
@@ -72,10 +71,7 @@
   justify-content: flex-end; /* 버튼이 오른쪽에 정렬되도록 */
 }
 
-
-
 /* 버튼 스타일 */
-
 
 .fc-button {
   background: #ffffff;
@@ -90,15 +86,10 @@
 }
 
 .fc-button:hover,
-
 .fc-button-active {
   background: #007bff;
   color: #ffffff;
 }
-
-
-
-
 
 .fc-daygrid-day-number {
   font-size: 16px;
@@ -106,22 +97,19 @@
   color: #444;
 }
 
-
 /* 일요일 날짜 숫자 스타일 */
 .fc .fc-day-sun .fc-daygrid-day-number {
   color: red; /* 일요일 날짜 숫자를 빨간색으로 변경 */
 }
 
-.fc .fc-day-sun i{
+.fc .fc-day-sun i {
   color: white;
 }
-
 
 /* 토요일 날짜 숫자 스타일 */
 .fc .fc-day-sat .fc-daygrid-day-number {
   color: blue; /* 토요일 날짜 숫자를 파란색으로 변경 */
 }
-
 
 /* 일요일 및 토요일 날짜 스타일 */
 .fc .fc-day-sun {
@@ -133,20 +121,19 @@
 }
 
 .fc-daygrid-more-link {
-  color: #585050 /* 부모의 색상을 따르지 않고 기본값 유지 */
+  color: #585050; /* 부모의 색상을 따르지 않고 기본값 유지 */
 }
 
 /* 공휴일 이벤트 스타일 */
 .holiday-event {
   background: #ff8080 !important; /* 공휴일 배경색 */
-  color: white !important;        /* 공휴일 텍스트 색상 */
+  color: white !important; /* 공휴일 텍스트 색상 */
   border: none !important;
 }
 
 .fc-daygrid-day.fc-daygrid-day-holiday .fc-daygrid-day-number {
   color: red; /* !important로 우선 순위 강제 */
 }
-
 
 /* 오늘 날짜 강조 */
 .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
@@ -157,16 +144,13 @@
   font-weight: 600;
 }
 
-
 /* 오늘 날짜 셀에 배경색 추가 */
 .fc .fc-daygrid-day.fc-day-today {
   background-color: #e3fab7;
-
 }
 
 /* 이벤트 스타일 */
 .fc-event {
-
   background: #dfc260;
   color: white;
 
@@ -180,7 +164,6 @@
 }
 
 .fc-event:hover {
-
   background: #66cfd3;
 
   transform: scale(1.05);
@@ -199,6 +182,40 @@
   overflow-y: auto; /* 스크롤 가능하도록 설정 */
   transform: translateY(-40%);
   /* 팝오버를 약간 위로 이동 */
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3px;
+}
+
+/* 하단의 구글 로그인 */
+.titleContainer .googleSignIn {
+  margin: 20px 0;
+  width: 30%;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  padding: 12px;
+  background-color: #ffec8bdb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.titleContainer .googleSignIn:hover {
+  background-color: #ffec8bf3;
+}
+
+.titleContainer .googleSignIn img {
+  margin-right: 8px;
+}
+
+.titleContainer .googleSignIn span {
+  font-size: 14px;
+  color: #333;
 }
 
 /* 모달 스타일 */
@@ -269,8 +286,6 @@
   }
 }
 
-
-
 /* 요일 스타일 */
 .fc-theme-standard th {
   height: 40px;
@@ -282,8 +297,6 @@
   color: #7b7b7b;
   vertical-align: middle;
 }
-
-
 
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
@@ -337,7 +350,6 @@
   .modal-content p {
     font-size: 14px;
   }
-
 }
 
 @media (max-width: 576px) {
@@ -346,18 +358,18 @@
     padding: 5px 10px; /* 작은 화면에서 패딩 조정 */
     height: auto;
   }
-  
+
   .fc-toolbar-title {
     font-size: 18px;
     margin-bottom: 10px;
     flex: unset; /* 타이틀이 자동으로 크기 조정 */
   }
-  
+
   .fc-button-group {
     flex-wrap: wrap;
     justify-content: center; /* 버튼들이 중앙에 정렬되도록 */
   }
-  
+
   .fc-button {
     padding: 5px 10px;
     font-size: 12px;
@@ -394,7 +406,5 @@
   .fc-more-popover {
     max-height: 65vh; /* 작은 화면에서 팝오버의 최대 높이 설정 */
     transform: translateY(-30%); /* 팝오버를 약간 위로 이동 */
-   
   }
 }
-

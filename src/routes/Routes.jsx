@@ -50,9 +50,12 @@ const AppRoutes = () => {
   };
 
   return (
-    <HeaderColorProvider>  {/* HeaderColorProvider로 감싸줍니다 */}
-      <Router>{isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}</Router>
-    </HeaderColorProvider>
+    <Router>
+      <HeaderColorProvider>
+        {/* HeaderColorProvider로 감싸줍니다 */}
+        {isAuthenticated ? <PrivateRoutes /> : <PublicRoutes />}
+      </HeaderColorProvider>
+    </Router>
   );
 };
 

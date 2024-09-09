@@ -1,16 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import AppRoutes from './routes/Routes';
-import reportWebVitals from './reportWebVitals';
-import UserProvider from './context/UserProvider';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import AppRoutes from "./routes/Routes";
+import reportWebVitals from "./reportWebVitals";
+import UserProvider from "./context/UserProvider";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+/**
+ * UserProvider로 애플리케이션을 감싸서 하위 컴포넌트에서 사용자 컨텍스트를 사용할 수 있도록 설정합니다.
+ */
 root.render(
-  // 이렇게 UserProvider 로 감싸놓게 되면 그 하위 컴포넌트에서 useContext를 이용해
-  // UserProvider 안의 모든 함수들과 state 들을 바로바로 꺼내 사용할 수 있음
   <UserProvider>
     <AppRoutes />
   </UserProvider>
 );
+
+/**
+ * 웹 성능 측정을 위한 함수 호출입니다.
+ */
 reportWebVitals();

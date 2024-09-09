@@ -5,25 +5,32 @@ import ScheduleList from "../components/ScheduleList";
 import { UserContext } from "../context/UserProvider";
 import { HeaderColorContext } from "../context/HeaderColorContext"; // 헤더 컬러 컨텍스트 추가
 
+/**
+ * 마이 스케줄 페이지 컴포넌트.
+ * 사용자 일정 목록을 필터링하고 표시하는 기능을 제공.
+ *
+ * @return {JSX.Element} 마이 스케줄 페이지 컴포넌트.
+ */
 const MySchedulesPage = () => {
-  const [activeTab, setActiveTab] = useState("all");
-  const [allSchedules, setAllSchedules] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [counts, setCounts] = useState({ all: 0, travel: 0, business: 0, important: 0 });
+  const [activeTab, setActiveTab] = useState("all"); // 현재 활성화된 탭
+  const [allSchedules, setAllSchedules] = useState([]); // 모든 일정 데이터
+  const [counts, setCounts] = useState({ all: 0, travel: 0, business: 0, important: 0 }); // 각 탭의 일정 개수
   const { user } = useContext(UserContext);
-
   const { headerColor } = useContext(HeaderColorContext); // 헤더 컬러 컨텍스트 사용
 
+  // 사용자 정보를 기반으로 일정을 가져옴
   useEffect(() => {
     if (user) {
       fetchSchedules();
     }
   }, [user]);
 
+  /**
+   * 모든 일정 데이터를 서버에서 가져오는 함수.
+   */
   const fetchSchedules = async () => {
-    setLoading(true);
     try {
-      const url = `/plan/api/schedules/all?userId=${user.userId}`; // 모든 일정 데이터를 가져옴
+      const url = `/plan/api/schedules/all?userId=${user.userId}`; // 모든 일정 데이터를 가져오는 API URL
       const response = await axios.get(url);
       const schedules = response.data;
 
@@ -39,9 +46,13 @@ const MySchedulesPage = () => {
     } catch (error) {
       console.error("Error fetching schedules:", error);
     }
-    setLoading(false);
   };
 
+  /**
+   * 현재 활성화된 탭에 따라 일정 목록을 필터링하는 함수.
+   *
+   * @return {Array} 필터링된 일정 목록.
+   */
   const getFilteredSchedules = () => {
     switch (activeTab) {
       case "travel":
@@ -82,11 +93,7 @@ const MySchedulesPage = () => {
         </div>
       </div>
       <div className={styles.container}>
-        {loading ? (
-          <div>로딩 중...</div>
-        ) : (
-          <ScheduleList schedules={getFilteredSchedules()} fetchSchedules={fetchSchedules} />
-        )}
+        <ScheduleList schedules={getFilteredSchedules()} fetchSchedules={fetchSchedules} />
       </div>
     </div>
   );
