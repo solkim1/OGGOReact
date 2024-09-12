@@ -65,7 +65,7 @@ const LoginPage = () => {
 
     try {
       // 서버에 로그인 요청
-      const response = await axios.post("http://localhost:8090/plan/user/login", formData);
+      const response = await axios.post("https://www.planmaker.me/plan/user/login", formData);
 
       // 로그인 성공 시 UserContext에 사용자 정보 저장
       login({

@@ -112,7 +112,7 @@ const MyPage = () => {
 
     // 서버에 사용자 정보 수정 요청
     try {
-      const response = await axios.post("http://localhost:8090/plan/user/editProfile", formData);
+      const response = await axios.post("https://www.planmaker.me/plan/user/editProfile", formData);
       console.log("응답:", response.data);
 
       login({

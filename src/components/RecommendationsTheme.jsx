@@ -36,7 +36,7 @@ const RecommendationsTheme = () => {
   const handleStartJourney = async () => {
     try {
       // 선택된 테마에 대한 데이터를 서버에서 가져옵니다.
-      const response = await fetch(`http://localhost:8090/plan/api/schedules/themes/${selectedTheme}`);
+      const response = await fetch(`https://www.planmaker.me/plan/api/schedules/themes/${selectedTheme}`);
       if (!response.ok) {
         throw new Error("테마 데이터를 불러오는 데 실패했습니다.");
       }

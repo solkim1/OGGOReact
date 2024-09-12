@@ -146,7 +146,7 @@ const BusinessMainPage = () => {
    */
   const handleStartJourney = async () => {
     try {
-      const response = await fetch(`http://localhost:8090/plan/api/schedules/exhibitions/${selectedExhibition}`);
+      const response = await fetch(`https://www.planmaker.me/plan/api/schedules/exhibitions/${selectedExhibition}`);
       if (!response.ok) {
         throw new Error("전시회 데이터를 불러오는 데 실패했습니다.");
       }

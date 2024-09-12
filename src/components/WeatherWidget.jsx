@@ -52,7 +52,7 @@ const WeatherWidget = () => {
   return (
     <div className={styles.weatherWidget}>
       {weatherData.map((data, index) => {
-        const weatherIcon = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`; // 날씨 아이콘 URL
+        const weatherIcon = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`; // 날씨 아이콘 URL
         const date = new Date(data.dt * 1000); // UNIX 타임스탬프를 Date 객체로 변환
         const formattedDate = `${date.getMonth() + 1}/${date.getDate()}(${getDayOfWeek(date)})`; // 날짜와 요일 포맷팅
 

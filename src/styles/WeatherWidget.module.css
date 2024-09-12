@@ -1,10 +1,12 @@
 .weatherWidget {
+  max-width: 460px;
   display: flex;
   align-items: center;
   justify-content: center; /* 수평 중앙 정렬 */
   gap: 12px;
   margin: 0 auto; /* 중앙 정렬 */
   padding: 5px;
+  overflow-wrap: anywhere;
 }
 
 .weatherItem {

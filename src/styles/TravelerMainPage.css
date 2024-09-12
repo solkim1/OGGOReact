@@ -1,5 +1,4 @@
-/* reset */
-a,
+reset a,
 abbr,
 acronym,
 address,
@@ -119,7 +118,7 @@ button {
 
 /* 헤더 홈 테마 지역 지우면 줄생김 */
 a {
-  font-family: NotoSansKR, NotoSansJP, '돋움', Dotum, AppleGothic, Tahoma, Sans-serif;
+  font-family: NotoSansKR, NotoSansJP, "돋움", Dotum, AppleGothic, Tahoma, Sans-serif;
   color: #333;
   text-decoration: none;
 }
@@ -177,7 +176,7 @@ div {
 
 #gnbCommon .depth1 ul li.swiper-slide.on > a:after,
 #gnbCommon .depth1 ul li.swiper-slide:hover > a:after {
-  content: '';
+  content: "";
   display: inline-block;
   width: 5px;
   height: 5px;
@@ -411,7 +410,7 @@ div {
 }
 
 .main_showcase:after {
-  content: '';
+  content: "";
   display: block;
   width: 100%;
   height: 160px;
@@ -442,7 +441,7 @@ div {
 }
 
 .main_showcase .gallery-top.swiper-container:after {
-  content: '';
+  content: "";
   display: inline-block;
   width: 123px;
   height: 126px;
@@ -513,7 +512,7 @@ div {
 }
 
 .main_showcase .tit_wrap a:after {
-  content: '';
+  content: "";
   display: block;
   height: 1px;
   background: #908f8f;
@@ -529,7 +528,7 @@ div {
 }
 
 .main_showcase .swiper-slide a:focus-visible:after {
-  content: '';
+  content: "";
   display: block;
   width: 100%;
   height: 100%;
@@ -603,7 +602,7 @@ div {
   background: #000;
   height: 100%;
   width: 0;
-  content: '';
+  content: "";
 }
 
 .main_showcase .swiper-progress-bar.active .slide_progress-bar {
@@ -779,17 +778,45 @@ div {
 }
 
 @media screen and (max-width: 768px) {
+  .main_showcase {
+    padding-top: 20px;
+    position: relative;
+  }
+
+  .main_showcase .img_wrap {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin-top: -20px;
+  }
+
+  .main_showcase .swiper-container.gallery-top {
+    padding: 5px 5px 5px 5px;
+  }
+
   .filterContainer {
     flex-direction: column;
     border-radius: 20px;
     padding: 20px;
   }
+
   .dateInputContainer {
     padding-left: 10px;
   }
-  .main_showcase {
+
+  .cont *,
+  .page_box *,
+  .main_showcase .gallery-top.swiper-container:after {
     display: none;
   }
+
+  .page {
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+    padding: 0px;
+  }
+
   .scheduleButton {
     margin-left: 0px;
   }

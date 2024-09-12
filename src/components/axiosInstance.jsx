@@ -8,7 +8,7 @@ import axios from "axios";
  * - headers: 요청 시 사용될 기본 헤더 설정 (JSON 형식)
  */
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8090/plan/api/events",
+  baseURL: "https://www.planmaker.me/plan/api/events",
   headers: {
     "Content-Type": "application/json",
     // 'Authorization': `Bearer ${yourToken}` // 필요 시 인증 헤더 추가

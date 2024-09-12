@@ -88,7 +88,7 @@ const JoinPage = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8090/plan/user/checkId?userId=${id}`);
+        const response = await axios.get(`https://www.planmaker.me/plan/user/checkId?userId=${id}`);
         setUserIdValid(response.data.available);
       } catch (e) {
         console.error(e);
@@ -111,7 +111,7 @@ const JoinPage = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8090/plan/user/checkEmail?userEmail=${email}`);
+        const response = await axios.get(`https://www.planmaker.me/plan/user/checkEmail?userEmail=${email}`);
         setEmailDuplicate(response.data.available);
       } catch (e) {
         console.error(e);
@@ -169,7 +169,7 @@ const JoinPage = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8090/plan/user/join", formData);
+      const response = await axios.post("https://www.planmaker.me/plan/user/join", formData);
       console.log(response.data);
       alert("회원가입 성공");
       nav("/");

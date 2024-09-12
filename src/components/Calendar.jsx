@@ -60,7 +60,7 @@ const Calendar = () => {
    */
   const fetchEventsFromDB = async () => {
     try {
-      const response = await axios.get("http://localhost:8090/plan/api/schedules/all", {
+      const response = await axios.get("https://www.planmaker.me/plan/api/schedules/all", {
         params: { userId: user.userId },
       });
 

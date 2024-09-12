@@ -104,26 +104,23 @@ const Header = () => {
       <header className={styles.header} style={{ backgroundColor: headerColor }}>
         <div className={styles.headerContent}>
           <div className={styles.logoContainer}>
-            {/* 로고 클릭 시 홈 페이지로 이동 */}
             <img src={logoImage} alt="플랜메이커 로고" className={styles.logo} onClick={goToHomePage} />
           </div>
           <div className={styles.rightContent}>
             <WeatherWidget />
-            <div className={styles.headerButtons}>
-              {/* 모드 전환 버튼 */}
-              <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`} onClick={toggleMode}>
-                <div className={styles.toggleCircle}>
-                  <img
-                    src={isBusinessMode ? businessIcon : travelerIcon}
-                    alt={isBusinessMode ? "출장자 모드 아이콘" : "여행자 모드 아이콘"}
-                    className={styles.modeIcon}
-                  />
-                </div>
-                <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
-                  {isBusinessMode ? "출장자 모드" : "여행자 모드"}
-                </span>
+            <div className={`${styles.toggleSwitch} ${isBusinessMode ? styles.active : ""}`} onClick={toggleMode}>
+              <div className={styles.toggleCircle}>
+                <img
+                  src={isBusinessMode ? businessIcon : travelerIcon}
+                  alt={isBusinessMode ? "출장자 모드 아이콘" : "여행자 모드 아이콘"}
+                  className={styles.modeIcon}
+                />
               </div>
-              {/* 네비게이션 버튼들 */}
+              <span className={`${styles.toggleText} ${isBusinessMode ? styles.rightText : styles.leftText}`}>
+                {isBusinessMode ? "출장자 모드" : "여행자 모드"}
+              </span>
+            </div>
+            <div className={styles.headerButtons}>
               <button className={styles.navButton} onClick={toggleCalendar}>
                 여행캘린더
               </button>
@@ -140,7 +137,6 @@ const Header = () => {
           </div>
         </div>
       </header>
-      {/* 캘린더 오버레이 */}
       {showCalendar && (
         <div className={styles.calendarOverlay} onClick={handleOutsideClick}>
           <div className={styles.calendarContainer}>

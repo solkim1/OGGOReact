@@ -7,8 +7,8 @@ import axios from "axios";
 export const UserContext = createContext();
 
 // Google OAuth 클라이언트 ID와 리디렉션 URI
-const CLIENT_ID = "774245247226-mb4dm5idh0esrgea29g9kb0qr6ch0j84.apps.googleusercontent.com";
-const REDIRECT_URI = "http://localhost:3000/oauth2/callback";
+const CLIENT_ID = "492030565512-v26kv67d7eq37mqsbt9vtlmub48ourim.apps.googleusercontent.com";
+const REDIRECT_URI = "https://www.planmaker.me/oauth2/callback";
 
 /**
  * UserProvider 컴포넌트.
@@ -125,7 +125,7 @@ const UserProvider = ({ children }) => {
 
       console.log(data);
 
-      const response = await axios.post("http://localhost:8090/plan/user/googleLogin", {
+      const response = await axios.post("https://www.planmaker.me/plan/user/googleLogin", {
         userId: data.id,
         userNick: data.name,
         userEmail: data.email,
