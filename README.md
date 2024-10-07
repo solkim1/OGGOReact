@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/ab50582c-849a-4632-b8b1-8d86d9cf6331)[![123](https://github.com/user-attachments/assets/bd9265e5-bb4e-4c4d-b93c-56c9d25b9ef6)](https://youtu.be/uKglF3vfuco)
+[![123](https://github.com/user-attachments/assets/bd9265e5-bb4e-4c4d-b93c-56c9d25b9ef6)](https://youtu.be/uKglF3vfuco)
 
 목차
 - [서비스 소개](#서비스-소개)
